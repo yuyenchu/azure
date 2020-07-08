@@ -17,7 +17,12 @@ https://github.com/Azure/azure-sdk-for-python/blob/master/sdk/eventhub/azure-eve
 
 from azure.eventhub import TransportType
 from azure.eventhub import EventHubConsumerClient
-
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import json
+import threading
+import logging
+logging.getLogger().setLevel(logging.CRITICAL)
 
 # Event Hub-compatible endpoint
 # az iot hub show --query properties.eventHubEndpoints.events.endpoint --name hub-test1
@@ -35,14 +40,27 @@ IOTHUB_SAS_KEY = "aOQRCy8GcrQokjuJjAb7PFYc9dj9SjqPnlH1OMAzYVQ="
 # you can skip the Azure CLI commands above, and assign the connection string directly here.
 CONNECTION_STR = f'Endpoint={EVENTHUB_COMPATIBLE_ENDPOINT}/;SharedAccessKeyName=service;SharedAccessKey={IOTHUB_SAS_KEY};EntityPath={EVENTHUB_COMPATIBLE_PATH}'
 
+
+received_data = {}
+# received_data = {'a':[1,2,3,4,5,6,7,8,9,10,11,12]}
 # Define callbacks to process events
 def on_event_batch(partition_context, events):
+    global received_data
     for event in events:
         print("Received event from partition: {}.".format(partition_context.partition_id))
         print("Telemetry received: ", event.body_as_str())
         print("Properties (set by device): ", event.properties)
         print("System properties (set by IoT Hub): ", event.system_properties)
-        print()
+        print(event.system_properties[b'iothub-connection-device-id'])
+        device_id=event.system_properties[b'iothub-connection-device-id'].decode("utf-8") 
+        obj = event.body_as_json()
+        # print("obj:", obj['temperature'])
+        if device_id not in received_data.keys():
+            received_data[device_id]=[obj['temperature']]
+        else:
+            received_data[device_id].append(obj['temperature'])
+        print("")
+    
     partition_context.update_checkpoint()
 
 def on_error(partition_context, error):
@@ -55,28 +73,39 @@ def on_error(partition_context, error):
     else:
         print("An exception: {} occurred during the load balance process.".format(error))
 
+def wrapper(client):
+    with client:
+        print(client.get_eventhub_properties())
+        client.receive_batch(
+            on_event_batch=on_event_batch,
+            on_error=on_error
+        )
 
 def main():
-    client = EventHubConsumerClient.from_connection_string(
-        conn_str=CONNECTION_STR,
-        consumer_group="$default",
-        # transport_type=TransportType.AmqpOverWebsocket,  # uncomment it if you want to use web socket
-        # http_proxy={  # uncomment if you want to use proxy 
-        #     'proxy_hostname': '127.0.0.1',  # proxy hostname.
-        #     'proxy_port': 3128,  # proxy port.
-        #     'username': '<proxy user name>',
-        #     'password': '<proxy password>'
-        # }
-    )
     try:
-        with client:
-            print(client.get_eventhub_properties())
-            client.receive_batch(
-                on_event_batch=on_event_batch,
-                on_error=on_error
-            )
+        client = EventHubConsumerClient.from_connection_string(
+            conn_str=CONNECTION_STR,
+            consumer_group="$default",
+        )
+        read_thread = threading.Thread(target=wrapper, args=(client,),daemon = True)
+        read_thread.start()
+        plt.figure()
+        plt.xlabel("time")
+        plt.ylabel("temperature")
+        plt.title("device temperature")
+        while True:
+            plt.cla()
+            for k in received_data.keys():
+                # x=range(max(1,len(received_data[k])-10),len(received_data[k]))
+                # y=received_data[k][-10:]
+                # print("x and y have len {} and {}".format(len(x), len(y)))
+                plt.ylim(0,60)
+                plt.plot(range(max(0,len(received_data[k])-10),len(received_data[k])),
+                        received_data[k][-10:],marker='.', label=k)
+            plt.legend()
+            plt.pause(0.5)
     except KeyboardInterrupt:
-        print("Receiving has stopped.")
-
+        print ( "Receiving has stopped." )
+    
 if __name__ == '__main__':
     main()

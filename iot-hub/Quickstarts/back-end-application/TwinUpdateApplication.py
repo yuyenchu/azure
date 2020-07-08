@@ -23,7 +23,7 @@ def iothub_devicemethod_sample_run():
         # get device's twin
         twin = registry_manager.get_twin(DEVICE_ID)
         print("first device twin", twin.properties)
-        twin_patch = Twin(tags=neww_tag, properties= TwinProperties(desired={'Power' : False}))
+        twin_patch = Twin(tags=neww_tag, properties= TwinProperties(desired={'Power' : True,"test":None}))
         twin = registry_manager.update_twin(DEVICE_ID, twin_patch, twin.etag)
 
         print ( "" )
@@ -36,7 +36,7 @@ def iothub_devicemethod_sample_run():
         # get latest twin to observe difference
         twin = registry_manager.get_twin(DEVICE_ID)
         print("latest device twin properties", twin.properties)
-        # twin_patch = Twin(tags=twin.tags, properties= TwinProperties())
+        # twin_patch = Twin(tags=twin.tags, properties= TwinProperties(desired = None))
         # twin = registry_manager.update_twin(DEVICE_ID, twin_patch, twin.etag)
         # print("cleaned up desired property")
     except Exception as ex:

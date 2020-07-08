@@ -1,6 +1,7 @@
 # Copyright (c) Microsoft. All rights reserved.
 # Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+import json
 import random
 import time
 import threading
@@ -19,7 +20,7 @@ CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate2;Sha
 TEMPERATURE = 20.0
 HUMIDITY = 60
 POWER = True
-MSG_TXT = '{{"temperature": {temperature},"humidity": {humidity},"power":{power}}}'
+MSG_TXT = '{{"temperature": {temperature},"humidity": {humidity},"power": {power}}}'
 
 INTERVAL = 1
 
@@ -49,15 +50,14 @@ def device_method_listener(device_client):
                 response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                 response_status = 200
         elif method_request.name == "SetPower":
-            try:
+            if method_request.payload=="True" or method_request.payload=="False":
                 POWER = method_request.payload=="True"
                 print("power is set to",POWER)
-            except ValueError:
-                response_payload = {"Response": "Invalid parameter"}
-                response_status = 400
-            else:
                 response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                 response_status = 200
+            else:
+                response_payload = {"Response": "Invalid parameter"}
+                response_status = 400
         else:
             response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
             response_status = 404
@@ -90,28 +90,26 @@ def iothub_client_telemetry_sample_run():
         twin_update_thread = threading.Thread(target=twin_update_listener, args=(client,))
         twin_update_thread.daemon = True
         twin_update_thread.start()
-
+        count = 0
         while True:
             # Build the message with simulated telemetry values.
-            temperature = TEMPERATURE + (random.random() * 15)
+            temperature = TEMPERATURE + count
             humidity = HUMIDITY + (random.random() * 20)
-            power = "on" if POWER is True else "off"
-            print(POWER)
+            power = '"on"' if POWER is True else '"off"'
+            # print(POWER)
             msg_txt_formatted = MSG_TXT.format(temperature=temperature, humidity=humidity,power=power)
+            # print(json.loads(msg_txt_formatted))
+            message = Message(msg_txt_formatted, content_type='json')
+            # message = {"temperature": temperature, "humidity": humidity, "power": power}
             
-            message = Message(msg_txt_formatted)
-
             # Add a custom application property to the message.
             # An IoT hub can filter on these properties without access to the message body.
-            if temperature > 30:
-              message.custom_properties["temperatureAlert"] = "true"
-            else:
-              message.custom_properties["temperatureAlert"] = "false"
-
+            message.custom_properties["temperatureAlert"] = "true" if temperature > 30 else "false"
             # Send the message.
-            print( "Sending message: {}".format(message) )
+            print( "Sending message: {}".format(message))
             client.send_message(message)
             print( "Message sent" )
+            count = 0 if count>15 else count+1
             time.sleep(INTERVAL)
 
     except KeyboardInterrupt:
