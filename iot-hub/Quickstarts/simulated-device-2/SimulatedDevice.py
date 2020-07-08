@@ -18,7 +18,8 @@ CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate2;Sha
 # Define the JSON message to send to IoT Hub.
 TEMPERATURE = 20.0
 HUMIDITY = 60
-MSG_TXT = '{{"temperature": {temperature},"humidity": {humidity}}}'
+POWER = True
+MSG_TXT = '{{"temperature": {temperature},"humidity": {humidity},"power":{power}}}'
 
 INTERVAL = 1
 
@@ -29,7 +30,7 @@ def iothub_client_init():
 
 
 def device_method_listener(device_client):
-    global INTERVAL
+    global INTERVAL, POWER
     while True:
         method_request = device_client.receive_method_request()
         print (
@@ -47,6 +48,16 @@ def device_method_listener(device_client):
             else:
                 response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                 response_status = 200
+        elif method_request.name == "SetPower":
+            try:
+                POWER = method_request.payload=="True"
+                print("power is set to",POWER)
+            except ValueError:
+                response_payload = {"Response": "Invalid parameter"}
+                response_status = 400
+            else:
+                response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
+                response_status = 200
         else:
             response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
             response_status = 404
@@ -54,24 +65,39 @@ def device_method_listener(device_client):
         method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
         device_client.send_method_response(method_response)
 
+def twin_update_listener(client):
+    global POWER
+    while True:
+        patch = client.receive_twin_desired_properties_patch()  # blocking call
+        print("Twin patch received:")
+        print(patch)
+        POWER=patch["Power"]
+        print("power is set to",POWER)
+        reported_patch = {"Power": POWER}
+        client.patch_twin_reported_properties(reported_patch)
 
 
 def iothub_client_telemetry_sample_run():
-
     try:
         client = iothub_client_init()
         print ( "IoT Hub device sending periodic messages, press Ctrl-C to exit" )
 
-        # Start a thread to listen 
+        # Start a thread to listen direct method
         device_method_thread = threading.Thread(target=device_method_listener, args=(client,))
         device_method_thread.daemon = True
         device_method_thread.start()
+        # start thread to listen twin update 
+        twin_update_thread = threading.Thread(target=twin_update_listener, args=(client,))
+        twin_update_thread.daemon = True
+        twin_update_thread.start()
 
         while True:
             # Build the message with simulated telemetry values.
             temperature = TEMPERATURE + (random.random() * 15)
             humidity = HUMIDITY + (random.random() * 20)
-            msg_txt_formatted = MSG_TXT.format(temperature=temperature, humidity=humidity)
+            power = "on" if POWER is True else "off"
+            print(POWER)
+            msg_txt_formatted = MSG_TXT.format(temperature=temperature, humidity=humidity,power=power)
             
             message = Message(msg_txt_formatted)
 

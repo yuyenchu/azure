@@ -19,8 +19,10 @@ CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;SharedAccessKeyName=se
 DEVICE_ID = "simulate2"
 
 # Details of the direct method to call.
-METHOD_NAME = "SetTelemetryInterval"
-METHOD_PAYLOAD = "10"
+# METHOD_NAME = "SetTelemetryInterval"
+# METHOD_PAYLOAD = "10"
+METHOD_NAME = "SetPower"
+METHOD_PAYLOAD = "False"
 
 def iothub_devicemethod_sample_run():
     try:
