@@ -36,6 +36,9 @@ def iothub_devicemethod_sample_run():
         # get latest twin to observe difference
         twin = registry_manager.get_twin(DEVICE_ID)
         print("latest device twin properties", twin.properties)
+        # twin_patch = Twin(tags=twin.tags, properties= TwinProperties())
+        # twin = registry_manager.update_twin(DEVICE_ID, twin_patch, twin.etag)
+        # print("cleaned up desired property")
     except Exception as ex:
         print ( "" )
         print ( "Unexpected error {0}".format(ex) )
