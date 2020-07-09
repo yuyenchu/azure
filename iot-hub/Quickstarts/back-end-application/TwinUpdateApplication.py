@@ -2,40 +2,38 @@ import sys
 from azure.iot.hub import IoTHubRegistryManager
 from azure.iot.hub.models import Twin, TwinProperties, QuerySpecification, QueryResult
 from builtins import input
+from time import sleep
 
 CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;SharedAccessKeyName=service;SharedAccessKey=aOQRCy8GcrQokjuJjAb7PFYc9dj9SjqPnlH1OMAzYVQ="
 DEVICE_ID = "simulate2"
-
-# Details of the direct method to call.
-# METHOD_NAME = "SetTelemetryInterval"
-# METHOD_PAYLOAD = "10"
-METHOD_NAME = "SetPower"
-METHOD_PAYLOAD = "False"
+VALUE = 50
 
 def iothub_devicemethod_sample_run():
     try:
+        VALUE = int(input("Please enter the desired power level: "))
         # Create IoTHubRegistryManager
         registry_manager = IoTHubRegistryManager(CONNECTION_STRING)
 
-        neww_tag = {
-          "location" : "Taiwan"
-        }
+        # new_tag = {
+        #   "location" : "Taiwan"
+        # }
         # get device's twin
         twin = registry_manager.get_twin(DEVICE_ID)
-        print("first device twin", twin.properties)
-        twin_patch = Twin(tags=neww_tag, properties= TwinProperties(desired={'Power' : True,"test":None}))
+        print("current device twin properties", twin.properties)
+        # twin_patch = Twin(tags=new_tag, properties= TwinProperties(desired={'Power' : False}))
+        twin_patch = Twin(properties= TwinProperties(desired={'Power' : VALUE}))
         twin = registry_manager.update_twin(DEVICE_ID, twin_patch, twin.etag)
 
         print ( "" )
-        input("Press Enter to continue...\n")
+        sleep(3)
         # query to check new tag
-        query_spec = QuerySpecification(query="SELECT * FROM devices WHERE tags.location = 'Taiwan'")
-        query_result = registry_manager.query_iot_hub(query_spec, None, 100)
-        print("Devices in Taiwan: {}".format(', '.join([twin.device_id for twin in query_result.items])))
+        # query_spec = QuerySpecification(query="SELECT * FROM devices WHERE tags.location = 'Taiwan'")
+        # query_result = registry_manager.query_iot_hub(query_spec, None, 100)
+        # print("Devices in Taiwan: {}".format(', '.join([twin.device_id for twin in query_result.items])))
 
         # get latest twin to observe difference
         twin = registry_manager.get_twin(DEVICE_ID)
-        print("latest device twin properties", twin.properties)
+        print("updated device twin properties", twin.properties)
         # twin_patch = Twin(tags=twin.tags, properties= TwinProperties(desired = None))
         # twin = registry_manager.update_twin(DEVICE_ID, twin_patch, twin.etag)
         # print("cleaned up desired property")

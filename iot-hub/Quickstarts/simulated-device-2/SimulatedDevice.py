@@ -5,6 +5,8 @@ import json
 import random
 import time
 import threading
+import os
+import sys
 
 # Using the Python Device SDK for IoT Hub:
 #   https://github.com/Azure/azure-iot-sdk-python
@@ -19,8 +21,8 @@ CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate2;Sha
 # Define the JSON message to send to IoT Hub.
 TEMPERATURE = 20.0
 HUMIDITY = 60
-POWER = True
-MSG_TXT = '{{"temperature": {temperature},"humidity": {humidity},"power": {power}}}'
+POWER = 50
+MSG_TXT = '{{"temperature": {temperature},"humidity": {humidity},"power_level": {power}}}'
 
 INTERVAL = 1
 
@@ -58,6 +60,18 @@ def device_method_listener(device_client):
             else:
                 response_payload = {"Response": "Invalid parameter"}
                 response_status = 400
+        elif method_request.name == "Reboot":
+            try:
+                INTERVAL = int(method_request.payload)
+                print("rebooting in %d second(s)"%INTERVAL)
+                time.sleep(INTERVAL)
+                os.execl(sys.executable, os.path.abspath(__file__), *sys.argv) 
+            except ValueError:
+                response_payload = {"Response": "Invalid parameter"}
+                response_status = 400
+            else:
+                response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
+                response_status = 200
         else:
             response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
             response_status = 404
@@ -90,14 +104,13 @@ def iothub_client_telemetry_sample_run():
         twin_update_thread = threading.Thread(target=twin_update_listener, args=(client,))
         twin_update_thread.daemon = True
         twin_update_thread.start()
-        count = 0
+        temperature = 20.0
         while True:
             # Build the message with simulated telemetry values.
-            temperature = TEMPERATURE + count
             humidity = HUMIDITY + (random.random() * 20)
-            power = '"on"' if POWER is True else '"off"'
+            # power = '"on"' if POWER is True else '"off"'
             # print(POWER)
-            msg_txt_formatted = MSG_TXT.format(temperature=temperature, humidity=humidity,power=power)
+            msg_txt_formatted = MSG_TXT.format(temperature=temperature, humidity=humidity,power=POWER)
             # print(json.loads(msg_txt_formatted))
             message = Message(msg_txt_formatted, content_type='json')
             # message = {"temperature": temperature, "humidity": humidity, "power": power}
@@ -109,7 +122,8 @@ def iothub_client_telemetry_sample_run():
             print( "Sending message: {}".format(message))
             client.send_message(message)
             print( "Message sent" )
-            count = 0 if count>15 else count+1
+            # update temperature
+            temperature = min(60.0,temperature+POWER/100) if POWER>0 else max(10.0,temperature-1)
             time.sleep(INTERVAL)
 
     except KeyboardInterrupt:

@@ -42,10 +42,11 @@ CONNECTION_STR = f'Endpoint={EVENTHUB_COMPATIBLE_ENDPOINT}/;SharedAccessKeyName=
 
 
 received_data = {}
+deviceID = ""
 # received_data = {'a':[1,2,3,4,5,6,7,8,9,10,11,12]}
 # Define callbacks to process events
 def on_event_batch(partition_context, events):
-    global received_data
+    global received_data, deviceID
     for event in events:
         print("Received event from partition: {}.".format(partition_context.partition_id))
         print("Telemetry received: ", event.body_as_str())
@@ -53,12 +54,14 @@ def on_event_batch(partition_context, events):
         print("System properties (set by IoT Hub): ", event.system_properties)
         print(event.system_properties[b'iothub-connection-device-id'])
         device_id=event.system_properties[b'iothub-connection-device-id'].decode("utf-8") 
+        deviceID = device_id
         obj = event.body_as_json()
         # print("obj:", obj['temperature'])
-        if device_id not in received_data.keys():
-            received_data[device_id]=[obj['temperature']]
-        else:
-            received_data[device_id].append(obj['temperature'])
+        for k in obj.keys():
+            if k not in received_data.keys():
+                received_data[k]=[obj[k]]
+            else:
+                received_data[k].append(obj[k])
         print("")
     
     partition_context.update_checkpoint()
@@ -74,12 +77,15 @@ def on_error(partition_context, error):
         print("An exception: {} occurred during the load balance process.".format(error))
 
 def wrapper(client):
-    with client:
-        print(client.get_eventhub_properties())
-        client.receive_batch(
-            on_event_batch=on_event_batch,
-            on_error=on_error
-        )
+    try: 
+        with client:
+            print(client.get_eventhub_properties())
+            client.receive_batch(
+                on_event_batch=on_event_batch,
+                on_error=on_error
+            )
+    except KeyboardInterrupt:
+        print ( "Receiving has stopped." )
 
 def main():
     try:
@@ -90,19 +96,19 @@ def main():
         read_thread = threading.Thread(target=wrapper, args=(client,),daemon = True)
         read_thread.start()
         plt.figure()
-        plt.xlabel("time")
-        plt.ylabel("temperature")
-        plt.title("device temperature")
         while True:
             plt.cla()
             for k in received_data.keys():
                 # x=range(max(1,len(received_data[k])-10),len(received_data[k]))
                 # y=received_data[k][-10:]
                 # print("x and y have len {} and {}".format(len(x), len(y)))
-                plt.ylim(0,60)
+                plt.ylim(0,100)
                 plt.plot(range(max(0,len(received_data[k])-10),len(received_data[k])),
                         received_data[k][-10:],marker='.', label=k)
-            plt.legend()
+            plt.legend(loc=2)
+            plt.xlabel("time stamp")
+            plt.ylabel("data received")
+            plt.title("device ID: "+deviceID)
             plt.pause(0.5)
     except KeyboardInterrupt:
         print ( "Receiving has stopped." )

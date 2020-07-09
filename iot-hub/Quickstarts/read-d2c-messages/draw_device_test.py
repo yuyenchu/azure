@@ -19,7 +19,9 @@ def main():
   plt.figure()
   plt.axis([0, 10, 0, 10])
   while True:
-    plt.scatter(count, count, color='k')
+    plt.cla()
+    plt.scatter(count, count, color='k', label = 'count')
+    plt.legend(loc=4)
     plt.pause(0.05)
     # fig = plt.figure()
     # #creating a subplot 
