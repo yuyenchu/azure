@@ -22,26 +22,27 @@ DEVICE_ID = "simulate2"
 # METHOD_NAME = "SetTelemetryInterval"
 # METHOD_PAYLOAD = "10"
 METHOD_NAME = "Reboot"
-METHOD_PAYLOAD = "5"
+METHOD_PAYLOAD = ""
 
 def iothub_devicemethod_sample_run():
     try:
+        METHOD_PAYLOAD = input("Please enter the payload: ")
         # Create IoTHubRegistryManager
         registry_manager = IoTHubRegistryManager(CONNECTION_STRING)
 
         # Call the direct method.
         deviceMethod = CloudToDeviceMethod(method_name=METHOD_NAME, payload=METHOD_PAYLOAD)
-        # response = registry_manager.invoke_device_method(DEVICE_ID, deviceMethod)
+        response = registry_manager.invoke_device_method(DEVICE_ID, deviceMethod)
 
         print ( "" )
         print ( "Device Method called" )
         print ( "Device Method name       : {0}".format(METHOD_NAME) )
         print ( "Device Method payload    : {0}".format(METHOD_PAYLOAD) )
         print ( "" )
-        # print ( "Response status          : {0}".format(response.status) )
-        # print ( "Response payload         : {0}".format(response.payload) )
+        print ( "Response status          : {0}".format(response.status) )
+        print ( "Response payload         : {0}".format(response.payload) )
 
-        input("Press Enter to continue...\n")
+        # input("Press Enter to continue...\n")
 
     except Exception as ex:
         print ( "" )

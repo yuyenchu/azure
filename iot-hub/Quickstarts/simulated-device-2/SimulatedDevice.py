@@ -64,14 +64,16 @@ def device_method_listener(device_client):
             try:
                 INTERVAL = int(method_request.payload)
                 print("rebooting in %d second(s)"%INTERVAL)
-                time.sleep(INTERVAL)
-                os.execl(sys.executable, os.path.abspath(__file__), *sys.argv) 
             except ValueError:
                 response_payload = {"Response": "Invalid parameter"}
                 response_status = 400
             else:
                 response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                 response_status = 200
+                method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
+                device_client.send_method_response(method_response)
+                time.sleep(INTERVAL)
+                os.execl(sys.executable, os.path.abspath(__file__), *sys.argv) 
         else:
             response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
             response_status = 404
