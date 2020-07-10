@@ -51,15 +51,6 @@ def device_method_listener(device_client):
             else:
                 response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                 response_status = 200
-        elif method_request.name == "SetPower":
-            if method_request.payload=="True" or method_request.payload=="False":
-                POWER = method_request.payload=="True"
-                print("power is set to",POWER)
-                response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
-                response_status = 200
-            else:
-                response_payload = {"Response": "Invalid parameter"}
-                response_status = 400
         elif method_request.name == "Reboot":
             try:
                 INTERVAL = int(method_request.payload)
@@ -110,12 +101,10 @@ def iothub_client_telemetry_sample_run():
         while True:
             # Build the message with simulated telemetry values.
             humidity = HUMIDITY + (random.random() * 20)
-            # power = '"on"' if POWER is True else '"off"'
             # print(POWER)
             msg_txt_formatted = MSG_TXT.format(temperature=temperature, humidity=humidity,power=POWER)
             # print(json.loads(msg_txt_formatted))
             message = Message(msg_txt_formatted, content_type='json')
-            # message = {"temperature": temperature, "humidity": humidity, "power": power}
             
             # Add a custom application property to the message.
             # An IoT hub can filter on these properties without access to the message body.

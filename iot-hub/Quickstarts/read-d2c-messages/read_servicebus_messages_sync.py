@@ -22,16 +22,29 @@ deviceID = ""
 # Define callbacks to process events
 
 def receive_serivebus(queue_client):
-  # Create the QueueClient
-  # Receive the message from the queue
-  with queue_client.get_receiver() as queue_receiver:
-      messages = queue_receiver.fetch_next(timeout=3)
-      for message in messages:
-          print(message)
-          print(type(message))
-          print(message.annotations)
-          print(message.user_properties)
-          message.complete()
+    global received_data, deviceID
+    
+    with queue_client.get_receiver() as queue_receiver:
+        while True:
+            messages = queue_receiver.fetch_next(timeout=3)
+            for message in messages:
+                print(message)
+                print(message.body)
+                print(type(message))
+                print(message.annotations)
+                print(message.user_properties)
+                try:
+                    obj = json.loads(str(message))
+                    deviceID = list(obj.keys())[0]
+                    for k in obj[deviceID].keys():
+                        if k not in received_data.keys():
+                            received_data[k]=[obj[deviceID][k]]
+                        else:
+                            received_data[k].append(obj[deviceID][k])
+                except Exception as ex:
+                    print ( "" )
+                    print ( "Unexpected error {0}".format(ex) )
+                message.complete()
 
 def main():
     try:
@@ -42,9 +55,6 @@ def main():
         while True:
             plt.cla()
             for k in received_data.keys():
-                # x=range(max(1,len(received_data[k])-10),len(received_data[k]))
-                # y=received_data[k][-10:]
-                # print("x and y have len {} and {}".format(len(x), len(y)))
                 plt.ylim(0,100)
                 plt.plot(range(max(0,len(received_data[k])-10),len(received_data[k])),
                         received_data[k][-10:],marker='.', label=k)

@@ -7,30 +7,20 @@ import time
 import threading
 import os
 import sys
+from azure.servicebus import QueueClient, Message
+from azure.iot.device import IoTHubDeviceClient, MethodResponse
 
-# Using the Python Device SDK for IoT Hub:
-#   https://github.com/Azure/azure-iot-sdk-python
-# The sample connects to a device-specific MQTT endpoint on your IoT Hub.
-from azure.iot.device import IoTHubDeviceClient, Message, MethodResponse
-
-# The device connection string to authenticate the device with your IoT hub.
-# Using the Azure CLI:
-# az iot hub device-identity show-connection-string --hub-name {YourIoTHubName} --device-id MyNodeDevice --output table
 CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate2;SharedAccessKey=ZWosSuCL4pHgXGmhRKm4QHG9yJKB0y72ctPDFv02Qqg="
-
-# Define the JSON message to send to IoT Hub.
 TEMPERATURE = 20.0
 HUMIDITY = 60
 POWER = 50
-MSG_TXT = '{{"temperature": {temperature},"humidity": {humidity},"power_level": {power}}}'
-
 INTERVAL = 1
+MSG_TXT = '{{"simulate":{{"temperature": {temperature},"humidity": {humidity},"power_level": {power}}}}}'
 
 def iothub_client_init():
     # Create an IoT Hub client
     client = IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)
     return client
-
 
 def device_method_listener(device_client):
     global INTERVAL, POWER
@@ -51,15 +41,6 @@ def device_method_listener(device_client):
             else:
                 response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                 response_status = 200
-        elif method_request.name == "SetPower":
-            if method_request.payload=="True" or method_request.payload=="False":
-                POWER = method_request.payload=="True"
-                print("power is set to",POWER)
-                response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
-                response_status = 200
-            else:
-                response_payload = {"Response": "Invalid parameter"}
-                response_status = 400
         elif method_request.name == "Reboot":
             try:
                 INTERVAL = int(method_request.payload)
@@ -106,23 +87,19 @@ def iothub_client_telemetry_sample_run():
         twin_update_thread = threading.Thread(target=twin_update_listener, args=(client,))
         twin_update_thread.daemon = True
         twin_update_thread.start()
-        temperature = 20.0
+        temperature = TEMPERATURE
+
+        conn_str="Endpoint=sb://test-serbus1.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SRfu30BTAd6PsNF1QPdkglOFd+Ye6qkL/O76Gvmmu9s="
+        queue_client = QueueClient.from_connection_string(conn_str, "test-queue1")
         while True:
-            # Build the message with simulated telemetry values.
             humidity = HUMIDITY + (random.random() * 20)
-            # power = '"on"' if POWER is True else '"off"'
-            # print(POWER)
             msg_txt_formatted = MSG_TXT.format(temperature=temperature, humidity=humidity,power=POWER)
             # print(json.loads(msg_txt_formatted))
-            message = Message(msg_txt_formatted, content_type='json')
-            # message = {"temperature": temperature, "humidity": humidity, "power": power}
-            
-            # Add a custom application property to the message.
-            # An IoT hub can filter on these properties without access to the message body.
-            message.custom_properties["temperatureAlert"] = "true" if temperature > 30 else "false"
+            message = Message(msg_txt_formatted)
+            message.user_properties = {"temperatureAlert": "true" if temperature > 30 else "false"}
             # Send the message.
             print( "Sending message: {}".format(message))
-            client.send_message(message)
+            queue_client.send(message)
             print( "Message sent" )
             # update temperature
             temperature = min(60.0,temperature+POWER/100) if POWER>0 else max(10.0,temperature-1)
