@@ -54,7 +54,7 @@ def device_method_listener(device_client):
                 method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
                 device_client.send_method_response(method_response)
                 time.sleep(INTERVAL)
-                os.execl(sys.executable, os.path.abspath(__file__), *sys.argv) 
+                os.execv(sys.executable, [sys.executable] + sys.argv)
         else:
             response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
             response_status = 404
