@@ -80,8 +80,12 @@ def wrapper(client):
     try: 
         with client:
             print(client.get_eventhub_properties())
-            client.receive_batch(
-                on_event_batch=on_event_batch,
+            # client.receive_batch(
+            #     on_event_batch=on_event_batch,
+            #     on_error=on_error
+            # )
+            client.receive(
+                on_event=on_event_batch,
                 on_error=on_error
             )
     except KeyboardInterrupt:

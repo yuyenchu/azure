@@ -69,7 +69,7 @@ def twin_update_listener(client):
         print("Twin patch received:")
         print(patch)
         POWER=patch["Power"]
-        print("power is set to",POWER)
+        print("power level is set to",POWER)
         reported_patch = {"Power": POWER}
         client.patch_twin_reported_properties(reported_patch)
 

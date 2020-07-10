@@ -17,14 +17,12 @@ def iothub_getid_sample_run():
         #query to get all enabled device id
         query_spec = QuerySpecification(query="SELECT * FROM devices WHERE status = 'enabled'")
         query_result = registry_manager.query_iot_hub(query_spec, None, 100)
-        print("Devices enabled: {}".format(', '.join([str(twin.device_id)+": "+twin.connection_state for twin in query_result.items])))
+        print ( "" )
+        print("Devices enabled:\n{}".format('\n'.join(["\t"+str(twin.device_id)+": "+twin.connection_state for twin in query_result.items])))
     except Exception as ex:
         print ( "" )
         print ( "Unexpected error {0}".format(ex) )
         return
-    except KeyboardInterrupt:
-        print ( "" )
-        print ( "IoT Hub Device Twin service sample stopped" )
 
 if __name__ == '__main__':
     print ( "IoT Hub Python quickstart #4..." )
