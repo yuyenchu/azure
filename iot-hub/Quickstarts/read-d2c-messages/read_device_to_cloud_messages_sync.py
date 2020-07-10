@@ -53,8 +53,7 @@ def on_event_batch(partition_context, events):
         print("Properties (set by device): ", event.properties)
         print("System properties (set by IoT Hub): ", event.system_properties)
         print(event.system_properties[b'iothub-connection-device-id'])
-        device_id=event.system_properties[b'iothub-connection-device-id'].decode("utf-8") 
-        deviceID = device_id
+        deviceID = event.system_properties[b'iothub-connection-device-id'].decode("utf-8") 
         obj = event.body_as_json()
         # print("obj:", obj['temperature'])
         for k in obj.keys():
@@ -63,8 +62,26 @@ def on_event_batch(partition_context, events):
             else:
                 received_data[k].append(obj[k])
         print("")
-    
     partition_context.update_checkpoint()
+
+def on_event(partition_context, event):
+    global received_data, deviceID
+    print("Received event from partition: {}.".format(partition_context.partition_id))
+    print("Telemetry received: ", event.body_as_str())
+    print("Properties (set by device): ", event.properties)
+    print("System properties (set by IoT Hub): ", event.system_properties)
+    print(event.system_properties[b'iothub-connection-device-id'])
+    deviceID = event.system_properties[b'iothub-connection-device-id'].decode("utf-8") 
+    obj = event.body_as_json()
+    # print("obj:", obj['temperature'])
+    for k in obj.keys():
+        if k not in received_data.keys():
+            received_data[k]=[obj[k]]
+        else:
+            received_data[k].append(obj[k])
+    print("")
+    partition_context.update_checkpoint()
+
 
 def on_error(partition_context, error):
     # Put your code here. partition_context can be None in the on_error callback.
@@ -85,7 +102,7 @@ def wrapper(client):
             #     on_error=on_error
             # )
             client.receive(
-                on_event=on_event_batch,
+                on_event=on_event,
                 on_error=on_error
             )
     except KeyboardInterrupt:
