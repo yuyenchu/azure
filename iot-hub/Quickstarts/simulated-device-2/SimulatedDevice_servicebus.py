@@ -43,8 +43,8 @@ def device_method_listener(device_client):
                 response_status = 200
         elif method_request.name == "Reboot":
             try:
-                INTERVAL = int(method_request.payload)
-                print("rebooting in %d second(s)"%INTERVAL)
+                reboot_time = int(method_request.payload)
+                print("rebooting in %d second(s)"%reboot_time)
             except ValueError:
                 response_payload = {"Response": "Invalid parameter"}
                 response_status = 400
@@ -53,7 +53,7 @@ def device_method_listener(device_client):
                 response_status = 200
                 method_response = MethodResponse(method_request.request_id, response_status, payload=response_payload)
                 device_client.send_method_response(method_response)
-                time.sleep(INTERVAL)
+                time.sleep(reboot_time)
                 os.execv(sys.executable, [sys.executable] + sys.argv)
         else:
             response_payload = {"Response": "Direct method {} not defined".format(method_request.name)}
