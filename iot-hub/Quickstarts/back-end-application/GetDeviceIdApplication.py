@@ -1,6 +1,6 @@
 import sys
 from azure.iot.hub import IoTHubRegistryManager
-from azure.iot.hub.models import Twin, TwinProperties, QuerySpecification, QueryResult
+from azure.iot.hub.models import Twin, QuerySpecification, QueryResult
 from builtins import input
 
 CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;SharedAccessKeyName=service;SharedAccessKey=aOQRCy8GcrQokjuJjAb7PFYc9dj9SjqPnlH1OMAzYVQ="
