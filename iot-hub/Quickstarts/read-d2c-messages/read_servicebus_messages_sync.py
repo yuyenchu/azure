@@ -1,7 +1,6 @@
 from azure.eventhub import EventHubConsumerClient
 from azure.servicebus import QueueClient, Message
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 import json
 import threading
 import logging

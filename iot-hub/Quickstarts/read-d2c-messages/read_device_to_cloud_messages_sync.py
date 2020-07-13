@@ -18,7 +18,6 @@ https://github.com/Azure/azure-sdk-for-python/blob/master/sdk/eventhub/azure-eve
 from azure.eventhub import TransportType
 from azure.eventhub import EventHubConsumerClient
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 import json
 import threading
 import logging
