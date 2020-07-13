@@ -19,11 +19,11 @@ def receive_serivebus(queue_client):
         while True:
             messages = queue_receiver.fetch_next(timeout=3)
             for message in messages:
-                print(message)
-                print(message.annotations)
+                deviceID = message.user_properties[b'iothub-connection-device-id'].decode("utf-8") 
                 print("From device ID:",message.user_properties[b'iothub-connection-device-id'])
+                print("\tMessage body:",message)
+                print("\tAnnotations:",message.annotations)
                 try:
-                    deviceID = message.user_properties[b'iothub-connection-device-id'].decode("utf-8") 
                     obj = json.loads(str(message))
                     for k in obj.keys():
                         if k not in received_data.keys():
@@ -31,10 +31,11 @@ def receive_serivebus(queue_client):
                         else:
                             received_data[k].append(obj[k])
                     message.complete()
+                    print("Message completed")
                 except Exception as ex:
-                    print ( "" )
                     print ( "Unexpected error {0}".format(ex))
-                    print ( "Warning: Message not comlete")            
+                    print ( "Warning: Message not comlete")  
+                print ( "" )          
 
 def main():
     try:
@@ -45,7 +46,7 @@ def main():
         while True:
             plt.cla()
             for k in received_data.keys():
-                plt.ylim(0,100)
+                plt.ylim(-1,101)
                 plt.plot(range(max(0,len(received_data[k])-10),len(received_data[k])),
                         received_data[k][-10:],marker='.', label=k)
             plt.legend(loc=2)

@@ -122,7 +122,7 @@ def main():
                 # x=range(max(1,len(received_data[k])-10),len(received_data[k]))
                 # y=received_data[k][-10:]
                 # print("x and y have len {} and {}".format(len(x), len(y)))
-                plt.ylim(0,100)
+                plt.ylim(-1,101)
                 plt.plot(range(max(0,len(received_data[k])-10),len(received_data[k])),
                         received_data[k][-10:],marker='.', label=k)
             plt.legend(loc=2)
