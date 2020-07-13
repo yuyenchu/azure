@@ -7,19 +7,11 @@ import threading
 import logging
 logging.getLogger().setLevel(logging.CRITICAL)
 
-
 queue_conn_str="Endpoint=sb://test-serbus1.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SRfu30BTAd6PsNF1QPdkglOFd+Ye6qkL/O76Gvmmu9s="
-
-
-# EVENTHUB_COMPATIBLE_ENDPOINT = "sb://ihsuprodblres095dednamespace.servicebus.windows.net/"
-# EVENTHUB_COMPATIBLE_PATH = "iothub-ehub-hub-test1-3780350-0bfd74d500"
-# IOTHUB_SAS_KEY = "aOQRCy8GcrQokjuJjAb7PFYc9dj9SjqPnlH1OMAzYVQ="
-# CONNECTION_STR = f'Endpoint={EVENTHUB_COMPATIBLE_ENDPOINT}/;SharedAccessKeyName=service;SharedAccessKey={IOTHUB_SAS_KEY};EntityPath={EVENTHUB_COMPATIBLE_PATH}'
 
 received_data = {}
 deviceID = ""
 # received_data = {'a':[1,2,3,4,5,6,7,8,9,10,11,12]}
-# Define callbacks to process events
 
 def receive_serivebus(queue_client):
     global received_data, deviceID
@@ -29,22 +21,21 @@ def receive_serivebus(queue_client):
             messages = queue_receiver.fetch_next(timeout=3)
             for message in messages:
                 print(message)
-                print(message.body)
-                print(type(message))
                 print(message.annotations)
-                print(message.user_properties)
+                print("From device ID:",message.user_properties[b'iothub-connection-device-id'])
                 try:
+                    deviceID = message.user_properties[b'iothub-connection-device-id'].decode("utf-8") 
                     obj = json.loads(str(message))
-                    deviceID = list(obj.keys())[0]
-                    for k in obj[deviceID].keys():
+                    for k in obj.keys():
                         if k not in received_data.keys():
-                            received_data[k]=[obj[deviceID][k]]
+                            received_data[k]=[obj[k]]
                         else:
-                            received_data[k].append(obj[deviceID][k])
+                            received_data[k].append(obj[k])
+                    message.complete()
                 except Exception as ex:
                     print ( "" )
-                    print ( "Unexpected error {0}".format(ex) )
-                message.complete()
+                    print ( "Unexpected error {0}".format(ex))
+                    print ( "Warning: Message not comlete")            
 
 def main():
     try:
