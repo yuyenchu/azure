@@ -26,15 +26,10 @@ router.route('/devices')
 					b.forEach(element => r[element["deviceId"]]=element["connectionState"]);
 					res.send(r);
 		});
-		//request.get(options).on('response', function(response) {
-    		//	console.log(response.statusCode); 
-    		//	console.log(response.headers['content-type']);
-  		//}).pipe(res);
 	});
 
 router.route('/twin/:id')
 	.get(function (req, res) {
-		console.log(req)
 		const twinUrl = 'https://hub-test1.azure-devices.net/twins/'+req.params.id+'?api-version=2018-06-30'
 		request.get({
 			url: twinUrl,
