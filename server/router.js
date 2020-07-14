@@ -7,8 +7,6 @@ const hubHead = {
 	'Content-Type': 'application/json',
 	'Authorization': 'SharedAccessSignature sr=hub-test1.azure-devices.net&sig=ttX9fT38ugddM5g%2BISLKQaHL5Y2zrq5McsDzMVJ70yA%3D&se=1626159394&skn=iothubowner'
 }
-const deviceUrl = 'https://hub-test1.azure-devices.net/devices?api-version=2018-06-30'
-const twinUrl = 'https://hub-test1.azure-devices.net/twins/%s?api-version=2018-06-30'
  
 router.route('/')
     	.get(function (req, res) {
@@ -17,6 +15,7 @@ router.route('/')
 
 router.route('/devices')
 	.get(function (req, res) {
+		const deviceUrl = 'https://hub-test1.azure-devices.net/devices?api-version=2018-06-30'
 		request.get({
 			url: deviceUrl,
 			headers: hubHead
@@ -35,8 +34,9 @@ router.route('/devices')
 
 router.route('/twin')
 	.get(function (req, res) {
+		const twinUrl = 'https://hub-test1.azure-devices.net/twins/${req["id"]}?api-version=2018-06-30'
 		request.get({
-			url: parse(twinUrl, req['id']),
+			url: twinUrl,
 			headers: hubHead
 		}, 	function(error,response,body){
 					console.log(response.statusCode);
