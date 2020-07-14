@@ -40,7 +40,7 @@ router.route('/twin')
 			headers: hubHead
 		}, 	function(error,response,body){
 					console.log(response.statusCode);
-					res.send(r);
+					res.send(body);
 		});
 	});
 
