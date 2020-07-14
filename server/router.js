@@ -32,10 +32,10 @@ router.route('/devices')
   		//}).pipe(res);
 	});
 
-router.route('/twin')
+router.route('/twin/:id')
 	.get(function (req, res) {
 		console.log(req)
-		const twinUrl = 'https://hub-test1.azure-devices.net/twins/'+req["id"]+'?api-version=2018-06-30'
+		const twinUrl = 'https://hub-test1.azure-devices.net/twins/'+req.params.id+'?api-version=2018-06-30'
 		request.get({
 			url: twinUrl,
 			headers: hubHead
