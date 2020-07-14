@@ -34,7 +34,7 @@ router.route('/devices')
 
 router.route('/twin')
 	.get(function (req, res) {
-		const twinUrl = 'https://hub-test1.azure-devices.net/twins/${req["id"]}?api-version=2018-06-30'
+		const twinUrl = 'https://hub-test1.azure-devices.net/twins/'+req["id"]+'?api-version=2018-06-30'
 		request.get({
 			url: twinUrl,
 			headers: hubHead
