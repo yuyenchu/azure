@@ -153,8 +153,8 @@
 			$.ajax({
 				url: "/router/devices",
 				success: function (data) {
-					// console.log("data type: "+typeof(data));
-					// console.log("data: "+data);
+					console.log("data type: "+typeof(data));
+					console.log("data: "+data);
 					document.getElementById("devices").innerHTML = items(JSON.parse(data));
 				},
 				complete: function () {
