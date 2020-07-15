@@ -114,19 +114,7 @@
 		// msg_xhr.open("GET","/router/queue",false);
 		// msg_xhr.send(null);
 		// var msg = JSON.parse(JSON.parse(msg_xhr.responseText));
-		var doAjax = function() {
-			$.ajax({
-				url: "/router/queue",
-				success: function (data) {
-					Console.log("data type: "+typeof(data));
-					drawChart(JSON.parse(JSON.parse(data.responseText)))
-				},
-				complete: function () {
-					// Schedule the next
-					setTimeout(doAjax, 1000);
-				}
-			});
-		};
+		
 
 		function drawChart(msg){
 				const dateTime = Date.now();
@@ -148,11 +136,21 @@
 				lineChart.update();
 		}
 
-		function drawLoop(){
-			while (true) {
-				drawChart();
-			}
-		}
+		var doAjax = function() {
+			$.ajax({
+				url: "/router/queue",
+				success: function (data) {
+					Console.log("data type: "+typeof(data));
+					drawChart(JSON.parse(JSON.parse(data.responseText)))
+				},
+				complete: function () {
+					// Schedule the next
+					setTimeout(doAjax, 1000);
+				}
+			});
+		};
+
+		doAjax();
 	</script>
 </body>
 </html>
