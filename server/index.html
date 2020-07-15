@@ -30,11 +30,6 @@
 	<h1>Welcome to Andrew's Azure testing page!</h1>
 	<h3>Registered Devices:</h3>
 	<div id="devices"></div>
-	<!-- <div>
-		<div class="inner"><button onClick=drawChart()>Draw</button></div>
-		<div class="inner"><button onClick=drawLoop()>Start</button></div>
-  	<div class="inner"><button onClick="flag = false">Pause</button></div>
-	</div> -->
 	<canvas id="myChart" width="400" height="400"></canvas>
 	<script>
 		// setInterval(function(){ 
@@ -164,8 +159,16 @@
 				}
 			});
 		};
-
-		checkConn();
+		if(typeof(Worker) !== "undefined") {
+			var w = new Worker("conn_workers.js");
+			w.onmessage = function(event) {
+				console.log(event.data);
+				document.getElementById("devices").innerHTML = event.data;
+			};
+		} else {
+			document.getElementById("devices").innerHTML = "Sorry, your browser does not support Web Workers...";
+		}
+		//checkConn();
 		doAjax();
 	</script>
 </body>
