@@ -79,9 +79,17 @@
 			return str;
 		}
 
+		var lineChart = new Chart(document.getElementById('myChart').getContext('2d'), {
+			type: 'line',
+			data: {	"labels": [],
+							"datasets":[{	"label":"My First Dataset",
+														"data":[],
+														"fill":false,
+														"borderColor":"rgb(75, 192, 192)",
+														"lineTension":0.1}]},
+			options: {}
+		});
 		function drawChart(){
-			pts=[]
-			labels=[]
 			var flag = true;
 			while (flag) {
 				var msg_xhr = new XMLHttpRequest();
@@ -90,23 +98,16 @@
 				const dateTime = Date.now();
 				const timestamp = Math.floor(dateTime / 1000);
 				var msg = JSON.parse(JSON.parse(msg_xhr.responseText));
-				pts.push(msg['temperature']);
-				labels.push(timestamp);
-				if(pts.length > 10){
-					pts.shift();
-					labels.shift();
+				lineChart.data.datasets[0].data.push(msg['temperature']);
+				lineChart.data.labels.push(timestamp);
+				if(lineChart.data.datasets[0].data.length > 10){
+					lineChart.data.datasets[0].data.shift();
+					lineChart.data.labels.shift();
 				}
-				new Chart(document.getElementById('myChart').getContext('2d'), {
-					type: 'line',
-					data: {	"labels": labels,
-									"datasets":[{	"label":"My First Dataset",
-																"data":pts,
-																"fill":false,
-																"borderColor":"rgb(75, 192, 192)",
-																"lineTension":0.1}]},
-					options: {}
+				lineChart.update({
+						duration: 800,
+						easing: 'easeOutBounce'
 				});
-				setTimeout(function(){console.log("refreshing") }, 3000);
 			}
 		}
 		
