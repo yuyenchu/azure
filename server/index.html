@@ -110,14 +110,27 @@
             }
         }
 		});
+		// var msg_xhr = new XMLHttpRequest();
+		// msg_xhr.open("GET","/router/queue",false);
+		// msg_xhr.send(null);
+		// var msg = JSON.parse(JSON.parse(msg_xhr.responseText));
+		var doAjax = function() {
+			$.ajax({
+				url: "/router/queue",
+				success: function (data) {
+					Console.log("data type: "+typeof(data));
+					drawChart(JSON.parse(JSON.parse(data.responseText)))
+				},
+				complete: function () {
+					// Schedule the next
+					setTimeout(doAjax, 1000);
+				}
+			});
+		};
 
-		function drawChart(){
-				var msg_xhr = new XMLHttpRequest();
-				msg_xhr.open("GET","/router/queue",false);
-				msg_xhr.send(null);
+		function drawChart(msg){
 				const dateTime = Date.now();
 				const timestamp = Math.floor(dateTime / 1000);
-				var msg = JSON.parse(JSON.parse(msg_xhr.responseText));
 				lineChart.data.datasets[0].data.push(msg['temperature']);
 				lineChart.data.datasets[1].data.push(msg['humidity']);
 				lineChart.data.datasets[2].data.push(msg['power_level']);
@@ -128,10 +141,11 @@
 					lineChart.data.datasets[2].data.shift();
 					lineChart.data.labels.shift();
 				}
-				lineChart.update({
-						duration: 800,
-						easing: 'easeOutBounce'
-				});
+				// lineChart.update({
+				// 		duration: 800,
+				// 		easing: 'easeOutBounce'
+				// });
+				lineChart.update();
 		}
 
 		function drawLoop(){
