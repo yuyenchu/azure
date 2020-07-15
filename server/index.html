@@ -30,7 +30,7 @@
 	<h3>Registered Devices:</h3>
 	<div id="devices"></div>
 	<div>
-		<div class="inner"><button onClick="flag = true">Start</button></div>
+		<div class="inner"><button onClick=drawchart()>Start</button></div>
   	<div class="inner"><button onClick="flag = false">Pause</button></div>
 	</div>
 	<canvas id="myChart" width="400" height="400"></canvas>
@@ -78,32 +78,35 @@
 			});
 			return str;
 		}
-		pts=[]
-		labels=[]
-		var flag = false;
-		while (flag) {
-			var msg_xhr = new XMLHttpRequest();
-			msg_xhr.open("GET","/router/queue",false);
-			msg_xhr.send(null);
-			const dateTime = Date.now();
-			const timestamp = Math.floor(dateTime / 1000);
-			var msg = JSON.parse(JSON.parse(msg_xhr.responseText));
-			pts.push(msg['temperature']);
-			labels.push(timestamp);
-			if(pts.length > 10){
-				pts.shift();
-				labels.shift();
+
+		function drawChart(){
+			pts=[]
+			labels=[]
+			var flag = true;
+			while (flag) {
+				var msg_xhr = new XMLHttpRequest();
+				msg_xhr.open("GET","/router/queue",false);
+				msg_xhr.send(null);
+				const dateTime = Date.now();
+				const timestamp = Math.floor(dateTime / 1000);
+				var msg = JSON.parse(JSON.parse(msg_xhr.responseText));
+				pts.push(msg['temperature']);
+				labels.push(timestamp);
+				if(pts.length > 10){
+					pts.shift();
+					labels.shift();
+				}
+				new Chart(document.getElementById('myChart').getContext('2d'), {
+					type: 'line',
+					data: {	"labels": labels,
+									"datasets":[{	"label":"My First Dataset",
+																"data":pts,
+																"fill":false,
+																"borderColor":"rgb(75, 192, 192)",
+																"lineTension":0.1}]},
+					options: {}
+				});
 			}
-			new Chart(document.getElementById('myChart').getContext('2d'), {
-				type: 'line',
-				data: {	"labels": labels,
-								"datasets":[{	"label":"My First Dataset",
-															"data":pts,
-															"fill":false,
-															"borderColor":"rgb(75, 192, 192)",
-															"lineTension":0.1}]},
-				options: {}
-			});
 		}
 		
 	</script>
