@@ -24,7 +24,7 @@ router.route('/devices')
 					var r={};
 					var b = JSON.parse(body);
 					b.forEach(element => r[element["deviceId"]]=element["connectionState"]);
-					res.send(r);
+					res.json(r);
 		});
 	});
 
@@ -36,7 +36,7 @@ router.route('/twin/:id')
 			headers: hubHead
 		}, 	function(error,response,body){
 					console.log(response.statusCode);
-					res.send(body);
+					res.json(body);
 		});
 	});
 
