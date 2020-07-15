@@ -10,10 +10,13 @@ app.use(bodyparser.json());
 
 app.use('/router',router);
 
-var indexpage = app.createServer();
+var indexpage = express.createServer();
 indexpage.use(express.staticProvider(__dirname + '/public'));
 indexpage.get('/', function(req, res) {
     res.render('index.html');
+});
+indexpage.listen(80, function () {
+    console.log('app listening on port 3000!');
 });
 
 app.listen(3000, function () {
