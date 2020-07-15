@@ -37,15 +37,15 @@
 	</div> -->
 	<canvas id="myChart" width="400" height="400"></canvas>
 	<script>
-		setInterval(function(){ 
-			var xhr = new XMLHttpRequest();
-			xhr.open("GET","/router/devices",false);
-			xhr.send(null);
-			var data = JSON.parse(xhr.responseText);
-			console.log(data);
-			console.log(items(data));
-			document.getElementById("devices").innerHTML = items(data);
-		}, 3000);
+		// setInterval(function(){ 
+		// 	var xhr = new XMLHttpRequest();
+		// 	xhr.open("GET","/router/devices",false);
+		// 	xhr.send(null);
+		// 	var data = JSON.parse(xhr.responseText);
+		// 	console.log(data);
+		// 	console.log(items(data));
+		// 	document.getElementById("devices").innerHTML = items(data);
+		// }, 3000);
 
 		function toggle(id) {
 				var x = document.getElementById(id);
@@ -144,7 +144,22 @@
 				},
 				complete: function () {
 					// Schedule the next
-					setTimeout(doAjax, 1000);
+					setTimeout(checkConn, 100);
+				}
+			});
+		};
+
+		var checkConn = function() {
+			$.ajax({
+				url: "/router/devices",
+				success: function (data) {
+					// console.log("data type: "+typeof(data));
+					// console.log("data: "+data);
+					document.getElementById("devices").innerHTML = items(JSON.parse(data));
+				},
+				complete: function () {
+					// Schedule the next
+					setTimeout(doAjax, 900);
 				}
 			});
 		};
