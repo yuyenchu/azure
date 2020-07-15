@@ -155,7 +155,7 @@
 				success: function (data) {
 					console.log("data type: "+typeof(data));
 					console.log("data: "+data);
-					document.getElementById("devices").innerHTML = items(JSON.parse(data));
+					document.getElementById("devices").innerHTML = items(JSON.parse(JSON.parse(data)));
 				},
 				complete: function () {
 					// Schedule the next
