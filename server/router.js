@@ -7,6 +7,11 @@ const hubHead = {
 	'Content-Type': 'application/json',
 	'Authorization': 'SharedAccessSignature sr=hub-test1.azure-devices.net&sig=ttX9fT38ugddM5g%2BISLKQaHL5Y2zrq5McsDzMVJ70yA%3D&se=1626159394&skn=iothubowner'
 }
+
+const sbHead = {
+	'Content-Type': 'application/json',
+	'Authorization': 'SharedAccessSignature sr=https%3A%2F%2Ftest-serbus1.servicebus.windows.net%2Ftest-queue1&sig=aMIhuiM3C5LSSyUYtDdja%2BFc3ZydlFEr/rUXzCY3d7o%3D&se=1626327881&skn=RootManageSharedAccessKey'
+}
  
 router.route('/')
     	.get(function (req, res) {
@@ -40,4 +45,15 @@ router.route('/twin/:id')
 		});
 	});
 
+router.route('/queue')
+	.get(function (req, res) {
+		const sbUrl = 'https://test-serbus1.servicebus.windows.net/test-queue1/messages/head'
+		request.get({
+			url: sbUrl,
+			headers: sbHead
+		}, 	function(error,response,body){
+					console.log(response.statusCode);
+					res.json(body);
+		});
+	});
 module.exports = router;
