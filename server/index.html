@@ -72,9 +72,9 @@
 	}
 	pts=[]
 	labels=[]
-	var msg_xhr = new XMLHttpRequest();
-	msg_xhr.open("GET","/router/queue",false);
 	for (var i = 0; i < 10; i++) {
+		var msg_xhr = new XMLHttpRequest();
+		msg_xhr.open("GET","/router/queue",false);
 		msg_xhr.send(null);
 		const dateTime = Date.now();
 		const timestamp = Math.floor(dateTime / 1000);
