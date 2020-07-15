@@ -142,7 +142,8 @@
 				url: "/router/queue",
 				success: function (data) {
 					console.log("data type: "+typeof(data));
-					drawChart(JSON.parse(JSON.parse(data.responseText)))
+					console.log("data: "+data);
+					drawChart(JSON.parse(data.responseText));
 				},
 				complete: function () {
 					// Schedule the next
