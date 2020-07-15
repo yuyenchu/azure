@@ -20,12 +20,19 @@
 			margin-top: 20px;
 			line-height: 150%;
 		}
+		.inner {
+				display: inline-block;
+		}
 	</style>
 </head>
 <body>
 	<h1>Welcome to Andrew's Azure testing page!</h1>
 	<h3>Registered Devices:</h3>
 	<div id="devices"></div>
+	<div>
+		<div class="inner"><button onClick="flag = true">Start</button></div>
+  	<div class="inner"><button onClick="flag = false">Pause</button></div>
+	</div>
 	<canvas id="myChart" width="400" height="400"></canvas>
 	<script>
 		var xhr = new XMLHttpRequest();
@@ -73,7 +80,8 @@
 		}
 		pts=[]
 		labels=[]
-		for (var i = 0; i < 10; i++) {
+		var flag = false;
+		while (flag) {
 			var msg_xhr = new XMLHttpRequest();
 			msg_xhr.open("GET","/router/queue",false);
 			msg_xhr.send(null);
@@ -81,7 +89,11 @@
 			const timestamp = Math.floor(dateTime / 1000);
 			var msg = JSON.parse(JSON.parse(msg_xhr.responseText));
 			pts.push(msg['temperature']);
-			labels.push(timestamp)
+			labels.push(timestamp);
+			if(pts.length > 10){
+				pts.shift();
+				labels.shift();
+			}
 		}
 		var ctx = document.getElementById('myChart').getContext('2d');
 		var myLineChart = new Chart(ctx, {
