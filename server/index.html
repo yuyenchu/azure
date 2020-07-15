@@ -65,7 +65,7 @@
 		twin_xhr.send(null);
 		var twin = JSON.parse(JSON.parse(twin_xhr.responseText));
 		Object.keys(twin).forEach(element =>{
-			str += element+": "+twin[element]+"<br>";
+			str += element+": "+JSON.stringify(twin[element])+"<br>";
 		});
 		return str;
 	}

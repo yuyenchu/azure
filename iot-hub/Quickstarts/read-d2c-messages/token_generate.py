@@ -31,8 +31,7 @@ def get_token():
 # servicebus token
 def get_auth_token(sb_name, eh_name, sas_name, sas_value):
     """
-    Returns an authorization token dictionary 
-    for making calls to Event Hubs REST API.
+    Returns an authorization token for making calls to Event Hubs REST API.
     """
     uri = urllib.parse.quote_plus("https://{}.servicebus.windows.net/{}" \
                                   .format(sb_name, eh_name))
