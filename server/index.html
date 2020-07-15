@@ -141,7 +141,7 @@
 			$.ajax({
 				url: "/router/queue",
 				success: function (data) {
-					Console.log("data type: "+typeof(data));
+					console.log("data type: "+typeof(data));
 					drawChart(JSON.parse(JSON.parse(data.responseText)))
 				},
 				complete: function () {
