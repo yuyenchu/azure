@@ -4,7 +4,6 @@ var router = require('./router');
 var bodyparser = require('body-parser');
 var app = express();
 
-app.use(cors());
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 app.use(express.static(__dirname));
