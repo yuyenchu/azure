@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 45em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+    p {
+	text-indent: 50px;
+    }
+    .canvas {
+  	width: 100%;
+  	padding: 50px 0;
+  	text-align: center;
+  	background-color: lightblue;
+  	margin-top: 20px;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to Andrew's Azure testing page!</h1>
+<h3>Registered Devices:</h3>
+<div id="devices"></div>
+
+<!--<span style="color:green"> Green</span><button onclick="toggle('myDIV')">Try it</button>
+
+<div id="myDIV" class="canvas">
+This is my DIV element.
+</div>-->
+<script>
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET","http://test-vm-ubuntu1.eastus.cloudapp.azure.com:3000/router/devices",false);
+	xhr.send(null);
+	//document.getElementById("devices").innerHTML = xhr.responseText;
+	var data = JSON.parse(xhr.responseText);
+	console.log(data);
+	console.log(items(data));
+	document.getElementById("devices").innerHTML = items(data);
+
+	function toggle(id) {
+  		var x = document.getElementById(id);
+  		if (x.style.display === "none") {
+    			x.style.display = "block";
+  		} else {
+    			x.style.display = "none";
+  		}
+	}
+
+	function items(data){
+		var str ='' 
+		Object.keys(data).forEach(element =>{
+			str +='<p>'+element+':  <span style="color:'
+			if(data[element] == "Disconnected"){
+				str += 'red">Disconnected</span>'
+			} else {
+				str += 'green">Connected</span>'
+			}
+			str += '</p><button onclick="toggle(\''+element+'\')">More Info</button><div id='+element+' class="canvas" style="display: none;">Information</div>'
+		});
+		return str;
+	}
+</script>
+</body>
+</html>
