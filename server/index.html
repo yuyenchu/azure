@@ -1,98 +1,99 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Welcome to nginx!</title>
-<style>
-	body {
-			width: 45em;
-			margin: 0 auto;
-			font-family: Tahoma, Verdana, Arial, sans-serif;
-	}
-	p {
-		text-indent: 50px;
-	}
-	.canvas {
-  	width: 100%;
-  	padding: 50px 0;
-  	text-align: center;
-  	background-color: lightblue;
-		margin-top: 20px;
-		line-height: 150%;
-	}
-</style>
+	<title>Welcome to nginx!</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+	<style>
+		body {
+				width: 45em;
+				margin: 0 auto;
+				font-family: Tahoma, Verdana, Arial, sans-serif;
+		}
+		p {
+			text-indent: 50px;
+		}
+		.canvas {
+			width: 100%;
+			padding: 50px 0;
+			text-align: center;
+			background-color: lightblue;
+			margin-top: 20px;
+			line-height: 150%;
+		}
+	</style>
 </head>
 <body>
-<h1>Welcome to Andrew's Azure testing page!</h1>
-<h3>Registered Devices:</h3>
-<div id="devices"></div>
-<canvas id="myChart" width="400" height="400"></canvas>
-<script>
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET","/router/devices",false);
-	xhr.send(null);
-	var data = JSON.parse(xhr.responseText);
-	console.log(data);
-	console.log(items(data));
-	document.getElementById("devices").innerHTML = items(data);
+	<h1>Welcome to Andrew's Azure testing page!</h1>
+	<h3>Registered Devices:</h3>
+	<div id="devices"></div>
+	<canvas id="myChart" width="400" height="400"></canvas>
+	<script>
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET","/router/devices",false);
+		xhr.send(null);
+		var data = JSON.parse(xhr.responseText);
+		console.log(data);
+		console.log(items(data));
+		document.getElementById("devices").innerHTML = items(data);
 
-	function toggle(id) {
-  		var x = document.getElementById(id);
-  		if (x.style.display === "none") {
-    			x.style.display = "block";
-  		} else {
-    			x.style.display = "none";
-  		}
-	}
+		function toggle(id) {
+				var x = document.getElementById(id);
+				if (x.style.display === "none") {
+						x.style.display = "block";
+				} else {
+						x.style.display = "none";
+				}
+		}
 
-	function items(data){
-		var str ='' ;
-		Object.keys(data).forEach(element =>{
-			str +='<p>'+element+':  <span style="color:';
-			if(data[element] == "Disconnected"){
-				str += 'red">Disconnected</span>';
-			} else {
-				str += 'green">Connected</span>';
-			}
-			str += '</p><button onclick="toggle(\''+element+'\')">More Info</button><div id='+element+' class="canvas" style="display: none;">'
-			str += twinInfo(element)+'</div>';
+		function items(data){
+			var str ='' ;
+			Object.keys(data).forEach(element =>{
+				str +='<p>'+element+':  <span style="color:';
+				if(data[element] == "Disconnected"){
+					str += 'red">Disconnected</span>';
+				} else {
+					str += 'green">Connected</span>';
+				}
+				str += '</p><button onclick="toggle(\''+element+'\')">More Info</button><div id='+element+' class="canvas" style="display: none;">'
+				str += twinInfo(element)+'</div>';
+				});
+			return str;
+		}
+
+		function twinInfo(id){
+			var str ='';
+			var twin_xhr = new XMLHttpRequest();
+			twin_xhr.open("GET","/router/twin/"+id,false);
+			twin_xhr.send(null);
+			var twin = JSON.parse(JSON.parse(twin_xhr.responseText));
+			Object.keys(twin).forEach(element =>{
+				str += element+": "+JSON.stringify(twin[element])+"<br>";
 			});
-		return str;
-	}
-
-	function twinInfo(id){
-		var str ='';
-		var twin_xhr = new XMLHttpRequest();
-		twin_xhr.open("GET","/router/twin/"+id,false);
-		twin_xhr.send(null);
-		var twin = JSON.parse(JSON.parse(twin_xhr.responseText));
-		Object.keys(twin).forEach(element =>{
-			str += element+": "+JSON.stringify(twin[element])+"<br>";
+			return str;
+		}
+		pts=[]
+		labels=[]
+		for (var i = 0; i < 10; i++) {
+			var msg_xhr = new XMLHttpRequest();
+			msg_xhr.open("GET","/router/queue",false);
+			msg_xhr.send(null);
+			const dateTime = Date.now();
+			const timestamp = Math.floor(dateTime / 1000);
+			var msg = JSON.parse(msg_xhr.responseText);
+			pts.push(msg['temperature']);
+			labels.push(timestamp)
+		}
+		var ctx = document.getElementById('myChart').getContext('2d');
+		var myLineChart = new Chart(ctx, {
+			type: 'line',
+			data: {	"labels": labels,
+							"datasets":[{	"label":"My First Dataset",
+														"data":pts,
+														"fill":false,
+														"borderColor":"rgb(75, 192, 192)",
+														"lineTension":0.1}]},
+			options: {}
 		});
-		return str;
-	}
-	pts=[]
-	labels=[]
-	for (var i = 0; i < 10; i++) {
-		var msg_xhr = new XMLHttpRequest();
-		msg_xhr.open("GET","/router/queue",false);
-		msg_xhr.send(null);
-		const dateTime = Date.now();
-		const timestamp = Math.floor(dateTime / 1000);
-		var msg = JSON.parse(msg_xhr.responseText);
-		pts.push(msg['temperature']);
-		labels.push(timestamp)
-	}
-	var ctx = document.getElementById('myChart').getContext('2d');
-	var myLineChart = new Chart(ctx, {
-    type: 'line',
-		data: {	"labels": labels,
-						"datasets":[{	"label":"My First Dataset",
-													"data":pts,
-													"fill":false,
-													"borderColor":"rgb(75, 192, 192)",
-													"lineTension":0.1}]},
-    options: {}
-	});
-</script>
+	</script>
 </body>
 </html>
