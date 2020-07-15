@@ -78,7 +78,7 @@
 		msg_xhr.send(null);
 		const dateTime = Date.now();
 		const timestamp = Math.floor(dateTime / 1000);
-		var msg = JSON.parse(JSON.parse(msg_xhr.responseText));
+		var msg = JSON.parse(msg_xhr.responseText);
 		pts.push(msg['temperature']);
 		labels.push(timestamp)
 	}
