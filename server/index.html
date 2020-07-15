@@ -25,16 +25,10 @@
 <h3>Registered Devices:</h3>
 <div id="devices"></div>
 
-<!--<span style="color:green"> Green</span><button onclick="toggle('myDIV')">Try it</button>
-
-<div id="myDIV" class="canvas">
-This is my DIV element.
-</div>-->
 <script>
 	var xhr = new XMLHttpRequest();
-	xhr.open("GET","http://test-vm-ubuntu1.eastus.cloudapp.azure.com:3000/router/devices",false);
+	xhr.open("GET","/router/devices",false);
 	xhr.send(null);
-	//document.getElementById("devices").innerHTML = xhr.responseText;
 	var data = JSON.parse(xhr.responseText);
 	console.log(data);
 	console.log(items(data));
