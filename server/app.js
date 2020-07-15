@@ -10,8 +10,9 @@ app.use(bodyparser.json());
 
 app.use('/router',router);
 
-app.use(express.staticProvider(__dirname + '/public'));
-app.get('/', function(req, res) {
+var indexpage = app.createServer();
+indexpage.use(express.staticProvider(__dirname + '/public'));
+indexpage.get('/', function(req, res) {
     res.render('index.html');
 });
 
