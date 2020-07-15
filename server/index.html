@@ -63,7 +63,7 @@
 		var twin_xhr = new XMLHttpRequest();
 		twin_xhr.open("GET","/router/twin/"+id,false);
 		twin_xhr.send(null);
-		var twin = JSON.parse(JSON.parse(a.responseText));
+		var twin = JSON.parse(JSON.parse(twin_xhr.responseText));
 		Object.keys(twin).forEach(element =>{
 			str += element+": "+twin[element]+"<br>";
 		});
