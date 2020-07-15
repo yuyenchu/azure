@@ -25,7 +25,7 @@ router.route('/devices')
 			url: deviceUrl,
 			headers: hubHead
 		}, 	function(error,response,body){
-					console.log(response.statusCode);
+					console.log("devices "+response.statusCode);
 					var r={};
 					var b = JSON.parse(body);
 					b.forEach(element => r[element["deviceId"]]=element["connectionState"]);
@@ -40,7 +40,7 @@ router.route('/twin/:id')
 			url: twinUrl,
 			headers: hubHead
 		}, 	function(error,response,body){
-					console.log(response.statusCode);
+					console.log("twin "+response.statusCode);
 					res.json(body);
 		});
 	});
@@ -52,7 +52,7 @@ router.route('/queue')
 			url: sbUrl,
 			headers: sbHead
 		}, 	function(error,response,body){
-					console.log(response.statusCode);
+					console.log("queue "+response.statusCode);
 					res.json(body);
 		});
 	});
