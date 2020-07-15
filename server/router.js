@@ -29,7 +29,7 @@ router.route('/devices')
 					var r={};
 					var b = JSON.parse(body);
 					b.forEach(element => r[element["deviceId"]]=element["connectionState"]);
-					res.json(r);
+					res.send(r);
 		});
 	});
 
