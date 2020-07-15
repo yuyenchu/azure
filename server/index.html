@@ -156,7 +156,7 @@
 					console.log("data type: "+typeof(data));
 					console.log("data: "+data);
 					console.log("stringify data: "+JSON.stringify(data));
-					document.getElementById("devices").innerHTML = items(JSON.parse(JSON.parse(data)));
+					document.getElementById("devices").innerHTML = items(JSON.parse(JSON.stringify(data)));
 				},
 				complete: function () {
 					// Schedule the next
