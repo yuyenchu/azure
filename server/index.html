@@ -25,7 +25,7 @@
 <h1>Welcome to Andrew's Azure testing page!</h1>
 <h3>Registered Devices:</h3>
 <div id="devices"></div>
-
+<canvas id="myChart" width="400" height="400"></canvas>
 <script>
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET","/router/devices",false);
@@ -70,6 +70,29 @@
 		});
 		return str;
 	}
+	pts=[]
+	labels=[]
+	var msg_xhr = new XMLHttpRequest();
+	msg_xhr.open("GET","/router/queue",false);
+	for (var i = 0; i < 10; i++) {
+		msg_xhr.send(null);
+		const dateTime = Date.now();
+		const timestamp = Math.floor(dateTime / 1000);
+		var msg = JSON.parse(JSON.parse(msg_xhr.responseText));
+		pts.push(msg['temperature']);
+		labels.push(timestamp)
+	}
+	var ctx = document.getElementById('myChart').getContext('2d');
+	var myLineChart = new Chart(ctx, {
+    type: 'line',
+		data: {	"labels": labels,
+						"datasets":[{	"label":"My First Dataset",
+													"data":pts,
+													"fill":false,
+													"borderColor":"rgb(75, 192, 192)",
+													"lineTension":0.1}]},
+    options: {}
+	});
 </script>
 </body>
 </html>
