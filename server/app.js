@@ -10,6 +10,11 @@ app.use(bodyparser.json());
 
 app.use('/router',router);
 
+app.use(express.staticProvider(__dirname + '/public'));
+app.get('/', function(req, res) {
+    res.render('index.html');
+});
+
 app.listen(3000, function () {
     console.log('app listening on port 3000!');
 });
