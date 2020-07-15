@@ -48,7 +48,7 @@ router.route('/twin/:id')
 router.route('/queue')
 	.get(function (req, res) {
 		const sbUrl = 'https://test-serbus1.servicebus.windows.net/test-queue1/messages/head'
-		request.get({
+		request.post({
 			url: sbUrl,
 			headers: sbHead
 		}, 	function(error,response,body){
