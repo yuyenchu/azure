@@ -153,9 +153,9 @@
 			$.ajax({
 				url: "/router/devices",
 				success: function (data) {
-					console.log("data type: "+typeof(data));
-					console.log("data: "+data);
-					console.log("stringify data: "+JSON.stringify(data));
+					// console.log("data type: "+typeof(data));
+					// console.log("data: "+data);
+					// console.log("stringify data: "+JSON.stringify(data));
 					document.getElementById("devices").innerHTML = items(JSON.parse(JSON.stringify(data)));
 				},
 				complete: function () {
