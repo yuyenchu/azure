@@ -31,7 +31,7 @@
 	<div id="devices"></div>
 	<div>
 		<div class="inner"><button onClick=drawChart()>Draw</button></div>
-		<div class="inner"><button onClick="flag = true">Start</button></div>
+		<div class="inner"><button onClick=drawLoop()>Start</button></div>
   	<div class="inner"><button onClick="flag = false">Pause</button></div>
 	</div>
 	<canvas id="myChart" width="400" height="400"></canvas>
@@ -133,9 +133,11 @@
 						easing: 'easeOutBounce'
 				});
 		}
-		var flag = false;
-		while (flag) {
-			drawChart();
+
+		function drawLoop(){
+			while (true) {
+				drawChart();
+			}
 		}
 	</script>
 </body>
