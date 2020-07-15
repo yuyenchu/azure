@@ -82,11 +82,22 @@
 		var lineChart = new Chart(document.getElementById('myChart').getContext('2d'), {
 			type: 'line',
 			data: {	"labels": [],
-							"datasets":[{	"label":"My First Dataset",
+							"datasets":[{	"label":"Temperature",
+														"data":[],
+														"fill":false,
+														"borderColor":"rgb(255, 159, 0)",
+														"lineTension":0.1},
+													{	"label":"Humidity",
+														"data":[],
+														"fill":false,
+														"borderColor":"rgb(0, 59, 174)",
+														"lineTension":0.1},
+													{	"label":"Power level",
 														"data":[],
 														"fill":false,
 														"borderColor":"rgb(75, 192, 192)",
-														"lineTension":0.1}]},
+														"lineTension":0.1}
+													]},
 			options: {}
 		});
 		function drawChart(){
@@ -97,9 +108,13 @@
 				const timestamp = Math.floor(dateTime / 1000);
 				var msg = JSON.parse(JSON.parse(msg_xhr.responseText));
 				lineChart.data.datasets[0].data.push(msg['temperature']);
+				lineChart.data.datasets[1].data.push(msg['humidity']);
+				lineChart.data.datasets[2].data.push(msg['power_level']);
 				lineChart.data.labels.push(timestamp);
 				if(lineChart.data.datasets[0].data.length > 10){
 					lineChart.data.datasets[0].data.shift();
+					lineChart.data.datasets[1].data.shift();
+					lineChart.data.datasets[2].data.shift();
 					lineChart.data.labels.shift();
 				}
 				lineChart.update({
