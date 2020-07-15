@@ -143,7 +143,7 @@
 				success: function (data) {
 					console.log("data type: "+typeof(data));
 					console.log("data: "+data);
-					drawChart(JSON.parse(data.responseText));
+					drawChart(JSON.parse(data));
 				},
 				complete: function () {
 					// Schedule the next
