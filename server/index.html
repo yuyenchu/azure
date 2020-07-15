@@ -98,7 +98,16 @@
 														"borderColor":"rgb(75, 192, 192)",
 														"lineTension":0.1}
 													]},
-			options: {}
+			options: {
+            scales: {
+                yAxes : [{
+                    ticks : {
+                        max : 101,    
+                        min : -1
+                    }
+                }]
+            }
+        }
 		});
 		function drawChart(){
 				var msg_xhr = new XMLHttpRequest();
