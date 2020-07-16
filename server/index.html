@@ -57,7 +57,7 @@
 					// console.log("data type: "+typeof(data));
 					console.log("data: "+data);
 					$("#r"+id).css('color', 'green');
-					$("#r"+id).html("&#10003;");
+					$("#r"+id).html("&#10003;"+data["payload"]);
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
 				$("#r"+id).css('color', 'red');
