@@ -56,7 +56,7 @@ router.route('/queue')
 					console.log("queue "+response.statusCode);
 					res.json({
 						header: response.headers,
-						body: body
+						body: JSON.parse(body)
 					});
 		});
 	});

@@ -146,10 +146,10 @@
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					// console.log("data: "+data);
-					var obj = JSON.parse(data);
-					drawChart(obj.body,
-										obj.header['iothub-connection-device-id'],
-										obj.header['BrokerProperties']);
+					// var obj = JSON.parse(data);
+					drawChart(data.body,
+										data.header['iothub-connection-device-id'],
+										data.header['BrokerProperties']);
 					
 				},
 				complete: function () {
