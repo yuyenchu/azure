@@ -51,7 +51,7 @@
 			var methodname = $("#m"+id).val();
 			var payload = $("#p"+id).val();
 			$.ajax({
-				url: '/method/'+id+'/'+methodname+'/'+payload,
+				url: "/method/"+id+"/"+methodname+"/"+payload,
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					console.log("data: "+data);

@@ -34,7 +34,7 @@ router.route('/devices')
 	});
 
 router.route('/method/:id/:methodname/:payload')
-	.get(function (req, res) {
+	.post(function (req, res) {
 		const twinUrl = 'https://hub-test1.azure-devices.net/twins/'+req.params.id+'/methods?api-version=2020-03-13'
 		request.post({
 			url: twinUrl,
