@@ -48,8 +48,7 @@
 			Object.keys(data).forEach(element =>{
 				if (document.getElementById(element+"label") == undefined){
 					$("#devices").append(	'<p >'+element+':  <span id = '+element+
-																'label></span></p><button onclick="toggle(\''+
-																element+'\')">More Info</button>');
+																'label></span></p>');
 				}
 				if(data[element] == "Disconnected"){
 					$("#"+element+"label").css('color', 'red');
@@ -58,7 +57,8 @@
 				}
 				$("#"+element+"label").text(data[element]);
 				if (document.getElementById(element) == undefined){
-					$("#devices").append('<div id='+element+' class="canvas" style="display: none');
+					$("#devices").append('<div id='+element+' class="canvas" style="display: none></div><button onclick="toggle(\''+
+																element+'\')">More Info</button>');
 				} 
 				twinInfo(element)
 			});
