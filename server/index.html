@@ -118,6 +118,7 @@
 				const dateTime = Date.now();
 				const timestamp = Math.floor(dateTime / 1000);
 				var brokerprop = JSON.parse(bp);
+				console.log(brokerprop)
 				var count = 0
 				Object.keys(msg).forEach(element =>{
 					lineChart.data.datasets[count].data.push(msg[element]);
