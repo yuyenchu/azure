@@ -146,9 +146,10 @@
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					// console.log("data: "+data);
-					drawChart(JSON.parse(data),
-										request.getResponseHeader('iothub-connection-device-id'),
-										request.getResponseHeader('BrokerProperties'));
+					var obj = JSON.parse(data);
+					drawChart(obj.body,
+										obj.header['iothub-connection-device-id'],
+										obj.header['BrokerProperties']);
 					
 				},
 				complete: function () {
