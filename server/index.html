@@ -47,16 +47,30 @@
 				}
 		}
 
+		function invoke(id) {
+			var methodname = $("#m"+id).val();
+			var payload = $("#p"+id).val();
+			$.ajax({
+				url: '/method/'+id+'/'+methodname+'/'+payload,
+				success: function (data, textStatus, request) {
+					// console.log("data type: "+typeof(data));
+					console.log("data: "+data);
+					$("#r"+id).text("&#10003;");
+				}
+			});
+		}
+
 		function items(data){
 			Object.keys(data).forEach(element =>{
 				if (document.getElementById(element+"label") == undefined){
 					$("#devices").append(	'<p >'+element+':  <span id = '+element+
 																'label></span></p>');
 					$("#devices").append(	'<pre><label for="mname">Method:</label>'+
-																'<input type="text" id="mname" name="fname">'+
+																'<input type="text" id="m'+element+'" name="fname">'+
 																'<label for="payload">Payload:</label>'+
-																'<input type="text" id="payload" name="lname">'+
-																'<input type="submit" value="Submit"></pre><br>');
+																'<input type="text" id="p'+element+'" name="lname">'+
+																'<button onclick="invoke(\''+element+'\')">submit</button>'+
+																'<label id="r'+element+'"><label></pre><br>');
 				}
 				if(data[element] == "Disconnected"){
 					$("#"+element+"label").css('color', 'red');
@@ -66,7 +80,7 @@
 				$("#"+element+"label").text(data[element]);
 				if (document.getElementById(element) == undefined){
 					$("#devices").append('<div id='+element+' class="canvas" style="display: none"></div>');
-					$("#devices").append('<button onclick="toggle(\''+element+'\')">More Info</button>');
+					$("#devices").append('<button onclick="toggle(\''+element+'\')">More Info</button><hr>');
 				} 
 			});
 		}
