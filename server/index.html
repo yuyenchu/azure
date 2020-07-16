@@ -48,6 +48,7 @@
 		}
 
 		function invoke(id) {
+			$("#r"+id).html("");
 			var methodname = $("#m"+id).val();
 			var payload = $("#p"+id).val();
 			$.ajax({
