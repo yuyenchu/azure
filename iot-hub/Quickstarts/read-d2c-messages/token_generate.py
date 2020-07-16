@@ -12,7 +12,7 @@ TOKEN_FORMAT = 'SharedAccessSignature sr=%s&sig=%s&se=%s&skn=%s'
 # iot hub token
 def get_token():
     CONNECTION_STRING = """
-    HostName=hub-test1.azure-devices.net;DeviceId=simulate2;SharedAccessKey=ZWosSuCL4pHgXGmhRKm4QHG9yJKB0y72ctPDFv02Qqg=
+    HostName=hub-test1.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=Ul8DDbKWKcfZIR5nzEIHw+D6N0l3itJLNgnRqR8FeMQ=
     """
     IOTHOST, KEYNAME, KEYVLAUE = [
         sub[sub.index('=') + 1:] for sub in CONNECTION_STRING.split(";")]

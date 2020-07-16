@@ -33,6 +33,23 @@ router.route('/devices')
 		});
 	});
 
+router.route('/method/:id/:methodname/:payload')
+	.gget(function (req, res) {
+		const twinUrl = 'https://hub-test1.azure-devices.net/twins/'+id+'/methods?api-version=2020-03-13'
+		request.get({
+			url: twinUrl,
+			headers: hubHead,
+			body: {
+					"methodName": methodname,
+					"responseTimeoutInSeconds": 200,
+					"payload": payload
+			}
+		}, 	function(error,response,body){
+					console.log("invoke "+response.statusCode);
+					res.json(JSON.parse(body));
+		});
+	});
+
 router.route('/twin/:id')
 	.get(function (req, res) {
 		const twinUrl = 'https://hub-test1.azure-devices.net/twins/'+req.params.id+'?api-version=2018-06-30'
