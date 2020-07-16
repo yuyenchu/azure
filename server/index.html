@@ -33,16 +33,6 @@
 	<div id="devices"></div>
 	<canvas id="myChart" width="400" height="400"></canvas>
 	<script>
-		// setInterval(function(){ 
-		// 	var xhr = new XMLHttpRequest();
-		// 	xhr.open("GET","/router/devices",false);
-		// 	xhr.send(null);
-		// 	var data = JSON.parse(xhr.responseText);
-		// 	console.log(data);
-		// 	console.log(items(data));
-		// 	document.getElementById("devices").innerHTML = items(data);
-		// }, 3000);
-
 		function toggle(id) {
 				var x = document.getElementById(id);
 				if (x.style.display === "none") {
@@ -61,7 +51,10 @@
 				} else {
 					str += 'green">Connected</span>';
 				}
-				str += '</p><button onclick="toggle(\''+element+'\')">More Info</button><div id='+element+' class="canvas" style="display: none;">'
+				str += '</p><button onclick="toggle(\''+element+
+								'\')">More Info</button><div id='+
+								element+' class="canvas" style="display: '+
+								document.getElementById(id).style.display+'">';
 				str += twinInfo(element)+'</div>';
 				});
 			return str;
@@ -175,15 +168,6 @@
 			});
 		};
 
-		// if(typeof(Worker) !== "undefined") {
-		// 	var w = new Worker("conn_workers.js");
-		// 	w.onmessage = function(event) {
-		// 		console.log(event.data);
-		// 		document.getElementById("devices").innerHTML = event.data;
-		// 	};
-		// } else {
-		// 	document.getElementById("devices").innerHTML = "Sorry, your browser does not support Web Workers...";
-		// }
 		checkConn();
 		doAjax();
 	</script>
