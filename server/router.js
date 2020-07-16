@@ -39,7 +39,7 @@ router.route('/method/:id/:methodname/:payload')
 		request.post({
 			url: methodUrl,
 			headers: hubHead,
-			body: {
+			json: {
 					"methodName": req.params.methodname,
 					"responseTimeoutInSeconds": 200,
 					"payload": req.params.payload
