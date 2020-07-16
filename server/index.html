@@ -32,6 +32,8 @@
 	<div id="devices"></div>
 	<canvas id="myChart" width="400" height="400"></canvas>
 	<script>
+		const MAX_PTS = 20;
+
 		function toggle(id) {
 				var x = document.getElementById(id);
 				if (x.style.display === "none") {
@@ -119,13 +121,13 @@
 				var count = 0
 				Object.keys(msg).forEach(element =>{
 					lineChart.data.datasets[count].data.push(msg[element]);
-					if(lineChart.data.datasets[count].data.length > 10){
+					if(lineChart.data.datasets[count].data.length > MAX_PTS){
 						lineChart.data.datasets[count].data.shift();
 					}
 					count ++;
 				});
 				lineChart.data.labels.push(brokerprop["EnqueuedTimeUtc"]);
-				if(lineChart.data.labels.length > 10){
+				if(lineChart.data.labels.length > MAX_PTS){
 					lineChart.data.labels.shift();
 				}
 				// lineChart.update({
