@@ -106,37 +106,48 @@
                         min : 0
                     }
                 }]
-            }
+						},
+						title: {
+								display: true,
+								text: 'Chart 1'
+						}
         }
 		});
 
-		function drawChart(msg){
+		function drawChart(msg, title, bp){
 				const dateTime = Date.now();
 				const timestamp = Math.floor(dateTime / 1000);
-				lineChart.data.datasets[0].data.push(msg['temperature']);
-				lineChart.data.datasets[1].data.push(msg['humidity']);
-				lineChart.data.datasets[2].data.push(msg['power_level']);
-				lineChart.data.labels.push(timestamp);
-				if(lineChart.data.datasets[0].data.length > 10){
-					lineChart.data.datasets[0].data.shift();
-					lineChart.data.datasets[1].data.shift();
-					lineChart.data.datasets[2].data.shift();
+				var brokerprop = JSON.parse(bp);
+				var count = 0
+				Object.keys(msg).forEach(element =>{
+					lineChart.data.datasets[count].data.push(msg[element]);
+					if(lineChart.data.datasets[count].data.length > 10){
+						lineChart.data.datasets[count].data.shift();
+					}
+					count ++;
+				});
+				lineChart.data.labels.push(brokerprop["EnqueuedTimeUtc"]);
+				if(lineChart.data.labels.length > 10){
 					lineChart.data.labels.shift();
 				}
 				// lineChart.update({
 				// 		duration: 800,
 				// 		easing: 'easeOutBounce'
 				// });
+				lineChart.options.title.text = title;
 				lineChart.update();
 		}
 
 		var doAjax = function() {
 			$.ajax({
 				url: "/router/queue",
-				success: function (data) {
+				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					// console.log("data: "+data);
-					drawChart(JSON.parse(data));
+					drawChart(JSON.parse(data),
+										request.getResponseHeader('iothub-connection-device-id'),
+										request.getResponseHeader('BrokerProperties'));
+					
 				},
 				complete: function () {
 					// Schedule the next
