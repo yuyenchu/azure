@@ -52,7 +52,7 @@ router.route('/queue')
 			url: sbUrl,
 			headers: sbHead
 		}, 	function(error, response, body) {
-					console.log(response.headers);
+					// console.log(response.headers);
 					console.log("queue "+response.statusCode);
 					res.json({
 						header: response.headers,
