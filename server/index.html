@@ -46,21 +46,20 @@
 		function items(data){
 			var str ='' ;
 			Object.keys(data).forEach(element =>{
-				str +='<p>'+element+':  <span style="color:';
-				if(data[element] == "Disconnected"){
-					str += 'red">Disconnected</span>';
-				} else {
-					str += 'green">Connected</span>';
+				if (document.getElementById(element+"label") == undefined){
+					$("#devices").append(	'<p >'+element+':  <span id = '+element+
+																'label></span></p><button onclick="toggle(\''+
+																element+'\')">More Info</button>');
 				}
-				str += '</p><button onclick="toggle(\''+element+
-								'\')">More Info</button><div id='+
-								element+' class="canvas" style="display: '
-				if (document.getElementById(element) == undefined){
-					str +='none';
+				if(data[element] == "Disconnected"){
+					$("#"+element+"label").css('color', 'red');
 				} else {
-					str += document.getElementById(element).style.display;
-				};
-				str += '"></div>';
+					$("#"+element+"label").css('color', 'green');
+				}
+				$("#"+element+"label").text(data[element]);
+				if (document.getElementById(element) == undefined){
+					$("#devices").append('<div id='+element+' class="canvas" style="display: none');
+				} 
 				twinInfo(element)
 			});
 			return str;
