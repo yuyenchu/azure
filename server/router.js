@@ -15,7 +15,7 @@ const sbHead = {
  
 router.route('/')
     	.get(function (req, res) {
-	    	res.send("Connection success");
+	    	res.status(response.statusCode).send("Connection success");
 	});
 
 router.route('/devices')
@@ -29,7 +29,7 @@ router.route('/devices')
 					var r={};
 					var b = JSON.parse(body);
 					b.forEach(element => r[element["deviceId"]]=element["connectionState"]);
-					res.send(r);
+					res.status(response.statusCode).send(r);
 		});
 	});
 
@@ -45,14 +45,8 @@ router.route('/method/:id/:methodname/:payload')
 					"payload": req.params.payload
 			}
 		}, 	function(error,response,body){
-					console.log("invoke: "+error);
-					console.log("invoke: "+response);
-					console.log("invoke: "+body);
-					console.log("invoke: "+JSON.stringify(error));
-					console.log("invoke: "+JSON.stringify(response));
-					console.log("invoke: "+JSON.stringify(body));
-					console.log("invoke "+response.status);
-					res.json(JSON.parse(body));
+					console.log("invoke "+response.statusCode);
+					res.status(response.statusCode).json(body);
 		});
 	});
 
@@ -64,7 +58,7 @@ router.route('/twin/:id')
 			headers: hubHead
 		}, 	function(error,response,body){
 					console.log("twin "+response.statusCode);
-					res.json(JSON.parse(body));
+					res.status(response.statusCode).json(JSON.parse(body));
 		});
 	});
 
@@ -77,7 +71,7 @@ router.route('/queue')
 		}, 	function(error, response, body) {
 					// console.log(response.headers);
 					console.log("queue "+response.statusCode);
-					res.json({
+					res.status(response.statusCode).json({
 						header: response.headers,
 						body: JSON.parse(body)
 					});
