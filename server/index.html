@@ -37,6 +37,7 @@
 		function toggle(id) {
 				var x = document.getElementById(id);
 				if (x.style.display === "none") {
+						twinInfo(element)
 						x.style.display = "block";
 				} else {
 						x.style.display = "none";
@@ -48,6 +49,11 @@
 				if (document.getElementById(element+"label") == undefined){
 					$("#devices").append(	'<p >'+element+':  <span id = '+element+
 																'label></span></p>');
+					$("#devices").append(	'<span><label for="fname">Method:</label>'+
+																'<input type="text" id="fname" name="fname">'+
+																'<label for="lname">Payload:</label>'+
+																'<input type="text" id="lname" name="lname">'+
+																'<input type="submit" value="Submit"></span>');
 				}
 				if(data[element] == "Disconnected"){
 					$("#"+element+"label").css('color', 'red');
@@ -59,7 +65,6 @@
 					$("#devices").append('<div id='+element+' class="canvas" style="display: none"></div>');
 					$("#devices").append('<button onclick="toggle(\''+element+'\')">More Info</button>');
 				} 
-				twinInfo(element)
 			});
 		}
 
