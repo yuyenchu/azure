@@ -4,7 +4,6 @@
 	<title>Welcome to nginx!</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="conn_worker.js"></script>
 	<style>
 		body {
 				width: 45em;
@@ -54,7 +53,7 @@
 				str += '</p><button onclick="toggle(\''+element+
 								'\')">More Info</button><div id='+
 								element+' class="canvas" style="display: '+
-								document.getElementById(id).style.display+'">';
+								document.getElementById(element).style.display+'">';
 				str += twinInfo(element)+'</div>';
 				});
 			return str;
