@@ -115,11 +115,11 @@
 		});
 
 		function drawChart(msg, title, bp){
-				const dateTime = Date.now();
-				const timestamp = Math.floor(dateTime / 1000);
+				// const dateTime = Date.now();
+				// const timestamp = Math.floor(dateTime / 1000);
 				var brokerprop = JSON.parse(bp);
-				console.log("bp"+bp);
-				console.log("brokerprop"+brokerprop);
+				// console.log("bp"+bp);
+				// console.log("brokerprop"+brokerprop);
 				var count = 0
 				Object.keys(msg).forEach(element =>{
 					lineChart.data.datasets[count].data.push(msg[element]);
@@ -170,7 +170,7 @@
 				},
 				complete: function () {
 					// Schedule the next
-					setTimeout(doAjax, 1000);
+					setTimeout(checkConn, 1000);
 				}
 			});
 		};
@@ -185,7 +185,7 @@
 		// 	document.getElementById("devices").innerHTML = "Sorry, your browser does not support Web Workers...";
 		// }
 		checkConn();
-		// doAjax();
+		doAjax();
 	</script>
 </body>
 </html>
