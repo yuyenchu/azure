@@ -57,8 +57,8 @@
 				}
 				$("#"+element+"label").text(data[element]);
 				if (document.getElementById(element) == undefined){
-					$("#devices").append('<div id='+element+' class="canvas" style="display: none></div><button onclick="toggle(\''+
-																element+'\')">More Info</button>');
+					$("#devices").append('<div id='+element+' class="canvas" style="display: none></div>');
+					$("#devices").append('<button onclick="toggle(\''+element+'\')">More Info</button>');
 				} 
 				twinInfo(element)
 			});
