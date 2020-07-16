@@ -24,6 +24,9 @@
 		.inner {
 				display: inline-block;
 		}
+		label {
+				margin-left:30px
+		}
 	</style>
 </head>
 <body>
@@ -49,11 +52,11 @@
 				if (document.getElementById(element+"label") == undefined){
 					$("#devices").append(	'<p >'+element+':  <span id = '+element+
 																'label></span></p>');
-					$("#devices").append(	'<span><label for="fname">Method:</label>'+
-																'<input type="text" id="fname" name="fname">'+
-																'<label for="lname">Payload:</label>'+
-																'<input type="text" id="lname" name="lname">'+
-																'<input type="submit" value="Submit"></span><br>');
+					$("#devices").append(	'<pre><label for="mname">Method:</label>'+
+																'<input type="text" id="mname" name="fname">'+
+																'<label for="payload">Payload:</label>'+
+																'<input type="text" id="payload" name="lname">'+
+																'<input type="submit" value="Submit"></pre><br>');
 				}
 				if(data[element] == "Disconnected"){
 					$("#"+element+"label").css('color', 'red');
