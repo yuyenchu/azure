@@ -41,7 +41,7 @@ router.route('/twin/:id')
 			headers: hubHead
 		}, 	function(error,response,body){
 					console.log("twin "+response.statusCode);
-					res.json(body);
+					res.json(JSON.parse(body));
 		});
 	});
 
