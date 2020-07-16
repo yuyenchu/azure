@@ -51,9 +51,13 @@ router.route('/queue')
 		request.post({
 			url: sbUrl,
 			headers: sbHead
-		}, 	function(error,response,body){
+		}, 	function(error, response, body) {
+					console.log(response.headers);
 					console.log("queue "+response.statusCode);
-					res.json(body);
+					res.json({
+						header: response.headers,
+						body: body
+					});
 		});
 	});
 module.exports = router;
