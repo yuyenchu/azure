@@ -37,7 +37,7 @@
 		function toggle(id) {
 				var x = document.getElementById(id);
 				if (x.style.display === "none") {
-						twinInfo(element)
+						twinInfo(id)
 						x.style.display = "block";
 				} else {
 						x.style.display = "none";
@@ -53,7 +53,7 @@
 																'<input type="text" id="fname" name="fname">'+
 																'<label for="lname">Payload:</label>'+
 																'<input type="text" id="lname" name="lname">'+
-																'<input type="submit" value="Submit"></span>');
+																'<input type="submit" value="Submit"></span><br>');
 				}
 				if(data[element] == "Disconnected"){
 					$("#"+element+"label").css('color', 'red');
