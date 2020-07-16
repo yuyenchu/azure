@@ -55,8 +55,12 @@
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					console.log("data: "+data);
+					$("#r"+id).css('color', 'green');
 					$("#r"+id).text("&#10003;");
 				}
+			}).fail(function (jqXHR, textStatus, errorThrown) { 
+				$("#r"+id).css('color', 'green');
+				$("#r"+id).text("&#10007;");
 			});
 		}
 
