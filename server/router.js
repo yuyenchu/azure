@@ -15,7 +15,7 @@ const sbHead = {
  
 router.route('/')
     	.get(function (req, res) {
-	    	res.status(response.statusCode).send("Connection success");
+	    	res.send("Connection success");
 	});
 
 router.route('/devices')
@@ -58,7 +58,7 @@ router.route('/twin/:id')
 			headers: hubHead
 		}, 	function(error,response,body){
 					console.log("twin "+response.statusCode);
-					res.status(response.statusCode).json(JSON.parse(body));
+					res.json(JSON.parse(body));
 		});
 	});
 
