@@ -56,11 +56,11 @@
 					// console.log("data type: "+typeof(data));
 					console.log("data: "+data);
 					$("#r"+id).css('color', 'green');
-					$("#r"+id).text("&#10003;");
+					$("#r"+id).html("&#10003;");
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
-				$("#r"+id).css('color', 'green');
-				$("#r"+id).text("&#10007;");
+				$("#r"+id).css('color', 'red');
+				$("#r"+id).html("&#10007;");
 			});
 		}
 
