@@ -60,13 +60,14 @@
 				} else {
 					str += document.getElementById(element).style.display;
 				};
-				str += '">'+twinInfo(element)+'</div>';
-				});
+				str += '"></div>';
+				twinInfo(element)
+			});
 			return str;
 		}
 
 		function twinInfo(id){
-			var str ='';
+			// var str ='';
 			// var twin_xhr = new XMLHttpRequest();
 			// twin_xhr.open("GET","/router/twin/"+id,false);
 			// twin_xhr.send(null);
@@ -78,14 +79,16 @@
 					// console.log("data: "+data);
 					// var obj = JSON.parse(data);
 					// twin = data
+					var str =''
 					Object.keys(data).forEach(element =>{
 						console.log(element)
 						str += element+": "+JSON.stringify(data[element])+"<br>";
 					});
+					$("#"+id).html(str);
 				}
 			});
 			console.log(str);
-			return str;
+			// return str;
 		}
 
 		var lineChart = new Chart(document.getElementById('myChart').getContext('2d'), {
