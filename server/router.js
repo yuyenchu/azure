@@ -35,14 +35,14 @@ router.route('/devices')
 
 router.route('/method/:id/:methodname/:payload')
 	.get(function (req, res) {
-		const twinUrl = 'https://hub-test1.azure-devices.net/twins/'+id+'/methods?api-version=2020-03-13'
+		const twinUrl = 'https://hub-test1.azure-devices.net/twins/'+req.params.id+'/methods?api-version=2020-03-13'
 		request.post({
 			url: twinUrl,
 			headers: hubHead,
 			body: {
-					"methodName": methodname,
+					"methodName": req.params.methodname,
 					"responseTimeoutInSeconds": 200,
-					"payload": payload
+					"payload": req.params.payload
 			}
 		}, 	function(error,response,body){
 					console.log("invoke "+response.statusCode);
