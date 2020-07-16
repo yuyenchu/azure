@@ -45,8 +45,10 @@ router.route('/method/:id/:methodname/:payload')
 					"payload": req.params.payload
 			}
 		}, 	function(error,response,body){
+					console.log("invoke: "+error);
 					console.log("invoke: "+response);
 					console.log("invoke: "+body);
+					console.log("invoke: "+JSON.stringify(error));
 					console.log("invoke: "+JSON.stringify(response));
 					console.log("invoke: "+JSON.stringify(body));
 					console.log("invoke "+response.status);
