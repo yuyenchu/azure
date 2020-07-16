@@ -52,9 +52,13 @@
 				}
 				str += '</p><button onclick="toggle(\''+element+
 								'\')">More Info</button><div id='+
-								element+' class="canvas" style="display: '+
-								document.getElementById(element).style.display+'">';
-				str += twinInfo(element)+'</div>';
+								element+' class="canvas" style="display: '
+				if (document.getElementById(element) == undefined){
+					str +='none';
+				} else {
+					str += document.getElementById(element).style.display;
+				};
+				str += '">'+twinInfo(element)+'</div>';
 				});
 			return str;
 		}
