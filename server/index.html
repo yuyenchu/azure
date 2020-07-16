@@ -44,7 +44,6 @@
 		}
 
 		function items(data){
-			// var str ='' ;
 			Object.keys(data).forEach(element =>{
 				if (document.getElementById(element+"label") == undefined){
 					$("#devices").append(	'<p >'+element+':  <span id = '+element+
@@ -62,22 +61,14 @@
 				} 
 				twinInfo(element)
 			});
-			// return str;
 		}
 
 		function twinInfo(id){
-			// var str ='';
-			// var twin_xhr = new XMLHttpRequest();
-			// twin_xhr.open("GET","/router/twin/"+id,false);
-			// twin_xhr.send(null);
-			// var twin = JSON.parse(JSON.parse(twin_xhr.responseText));
 			$.ajax({
 				url: "/router/twin/"+id,
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					// console.log("data: "+data);
-					// var obj = JSON.parse(data);
-					// twin = data
 					var str =''
 					Object.keys(data).forEach(element =>{
 						// console.log(element)
@@ -86,8 +77,6 @@
 					$("#"+id).html(str);
 				}
 			});
-			// console.log(str);
-			// return str;
 		}
 
 		var lineChart = new Chart(document.getElementById('myChart').getContext('2d'), {
@@ -126,8 +115,6 @@
 		});
 
 		function drawChart(msg, title, bp){
-				// const dateTime = Date.now();
-				// const timestamp = Math.floor(dateTime / 1000);
 				var brokerprop = JSON.parse(bp);
 				// console.log("bp"+bp);
 				// console.log("brokerprop"+brokerprop);
@@ -157,7 +144,6 @@
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					// console.log("data: "+data);
-					// var obj = JSON.parse(data);
 					drawChart(data.body,
 										data.header['iothub-connection-device-id'],
 										data.header['brokerproperties']);
@@ -177,7 +163,6 @@
 					// console.log("data type: "+typeof(data));
 					// console.log("data: "+data);
 					// console.log("stringify data: "+JSON.stringify(data));
-					// document.getElementById("devices").innerHTML = items(JSON.parse(JSON.stringify(data)));
 					items(JSON.parse(JSON.stringify(data)))
 				},
 				complete: function () {
