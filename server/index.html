@@ -136,7 +136,7 @@
 				var str = "";
 				Object.keys(data).forEach(element => {
 					var ele = typeof(element)=="string" ? element.replace("$","") : element;
-					str += "</p><p style=\"text-indent:"+(indent*15)+"px;margin-top:-15px;\">"+
+					str += "</p><p style=\"text-indent:"+(indent*20)+"px;margin-top:-15px;\">"+
 								ele+": "+unwrapData(data[element], indent+1)+"</p>";
 				});
 				return str;
