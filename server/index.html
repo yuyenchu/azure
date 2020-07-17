@@ -4,6 +4,7 @@
 	<title>Welcome to nginx!</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 	<style>
 		body {
 				width: 45em;
@@ -16,7 +17,8 @@
 		.canvas {
 			width: 100%;
 			padding: 50px 0;
-			text-align: center;
+			padding-left:5em;
+			text-align: left;
 			background-color: lightblue;
 			margin-top: 20px;
 			line-height: 150%;
@@ -76,10 +78,10 @@
 				if (document.getElementById(element+"label") == undefined){
 					$("#devices").append(	'<p >'+element+':  <span id = '+element+
 																'label></span></p>');
-					$("#devices").append(	'<pre><label for="mname">Method:</label>'+
-																'<input type="text" id="m'+element+'" name="fname">'+
-																'<label for="payload">Payload:</label>'+
-																'<input type="text" id="p'+element+'" name="lname">'+
+					$("#devices").append(	//'<pre><label for="mname">Method:</label>'+
+																'<input type="text" class="form-control" placeholder="Method Name" id="m'+element+'" name="fname">'+
+																// '<label for="payload">Payload:</label>'+
+																'<input type="text" class="form-control" placeholder="Payload" id="p'+element+'" name="lname">'+
 																'<button onclick="invoke(\''+element+'\')">submit</button>'+
 																'<label id="r'+element+'"><label></pre><br>');
 				}
