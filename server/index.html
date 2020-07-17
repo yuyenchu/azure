@@ -43,6 +43,7 @@
 		<br>
 		<hr>
 		<div id="devices"></div>
+		<canvas id="myChart" width="400" height="400"></canvas>
 
 		<div id="carouselExampleIndicators" class="carousel slide" data-interval="false">
 			<ol class="carousel-indicators">
@@ -71,7 +72,6 @@
 			</a>
 		</div>
 
-		<canvas id="myChart" width="400" height="400"></canvas>
 	</div>
 	<script>
 		const MAX_PTS = 31;
@@ -116,12 +116,12 @@
 					$("#devices").append(	'<p class="p-3 mb-2 bg-light">'+element+
 																'<span class="m-2" id = '+element+
 																'label></span></p>');
-					$("#devices").append(	'<div class="input-group mb-3"><input type="text" class="form-control" placeholder="Method Name" id="m'+
+					$("#devices").append(	'<div class="input-group mb-3 mt-3"><input type="text" class="form-control" placeholder="Method Name" id="m'+
 																element+'" style="max-width: 200px">'+
 																'<input type="text" class="form-control" placeholder="Payload" id="p'+
 																element+'" style="max-width: 175px">'+
 																'<button type="button" class="btn btn-primary ml-3" onclick="invoke(\''+element+'\')">submit</button>'+
-																'<label id="r'+element+'" class="mt-1"></label></div><br><br>');
+																'<label id="r'+element+'" class="mt-1"></label></div>');
 				}
 				if(data[element] == "Disconnected"){
 					// $("#"+element+"label").css('color', 'red');
