@@ -11,7 +11,7 @@
 				margin: 0 auto;
 				font-family: Tahoma, Verdana, Arial, sans-serif;
 		}
-		p {
+		.space {
 			text-indent: 50px;
 		}
 		.canvas {
@@ -76,7 +76,8 @@
 		function items(data){
 			Object.keys(data).forEach(element =>{
 				if (document.getElementById(element+"label") == undefined){
-					$("#devices").append(	'<p>'+element+'<span id = '+element+
+					$("#devices").append(	'<p class="p-3 mb-2 bg-light">'+element+
+																'<span class="m-2" id = '+element+
 																'label></span></p>');
 					$("#devices").append(	'<div class="input-group mb-3"><input type="text" class="form-control" placeholder="Method Name" id="m'+
 																element+'" name="fname"></div>'+
