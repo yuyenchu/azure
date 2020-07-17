@@ -73,7 +73,7 @@ router.route('/queue')
 					console.log("queue "+response.statusCode);
 					if (response.statusCode<204) {
 						res.status(response.statusCode).json({
-							header: response.headers,
+							header: JSON.parse(response.headers),
 							body: JSON.parse(body)
 						});
 					} else {
