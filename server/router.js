@@ -71,10 +71,15 @@ router.route('/queue')
 		}, 	function(error, response, body) {
 					// console.log(response.headers);
 					console.log("queue "+response.statusCode);
-					res.status(response.statusCode).json({
-						header: response.headers,
-						body: JSON.parse(body)
-					});
+					if (response.statusCode<204) {
+						res.status(response.statusCode).json({
+							header: response.headers,
+							body: JSON.parse(body)
+						});
+					} else {
+						res.status(response.statusCode).send("Reached end of queue")
+					}
+					
 		});
 	});
 module.exports = router;

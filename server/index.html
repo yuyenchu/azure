@@ -229,7 +229,7 @@
 				lineChart.update();
 		}
 
-		var doAjax = function() {
+		var getQueue = function() {
 			$.ajax({
 				url: "/router/queue",
 				success: function (data, textStatus, request) {
@@ -264,7 +264,7 @@
 		};
 
 		checkConn();
-		doAjax();
+		getQueue();
 	</script>
 </body>
 </html>
