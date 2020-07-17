@@ -129,8 +129,8 @@
 																element+'\')">submit</button>'+
 																'<label id="r'+element+'" class="mt-1"></label></div>');
 					$("#indicator").append(	'<li data-target="#carouselExampleIndicators" data-slide-to="0"'+
-																	count==0?'class="active"':' '+'></li>');
-					$("#inner").append(	'<div class="carousel-item'+count==0?' active"':' '+
+																	(count==0?'class="active"':' ')+'></li>');
+					$("#inner").append(	'<div class="carousel-item'+(count==0?' active"':' ')+
 															'"><canvas id="chart'+element+'" width="400" height="400"></canvas></div>')
 					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), {
 						type: 'line',
