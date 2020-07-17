@@ -135,7 +135,7 @@
 			} else {
 				var str = "";
 				Object.keys(data).forEach(element => {
-					str += "</p><p style=\"text-indent:"+(indent*15)+"px;\">"+unwrapData(data[element], indent+1)+"</p>"
+					str += "</p><p style=\"text-indent:"+(indent*15)+"px;\">"+element+": "+unwrapData(data[element], indent+1)+"</p>"
 				});
 				return str;
 			}
