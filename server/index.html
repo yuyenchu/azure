@@ -56,8 +56,14 @@
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					console.log("data: "+data);
-					$("#r"+id).css('color', 'green');
-					$("#r"+id).html("&#10003; "+data.payload.Response);
+					if (response.status == 200) {
+						$("#r"+id).css('color', 'green');
+						$("#r"+id).html("&#10003; "+data.payload.Response);
+					} else {
+						$("#r"+id).css('color', 'red');
+						$("#r"+id).html("&#10007; "+data.status+data.payload.Response);
+					}
+					
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
 				$("#r"+id).css('color', 'red');
