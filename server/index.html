@@ -122,7 +122,7 @@
 					var str =''
 					Object.keys(data).forEach(element =>{
 						// console.log(element)
-						str += "<p>"+element+": "+JSON.stringify(data[element]);
+						str += "<p>"+element+": "+unwrapData(data[element], 0);
 					});
 					$("#"+id).html(str);
 				}
