@@ -131,7 +131,7 @@
 
 		function unwrapData(data, indent) {
 			if (data== null || ['string', 'number', 'boolean'].indexOf(typeof(data)) >= 0){
-				return data;
+				return data == null ? "null" : data;
 			} else {
 				var str = "";
 				Object.keys(data).forEach(element => {
