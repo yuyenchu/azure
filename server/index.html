@@ -244,27 +244,27 @@
 
 		function drawChart(msg, title, bp){
 				var brokerprop = JSON.parse(bp);
-				// var chart = charts[title];
+				var chart = charts[title];
 				// console.log("bp"+bp);
 				// console.log("brokerprop"+brokerprop);
 				var count = 0
 				Object.keys(msg).forEach(element =>{
-					lineChart.data.datasets[count].data.push(msg[element]);
-					if(lineChart.data.datasets[count].data.length > MAX_PTS){
-						lineChart.data.datasets[count].data.shift();
+					chart.data.datasets[count].data.push(msg[element]);
+					if(chart.data.datasets[count].data.length > MAX_PTS){
+						chart.data.datasets[count].data.shift();
 					}
 					count ++;
 				});
-				lineChart.data.labels.push(brokerprop["EnqueuedTimeUtc"]);
-				if(lineChart.data.labels.length > MAX_PTS){
-					lineChart.data.labels.shift();
+				chart.data.labels.push(brokerprop["EnqueuedTimeUtc"]);
+				if(chart.data.labels.length > MAX_PTS){
+					chart.data.labels.shift();
 				}
 				// lineChart.update({
 				// 		duration: 800,
 				// 		easing: 'easeOutBounce'
 				// });
-				lineChart.options.title.text = title;
-				lineChart.update();
+				// lineChart.options.title.text = title;
+				chart.update();
 		}
 
 		var getQueue = function() {
