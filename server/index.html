@@ -76,7 +76,7 @@
 		function items(data){
 			Object.keys(data).forEach(element =>{
 				if (document.getElementById(element+"label") == undefined){
-					$("#devices").append(	'<p >'+element+':  <span class="badge badge-secondary" id = '+element+
+					$("#devices").append(	'<p>'+element+'<span id = '+element+
 																'label></span></p>');
 					$("#devices").append(	'<div class="input-group mb-3"><input type="text" class="form-control" placeholder="Method Name" id="m'+
 																element+'" name="fname"></div>'+
@@ -86,9 +86,13 @@
 																'<label id="r'+element+'"></label></pre><br><br>');
 				}
 				if(data[element] == "Disconnected"){
-					$("#"+element+"label").css('color', 'red');
+					// $("#"+element+"label").css('color', 'red');
+					$("#"+element+"label").removeClass("badge badge-success");
+    			$("#"+element+"label").addClass("badge badge-danger");
 				} else {
-					$("#"+element+"label").css('color', 'green');
+					// $("#"+element+"label").css('color', 'green');
+					$("#"+element+"label").removeClass("badge badge-danger");
+    			$("#"+element+"label").addClass("badge badge-success");
 				}
 				$("#"+element+"label").text(data[element]);
 				if (document.getElementById(element) == undefined){
