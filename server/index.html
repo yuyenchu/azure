@@ -299,6 +299,7 @@
 				},
 				complete: function () {
 					// Schedule the next
+					getQueue();
 					setTimeout(checkConn, 1000);
 				}
 			});
@@ -306,7 +307,7 @@
 
 		$('.carousel').carousel()
 		checkConn();
-		getQueue();
+		
 	</script>
 </body>
 </html>
