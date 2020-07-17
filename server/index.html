@@ -12,9 +12,8 @@
 			font-family: Tahoma, Verdana, Arial, sans-serif;
 		}
 		.content {
-			width: 45em;
-			margin: 0 auto;
-      margin-top: 50px;
+			margin-top: 50px;
+			max-width: 750px;
 		}
 		.canvas {
 			width: 100%;
@@ -39,7 +38,7 @@
 		<img class="d-block" width="36" height="36" viewBox="0 0 612 612" src="./logo.png" alt="logo"> 
 		<span class="navbar-brand mb-0 h1 text-white" style="margin-left:10px">Andrew's Azure</span>
 	</header>
-	<div class="container-fluid" style="max-width:650px">
+	<div class="container-fluid">
 		<h3 style="text-align:center">Registered Devices</h3>
 		<br>
 		<hr>
@@ -118,9 +117,9 @@
 																'<span class="m-2" id = '+element+
 																'label></span></p>');
 					$("#devices").append(	'<div class="input-group mb-3"><input type="text" class="form-control" placeholder="Method Name" id="m'+
-																element+'" name="fname"></div>'+
+																element+'" style="max-width: 75px"></div>'+
 																'<div class="input-group mb-3"><input type="text" class="form-control" placeholder="Payload" id="p'+
-																	element+'" name="lname"></div>'+
+																element+'" style="max-width: 75px"></div>'+
 																'<button type="button" class="btn btn-primary" onclick="invoke(\''+element+'\')">submit</button>'+
 																'<label id="r'+element+'"></label></pre><br><br>');
 				}
