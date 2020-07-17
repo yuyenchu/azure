@@ -56,7 +56,7 @@
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					console.log("data: "+data);
-					if (response.status == 200) {
+					if (data.status == 200) {
 						$("#r"+id).css('color', 'green');
 						$("#r"+id).html("&#10003; "+data.payload.Response);
 					} else {
