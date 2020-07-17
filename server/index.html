@@ -78,12 +78,12 @@
 				if (document.getElementById(element+"label") == undefined){
 					$("#devices").append(	'<p >'+element+':  <span id = '+element+
 																'label></span></p>');
-					$("#devices").append(	//'<pre><label for="mname">Method:</label>'+
-																'<input type="text" class="form-control" placeholder="Method Name" id="m'+element+'" name="fname">'+
-																// '<label for="payload">Payload:</label>'+
-																'<input type="text" class="form-control" placeholder="Payload" id="p'+element+'" name="lname">'+
+					$("#devices").append(	'<div class="input-group mb-3"><input type="text" class="form-control" placeholder="Method Name" id="m'+
+																element+'" name="fname"></div'>+
+																'<div class="input-group mb-3"><input type="text" class="form-control" placeholder="Payload" id="p'+
+																	element+'" name="lname"></div>'+
 																'<button onclick="invoke(\''+element+'\')">submit</button>'+
-																'<label id="r'+element+'"><label></pre><br>');
+																'<label id="r'+element+'"></label></pre><br>');
 				}
 				if(data[element] == "Disconnected"){
 					$("#"+element+"label").css('color', 'red');
@@ -93,7 +93,7 @@
 				$("#"+element+"label").text(data[element]);
 				if (document.getElementById(element) == undefined){
 					$("#devices").append('<div id='+element+' class="canvas" style="display: none"></div>');
-					$("#devices").append('<button onclick="toggle(\''+element+'\')">More Info</button><hr>');
+					$("#devices").append('<button type="button" class="btn btn-info" onclick="toggle(\''+element+'\')">More Info</button><hr>');
 				} 
 			});
 		}
