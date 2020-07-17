@@ -45,16 +45,16 @@
 		<br>
 		<hr>
 		<div id="devices"></div>
-		<canvas id="myChart" width="400" height="400"></canvas>
+		<!-- <canvas id="myChart" width="400" height="400"></canvas> -->
 
 		<div id="carouselExampleIndicators" class="carousel slide" data-interval="false">
-			<ol class="carousel-indicators">
-				<li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+			<ol id="indicator" class="carousel-indicators">
+				<!-- <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
 				<li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-				<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+				<li data-target="#carouselExampleIndicators" data-slide-to="2"></li> -->
 			</ol>
-			<div class="carousel-inner">
-				<div class="carousel-item active">
+			<div id="inner" class="carousel-inner">
+				<!-- <div class="carousel-item active">
 					<canvas id="charttest_device1" width="400" height="400"></canvas>
 				</div>
 				<div class="carousel-item">
@@ -62,7 +62,7 @@
 				</div>
 				<div class="carousel-item">
 					<canvas id="chartsimulate1" width="400" height="400"></canvas>
-				</div>
+				</div> -->
 			</div>
 			<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -114,17 +114,24 @@
 		}
 
 		function items(data){
+			var count = 0;
 			Object.keys(data).forEach(element =>{
 				if (document.getElementById(element+"label") == undefined){
 					$("#devices").append(	'<p class="p-3 mb-2 bg-light">'+element+
 																'<span class="m-2" id = '+element+
 																'label></span></p>');
-					$("#devices").append(	'<div class="input-group mb-3 mt-3"><input type="text" class="form-control" placeholder="Method Name" id="m'+
+					$("#devices").append(	'<div class="input-group mb-3 mt-3"><input type="text" class='+
+																'"form-control" placeholder="Method Name" id="m'+
 																element+'" style="max-width: 200px">'+
 																'<input type="text" class="form-control" placeholder="Payload" id="p'+
 																element+'" style="max-width: 175px">'+
-																'<button type="button" class="btn btn-primary ml-3" onclick="invoke(\''+element+'\')">submit</button>'+
+																'<button type="button" class="btn btn-primary ml-3" onclick="invoke(\''+
+																element+'\')">submit</button>'+
 																'<label id="r'+element+'" class="mt-1"></label></div>');
+					$("#indicator").append(	'<li data-target="#carouselExampleIndicators" data-slide-to="0"'+
+																	count==0?'class="active"':' '+'></li>');
+					$("#inner").append(	'<div class="carousel-item'+count==0?' active"':' '+
+															'"><canvas id="chart'+element+'" width="400" height="400"></canvas></div>')
 					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), {
 						type: 'line',
 						data: {	"labels": [],
@@ -159,6 +166,7 @@
 									}
 							}
 					});
+					count++;
 				}
 				if(data[element] == "Disconnected"){
 					// $("#"+element+"label").css('color', 'red');
@@ -207,40 +215,40 @@
 			}
 		}
 
-		var lineChart = new Chart(document.getElementById('myChart').getContext('2d'), {
-			type: 'line',
-			data: {	"labels": [],
-							"datasets":[{	"label":"Temperature",
-														"data":[],
-														"fill":false,
-														"borderColor":"rgb(255, 159, 0)",
-														"lineTension":0.1},
-													{	"label":"Humidity",
-														"data":[],
-														"fill":false,
-														"borderColor":"rgb(0, 59, 174)",
-														"lineTension":0.1},
-													{	"label":"Power level",
-														"data":[],
-														"fill":false,
-														"borderColor":"rgb(75, 192, 192)",
-														"lineTension":0.1}
-													]},
-			options: {
-            scales: {
-                yAxes : [{
-                    ticks : {
-                        max : 100,    
-                        min : 0
-                    }
-                }]
-						},
-						title: {
-								display: true,
-								text: 'Chart 1'
-						}
-        }
-		});
+		// var lineChart = new Chart(document.getElementById('myChart').getContext('2d'), {
+		// 	type: 'line',
+		// 	data: {	"labels": [],
+		// 					"datasets":[{	"label":"Temperature",
+		// 												"data":[],
+		// 												"fill":false,
+		// 												"borderColor":"rgb(255, 159, 0)",
+		// 												"lineTension":0.1},
+		// 											{	"label":"Humidity",
+		// 												"data":[],
+		// 												"fill":false,
+		// 												"borderColor":"rgb(0, 59, 174)",
+		// 												"lineTension":0.1},
+		// 											{	"label":"Power level",
+		// 												"data":[],
+		// 												"fill":false,
+		// 												"borderColor":"rgb(75, 192, 192)",
+		// 												"lineTension":0.1}
+		// 											]},
+		// 	options: {
+    //         scales: {
+    //             yAxes : [{
+    //                 ticks : {
+    //                     max : 100,    
+    //                     min : 0
+    //                 }
+    //             }]
+		// 				},
+		// 				title: {
+		// 						display: true,
+		// 						text: 'Chart 1'
+		// 				}
+    //     }
+		// });
 
 		function drawChart(msg, tl, bp){
 				var brokerprop = JSON.parse(bp);
