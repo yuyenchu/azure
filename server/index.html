@@ -117,11 +117,11 @@
 																'<span class="m-2" id = '+element+
 																'label></span></p>');
 					$("#devices").append(	'<div class="input-group mb-3"><input type="text" class="form-control" placeholder="Method Name" id="m'+
-																element+'" style="max-width: 75px"></div>'+
-																'<div class="input-group mb-3"><input type="text" class="form-control" placeholder="Payload" id="p'+
-																element+'" style="max-width: 75px"></div>'+
-																'<button type="button" class="btn btn-primary" onclick="invoke(\''+element+'\')">submit</button>'+
-																'<label id="r'+element+'"></label></pre><br><br>');
+																element+'" style="max-width: 200px">'+
+																'<input type="text" class="form-control" placeholder="Payload" id="p'+
+																element+'" style="max-width: 175px">'+
+																'<button type="button" class="btn btn-primary ml-3" onclick="invoke(\''+element+'\')">submit</button>'+
+																'<label id="r'+element+'" class="mt-1"></label></div><br><br>');
 				}
 				if(data[element] == "Disconnected"){
 					// $("#"+element+"label").css('color', 'red');
