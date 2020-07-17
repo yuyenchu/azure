@@ -237,9 +237,12 @@
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					// console.log("data: "+data);
-					drawChart(data.body,
-										data.header['iothub-connection-device-id'],
-										data.header['brokerproperties']);
+					if (request.status != 204){
+						drawChart(data.body,
+											data.header['iothub-connection-device-id'],
+											data.header['brokerproperties']);
+					}
+					
 					
 				},
 				complete: function () {
@@ -264,7 +267,7 @@
 				}
 			});
 		};
-		
+
 		$('.carousel').carousel()
 		checkConn();
 		getQueue();
