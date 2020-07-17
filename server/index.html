@@ -122,7 +122,7 @@
 					var str =''
 					Object.keys(data).forEach(element =>{
 						// console.log(element)
-						str += "<p>"+element+": "+unwrapData(data[element], 1);
+						str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapData(data[element], 1);
 					});
 					$("#"+id).html(str);
 				}
