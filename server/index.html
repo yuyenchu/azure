@@ -68,6 +68,7 @@
 										"rgb(254, 27, 28)","rgb(254, 255, 51)","rgb(178, 102, 255)",
 										"rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
 		var charts = {};
+		var initialized = false;
 
 		function toggle(id) {
 				var x = document.getElementById(id);
@@ -196,22 +197,6 @@
 				return str;
 			}
 		}
-
-		// [{	"label":"Temperature",
-		// 	"data":[],
-		// 	"fill":false,
-		// 	"borderColor":"rgb(255, 159, 0)",
-		// 	"lineTension":0.1},
-		// {	"label":"Humidity",
-		// 	"data":[],
-		// 	"fill":false,
-		// 	"borderColor":"rgb(0, 59, 174)",
-		// 	"lineTension":0.1},
-		// {	"label":"Power level",
-		// 	"data":[],
-		// 	"fill":false,
-		// 	"borderColor":"rgb(75, 192, 192)",
-		// 	"lineTension":0.1}]
 					
 		function insertData(chart, lb, dat) {
 			var found = false;
@@ -270,8 +255,6 @@
 											data.header['iothub-connection-device-id'],
 											data.header['brokerproperties']);
 					}
-					
-					
 				},
 				complete: function () {
 					// Schedule the next
@@ -291,7 +274,10 @@
 				},
 				complete: function () {
 					// Schedule the next
-					getQueue();
+					if (!initialized) {
+						getQueue();
+						initialized = true;
+					}
 					setTimeout(checkConn, 1000);
 				}
 			});
