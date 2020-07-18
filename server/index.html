@@ -37,7 +37,7 @@
 
 <body>
 	<header class="navbar bg-dark navbar-expand flex-column flex-md-row">
-		<img class="d-block" width="36" height="36" viewBox="0 0 612 612" src="./logo.png" alt="logo"> 
+		<img class="d-block" width="36" height="36" viewBox="0 0 612 612" src="./public/logo.png" alt="logo"> 
 		<span class="navbar-brand mb-0 h1 text-white" style="margin-left:10px">Andrew's Azure</span>
 	</header>
 	<div class="container-fluid content mb-3">
@@ -64,6 +64,9 @@
 	</div>
 	<script>
 		const MAX_PTS = 31;
+		const COLORS = ["rgb(255, 159, 0)","rgb(0, 59, 174)","rgb(75, 192, 192)",
+										"rgb(254, 27, 28)","rgb(254, 255, 51)","rgb(178, 102, 255)",
+										"rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
 		var charts = {};
 
 		function toggle(id) {
@@ -122,28 +125,20 @@
 					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), {
 						type: 'line',
 						data: {	"labels": [],
-										"datasets":[{	"label":"Temperature",
-																	"data":[],
-																	"fill":false,
-																	"borderColor":"rgb(255, 159, 0)",
-																	"lineTension":0.1},
-																{	"label":"Humidity",
-																	"data":[],
-																	"fill":false,
-																	"borderColor":"rgb(0, 59, 174)",
-																	"lineTension":0.1},
-																{	"label":"Power level",
-																	"data":[],
-																	"fill":false,
-																	"borderColor":"rgb(75, 192, 192)",
-																	"lineTension":0.1}
-																]},
+										"datasets":[]},
 						options: {
 									scales: {
 											yAxes : [{
 													ticks : {
 															max : 100,    
-															min : 0
+															min : 0,
+													}
+											}],
+											xAxes : [{
+													ticks : {
+														callback: function(tick, index, array) {
+																return (index % 3) ? "" : tick;
+														}
 													}
 											}]
 									},
@@ -202,40 +197,46 @@
 			}
 		}
 
-		// var lineChart = new Chart(document.getElementById('myChart').getContext('2d'), {
-		// 	type: 'line',
-		// 	data: {	"labels": [],
-		// 					"datasets":[{	"label":"Temperature",
-		// 												"data":[],
-		// 												"fill":false,
-		// 												"borderColor":"rgb(255, 159, 0)",
-		// 												"lineTension":0.1},
-		// 											{	"label":"Humidity",
-		// 												"data":[],
-		// 												"fill":false,
-		// 												"borderColor":"rgb(0, 59, 174)",
-		// 												"lineTension":0.1},
-		// 											{	"label":"Power level",
-		// 												"data":[],
-		// 												"fill":false,
-		// 												"borderColor":"rgb(75, 192, 192)",
-		// 												"lineTension":0.1}
-		// 											]},
-		// 	options: {
-    //         scales: {
-    //             yAxes : [{
-    //                 ticks : {
-    //                     max : 100,    
-    //                     min : 0
-    //                 }
-    //             }]
-		// 				},
-		// 				title: {
-		// 						display: true,
-		// 						text: 'Chart 1'
-		// 				}
-    //     }
-		// });
+		// [{	"label":"Temperature",
+		// 	"data":[],
+		// 	"fill":false,
+		// 	"borderColor":"rgb(255, 159, 0)",
+		// 	"lineTension":0.1},
+		// {	"label":"Humidity",
+		// 	"data":[],
+		// 	"fill":false,
+		// 	"borderColor":"rgb(0, 59, 174)",
+		// 	"lineTension":0.1},
+		// {	"label":"Power level",
+		// 	"data":[],
+		// 	"fill":false,
+		// 	"borderColor":"rgb(75, 192, 192)",
+		// 	"lineTension":0.1}]
+					
+		function insertData(chart, lb, dat) {
+			var found = false;
+
+			for (const [index, element] of chart.data.datasets.entries()) {
+				// console.log(element.label);
+				// console.log(lb)
+				if (element.label == lb) {
+					var found = true;
+					element.data.push(dat);
+					if(element.data.length > MAX_PTS){
+						element.data.shift();
+					}
+					break;
+				}
+			}
+			if (!found) {
+				chart.data.datasets.push(
+				{	"label":lb,
+					"data":[dat],
+					"fill":false,
+					"borderColor":COLORS[chart.data.datasets.length%COLORS.length],
+					"lineTension":0.1});
+			}
+		}
 
 		function drawChart(msg, tl, bp){
 				var brokerprop = JSON.parse(bp);
@@ -244,14 +245,10 @@
 				// console.log("bp"+bp);
 				// console.log("brokerprop"+brokerprop);
 				var count = 0
-				Object.keys(msg).forEach(element =>{
-					chart.data.datasets[count].data.push(msg[element]);
-					if(chart.data.datasets[count].data.length > MAX_PTS){
-						chart.data.datasets[count].data.shift();
-					}
-					count ++;
+				Object.keys(msg).forEach(element => {
+					insertData(chart, element, msg[element]);
 				});
-				chart.data.labels.push(brokerprop["EnqueuedTimeUtc"]);
+				chart.data.labels.push(brokerprop["EnqueuedTimeUtc"].split(" ")[4]);
 				if(chart.data.labels.length > MAX_PTS){
 					chart.data.labels.shift();
 				}
@@ -259,7 +256,6 @@
 				// 		duration: 800,
 				// 		easing: 'easeOutBounce'
 				// });
-				// lineChart.options.title.text = title;
 				chart.update();
 		}
 
