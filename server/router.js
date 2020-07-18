@@ -1,20 +1,13 @@
-var express = require('express');
-var router = express.Router();
+process.env['NODE_CONFIG_DIR'] = __dirname + '/config/';
+
 const request = require('request');
 const config = require('config');
+
 const hub = config.get('hub');
 const sb = config.get('serviceBus');
 
-// const hubHead = {
-// 	'User-Agent': 'request',
-// 	'Content-Type': 'application/json',
-// 	'Authorization': 'SharedAccessSignature sr=hub-test1.azure-devices.net&sig=ttX9fT38ugddM5g%2BISLKQaHL5Y2zrq5McsDzMVJ70yA%3D&se=1626159394&skn=iothubowner'
-// }
-
-// const sbHead = {
-// 	'Content-Type': 'application/json',
-// 	'Authorization': 'SharedAccessSignature sr=https%3A%2F%2Ftest-serbus1.servicebus.windows.net%2Ftest-queue1&sig=aMIhuiM3C5LSSyUYtDdja%2BFc3ZydlFEr/rUXzCY3d7o%3D&se=1626327881&skn=RootManageSharedAccessKey'
-// }
+var express = require('express');
+var router = express.Router();
  
 router.route('/')
 	.get(function (req, res) {
