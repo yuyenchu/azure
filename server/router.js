@@ -62,7 +62,8 @@ router.route('/twin/:id')
 router.route('/queue')
 	.get(function (req, res) {
 		const sbUrl = 'https://'+sb.name+'.servicebus.windows.net/'+sb.queueName+'/messages/head'
-		request.post({
+		// request.post({
+		request.delete({
 			url: sbUrl,
 			headers: sb.head
 		}, 	function(error, response, body) {

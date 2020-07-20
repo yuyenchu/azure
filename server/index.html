@@ -214,12 +214,13 @@
 				}
 			}
 			if (!found) {
-				chart.data.datasets.push(
-				{	"label":lb,
+				chart.data.datasets.push({
+					"label":lb,
 					"data":[dat],
 					"fill":false,
 					"borderColor":COLORS[chart.data.datasets.length%COLORS.length],
-					"lineTension":0.1});
+					"lineTension":0.1
+				});
 			}
 		}
 
