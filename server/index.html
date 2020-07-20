@@ -199,28 +199,29 @@
 		}
 					
 		function insertData(chart, lb, dat) {
-			var found = false;
-
-			for (const [index, element] of chart.data.datasets.entries()) {
-				// console.log(element.label);
-				// console.log(lb)
-				if (element.label == lb) {
-					var found = true;
-					element.data.push(dat);
-					if(element.data.length > MAX_PTS){
-						element.data.shift();
+			if (typeof(dat) == "boolean" || typeof(dat) == "number") {
+				var found = false;
+				for (const [index, element] of chart.data.datasets.entries()) {
+					// console.log(element.label);
+					// console.log(lb)
+					if (element.label == lb) {
+						var found = true;
+						element.data.push(dat);
+						if(element.data.length > MAX_PTS){
+							element.data.shift();
+						}
+						break;
 					}
-					break;
 				}
-			}
-			if (!found) {
-				chart.data.datasets.push({
-					"label":lb,
-					"data":[dat],
-					"fill":false,
-					"borderColor":COLORS[chart.data.datasets.length%COLORS.length],
-					"lineTension":0.1
-				});
+				if (!found) {
+					chart.data.datasets.push({
+						"label":lb,
+						"data":[dat],
+						"fill":false,
+						"borderColor":COLORS[chart.data.datasets.length%COLORS.length],
+						"lineTension":0.1
+					});
+				}
 			}
 		}
 
@@ -232,7 +233,7 @@
 				// console.log("brokerprop"+brokerprop);
 				var count = 0
 				Object.keys(msg).forEach(element => {
-					insertData(chart, element, msg[element]);
+					insertData(chart, element, JSON.parse(msg[element]));
 				});
 				chart.data.labels.push(brokerprop["EnqueuedTimeUtc"].split(" ")[4]);
 				if(chart.data.labels.length > MAX_PTS){
