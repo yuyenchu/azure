@@ -82,8 +82,8 @@
 
 		function invoke(id) {
 			$("#r"+id).html("");
-			var methodname = $("#m"+id).val();
-			var payload = $("#p"+id).val();
+			var methodname = $("#m"+id).val().trim();
+			var payload = $("#p"+id).val().trim();
 			$.ajax({
 				url: "/router/method/"+id+"/"+methodname+"/"+payload,
 				success: function (data, textStatus, request) {
