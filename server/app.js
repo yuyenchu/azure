@@ -11,6 +11,18 @@ app.use(bodyparser.json());
 app.use(express.static(__dirname));
 
 app.use('/router', router);
+
+app.get('/home', function(req, res) {
+    if (req.session.loggedin) {
+		res.render('index.html');
+	} else {
+		res.send('Please login to view this page!');
+	}
+});
+app.get('/', function(req, res) {
+	res.render('login.html');
+});
+
 app.post('/auth', function(req, res) {
 	var username = req.body.username;
 	var password = req.body.password;
@@ -34,16 +46,6 @@ app.post('/auth', function(req, res) {
 		res.send('Please enter Username and Password!');
 		res.end();
 	}
-});
-app.get('/home', function(req, res) {
-    if (req.session.loggedin) {
-		res.render('index.html');
-	} else {
-		res.send('Please login to view this page!');
-	}
-});
-app.get('/', function(req, res) {
-	res.render('login.html');
 });
 
 app.listen(3000, function () {
