@@ -225,9 +225,9 @@
 			}
 		}
 
-		function drawChart(msg, tl, bp){
-				var brokerprop = JSON.parse(bp);
-				var title = JSON.parse(tl);
+		function drawChart(msg, title, brokerprop){
+				// var brokerprop = JSON.parse(bp);
+				// var title = JSON.parse(tl);
 				var chart = charts[title];
 				// console.log("bp"+bp);
 				// console.log("brokerprop"+brokerprop);
@@ -253,11 +253,12 @@
 					// console.log("data type: "+typeof(data));
 					// console.log("data: "+data);
 					if (request.status != 204){
+						var bp = JSON.parse(data.header['brokerproperties']);
 						drawChart(data.body,
-											data.header['iothub-connection-device-id'],
-											data.header['brokerproperties']);
+											JSON.parse(data.header['iothub-connection-device-id']),
+											bp);
 						$.ajax({
-							url: "/router/queue/"+data.header['brokerproperties']['MessageId']+"/"+data.header['brokerproperties']['LockToken'],
+							url: "/router/queue/"+bp['MessageId']+"/"+bp['LockToken'],
 							type: 'DELETE',
 							success: function (data, textStatus, request) {
 								console.log("message processed")
