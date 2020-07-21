@@ -256,6 +256,15 @@
 						drawChart(data.body,
 											data.header['iothub-connection-device-id'],
 											data.header['brokerproperties']);
+						$.ajax({
+							url: "/router/queue",
+							type: 'DELETE',
+							success: function (data, textStatus, request) {
+								console.log("message processed")
+							}
+						}).fail(function (jqXHR, textStatus, errorThrown) { 
+							console.log("error "+textStatus+" "+errorThrown)
+						});
 					}
 				},
 				complete: function () {

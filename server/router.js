@@ -62,13 +62,13 @@ router.route('/twin/:id')
 router.route('/queue')
 	.get(function (req, res) {
 		const sbUrl = 'https://'+sb.name+'.servicebus.windows.net/'+sb.queueName+'/messages/head'
-		// request.post({
-		request.delete({
+		request.post({
+		// request.delete({
 			url: sbUrl,
 			headers: sb.head
 		}, 	function(error, response, body) {
 					// console.log(response.headers);
-					console.log("queue "+response.statusCode);
+					console.log("queue peek "+response.statusCode);
 					if (response.statusCode<204) {
 						res.status(response.statusCode).json({
 							header: response.headers,
@@ -77,7 +77,17 @@ router.route('/queue')
 					} else {
 						res.status(response.statusCode).send("Reached end of queue")
 					}
-					
+		});
+	})
+	.delete(function (req, res) {
+		const sbUrl = 'https://'+sb.name+'.servicebus.windows.net/'+sb.queueName+'/messages/'+req.params.id+'/'+req.params.token
+		request.delete({
+		// request.delete({
+			url: sbUrl,
+			headers: sb.head
+		}, 	function(error, response, body) {
+					// console.log(response.headers);
+					console.log("queue delete"+response.statusCode);
 		});
 	});
 module.exports = router;
