@@ -257,7 +257,7 @@
 											data.header['iothub-connection-device-id'],
 											data.header['brokerproperties']);
 						$.ajax({
-							url: "/router/queue"+data.header['brokerproperties']["MessageId"]+data.header['brokerproperties']["LockToken"],
+							url: "/router/queue"+data.header['brokerproperties']['MessageId']+data.header['brokerproperties']['LockToken'],
 							type: 'DELETE',
 							success: function (data, textStatus, request) {
 								console.log("message processed")
