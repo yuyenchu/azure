@@ -226,10 +226,7 @@
 		}
 
 		function drawChart(msg, title, brokerprop){
-				// var brokerprop = JSON.parse(bp);
-				// var title = JSON.parse(tl);
 				var chart = charts[title];
-				// console.log("bp"+bp);
 				// console.log("brokerprop"+brokerprop);
 				var count = 0
 				Object.keys(msg).forEach(element => {
@@ -239,24 +236,27 @@
 				if(chart.data.labels.length > MAX_PTS){
 					chart.data.labels.shift();
 				}
-				// lineChart.update({
+				// chart.update({
 				// 		duration: 800,
 				// 		easing: 'easeOutBounce'
 				// });
 				chart.update();
 		}
 
+		// try peek and lock message from queue
 		var getQueue = function() {
 			$.ajax({
 				url: "/router/queue",
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					// console.log("data: "+data);
+					// draw data if not reached end of queue
 					if (request.status != 204){
 						var bp = JSON.parse(data.header['brokerproperties']);
 						drawChart(data.body,
 											JSON.parse(data.header['iothub-connection-device-id']),
 											bp);
+						// delete the message after successfully processed
 						$.ajax({
 							url: "/router/queue/"+bp['MessageId']+"/"+bp['LockToken'],
 							type: 'DELETE',
@@ -275,6 +275,8 @@
 			});
 		};
 
+		// get registered device list and 
+		// add html elements for each device
 		var checkConn = function() {
 			$.ajax({
 				url: "/router/devices",
@@ -285,7 +287,8 @@
 					items(JSON.parse(JSON.stringify(data)))
 				},
 				complete: function () {
-					// Schedule the next
+					// Schedule the nex, make sure getQueue happens after
+					// page have been initialized
 					if (!initialized) {
 						getQueue();
 						initialized = true;
