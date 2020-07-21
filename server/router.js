@@ -59,7 +59,7 @@ router.route('/twin/:id')
 		});
 	});
 
-router.route('/queue')
+router.route('/queue/:id/:token')
 	.get(function (req, res) {
 		const sbUrl = 'https://'+sb.name+'.servicebus.windows.net/'+sb.queueName+'/messages/head'
 		request.post({
