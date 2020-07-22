@@ -19,8 +19,10 @@ app.use(session({
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
+// routing for CORS issue
 app.use('/router', router);
 
+// decide which page to go
 app.get('/', function(req, res) {
     if (req.session.loggedin) {
         res.redirect('/home');
@@ -28,7 +30,7 @@ app.get('/', function(req, res) {
         res.redirect('/login');
 	}
 });
-
+// home page
 app.get('/home', function(req, res) {
     if (req.session.loggedin) {
         res.render('pages/index',{username:"andrew"});
@@ -36,13 +38,15 @@ app.get('/home', function(req, res) {
         res.send('Please login to view this page!');
 	}
 });
+// login page
 app.get('/login', function(req, res) {
     res.render('pages/login',{username:""});
 });
 
+// response to login submit
 app.post('/auth', function(req, res) {
-	var username = req.body.username;
-	var password = req.body.password;
+	var username = req.body.username.trim();
+	var password = req.body.password.trim();
 	if (username && password) {
 		// connection.query('SELECT * FROM accounts WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
 		// 	if (results.length > 0) {
