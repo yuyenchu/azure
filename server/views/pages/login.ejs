@@ -1,0 +1,23 @@
+<!-- views/pages/login.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body>
+  <header>
+    <%- include('../partials/header') %>
+  </header>
+  <div class="container-fluid login-form">
+    <h1>Login Form</h1>
+    <form action="auth" method="POST">
+      <div class="form-group">
+          <input type="text" class="form-control mb-3" name="username" placeholder="Username" required="">
+          <input type="password" class="form-control mb-3" name="password" placeholder="Password" required="">
+          <button type="submit" class="btn btn-primary h-center">Login</button>
+      </div>
+    </form>
+  </div>
+
+</body></html>

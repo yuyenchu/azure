@@ -1,26 +1,43 @@
 var express = require('express');
-var cors = require('cors');
+var session = require('express-session');
+// var cors = require('cors');
+var path = require('path');
 var router = require('./router');
 var bodyparser = require('body-parser');
 var app = express();
 
 // console.log(process.env);
+app.set('views', path.join(__dirname, '/views'))
+app.set('view engine', 'ejs');
 
+app.use(express.static(path.join(__dirname, '/public')));
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
-app.use(express.static(__dirname));
 
 app.use('/router', router);
 
-app.get('/home', function(req, res) {
+app.get('/', function(req, res) {
     if (req.session.loggedin) {
-		res.render('index.html');
+        res.redirect('/home');
 	} else {
-		res.send('Please login to view this page!');
+        res.redirect('/login');
 	}
 });
-app.get('/', function(req, res) {
-	res.render('login.html');
+
+app.get('/home', function(req, res) {
+    if (req.session.loggedin) {
+        res.render('pages/index',{username:"andrew"});
+	} else {
+        res.send('Please login to view this page!');
+	}
+});
+app.get('/login', function(req, res) {
+    res.render('pages/login',{username:""});
 });
 
 app.post('/auth', function(req, res) {
@@ -40,7 +57,7 @@ app.post('/auth', function(req, res) {
         if (username=="andrew" && password=="andrew") {
             req.session.loggedin = true;
             req.session.username = username;
-            req.redirect('/home');
+            res.redirect('/home');
         }
 	} else {
 		res.send('Please enter Username and Password!');

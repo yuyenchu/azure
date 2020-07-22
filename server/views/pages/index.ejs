@@ -1,0 +1,281 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include('../partials/head') %>
+</head>
+
+<body>
+	<header>
+    <%- include('../partials/header') %>
+  </header>
+	<div class="container-fluid content mb-3">
+		<h3 style="text-align:center"><b>Registered Devices</b></h3>
+		<br>
+		<hr>
+		<div id="devices"></div>
+
+		<div id="carousel" class="carousel slide p-5 border" data-interval="false">
+			<ol id="indicator" class="carousel-indicators bg-dark">
+			</ol>
+			<div id="inner" class="carousel-inner">
+			</div>
+			<a class="carousel-control-prev mr-5" href="#carousel" role="button" data-slide="prev">
+				<span class="carousel-control-prev-icon mr-5 bg-dark rounded" aria-hidden="true"></span>
+				<span class="sr-only mr-5">Previous</span>
+			</a>
+			<a class="carousel-control-next ml-5" href="#carousel" role="button" data-slide="next">
+				<span class="carousel-control-next-icon ml-5 bg-dark rounded" aria-hidden="true"></span>
+				<span class="sr-only ml-5">Next</span>
+			</a>
+		</div>
+
+	</div>
+	<script>
+		const MAX_PTS = 31;
+		const COLORS = ["rgb(255, 159, 0)","rgb(0, 59, 174)","rgb(75, 192, 192)",
+										"rgb(254, 27, 28)","rgb(254, 255, 51)","rgb(178, 102, 255)",
+										"rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
+		var charts = {};
+		var initialized = false;
+
+		function toggle(id) {
+				var x = document.getElementById(id);
+				if (x.style.display === "none") {
+						twinInfo(id)
+						x.style.display = "block";
+				} else {
+						x.style.display = "none";
+				}
+		}
+
+		function invoke(id) {
+			$("#r"+id).html("");
+			var methodname = $("#m"+id).val().trim();
+			var payload = $("#p"+id).val().trim();
+			$.ajax({
+				url: "/router/method/"+id+"/"+methodname+"/"+payload,
+				success: function (data, textStatus, request) {
+					// console.log("data type: "+typeof(data));
+					console.log("data: "+data);
+					if (data.status == 200) {
+						$("#r"+id).css('color', 'green');
+						$("#r"+id).html("&#10003; "+data.payload.Response);
+					} else {
+						$("#r"+id).css('color', 'red');
+						$("#r"+id).html("&#10007; "+data.status+data.payload.Response);
+					}
+					
+				}
+			}).fail(function (jqXHR, textStatus, errorThrown) { 
+				$("#r"+id).css('color', 'red');
+				$("#r"+id).html("&#10007; "+jqXHR.status+jqXHR.statusText);
+			});
+		}
+
+		function items(data){
+			var count = 0;
+			Object.keys(data).forEach(element =>{
+				if (document.getElementById(element+"label") == undefined){
+					// device name and conn status
+					$("#devices").append(	'<p class="p-3 mb-2 bg-light">'+element+
+																'<span class="m-2" id = "'+element+
+																'label"></span></p>');
+					// input group for invoke direcjt method
+					$("#devices").append(	'<div class="input-group mb-3 mt-3"><input type="text" class='+
+																'"form-control" placeholder="Method Name" id="m'+
+																element+'" style="max-width: 200px">'+
+																'<input type="text" class="form-control" placeholder="Payload" id="p'+
+																element+'" style="max-width: 175px">'+
+																'<button type="button" class="btn btn-primary ml-3" onclick="invoke(\''+
+																element+'\')">submit</button>'+
+																'<label id="r'+element+'" class="mt-1 ml-3"></label></div>');
+					// insert carousel indicator
+					$("#indicator").append(	'<li data-target="#carousel" data-slide-to="0"'+
+																	(count==0?'class="active"':' ')+'></li>');
+					// carousel items (chart)
+					$("#inner").append(	'<div class="carousel-item'+(count==0?' active"':' ')+
+															'"><canvas id="chart'+element+'" width="400" height="400"></canvas></div>')
+					// labeling charts
+					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), {
+						type: 'line',
+						data: {	"labels": [],
+										"datasets":[]},
+						options: {
+									scales: {
+											yAxes : [{
+													ticks : {
+															max : 100,    
+															min : 0,
+													}
+											}],
+											xAxes : [{
+													ticks : {
+														callback: function(tick, index, array) {
+																return (index % 3) ? "" : tick;
+														}
+													}
+											}]
+									},
+									title: {
+											display: true,
+											text: element
+									}
+							}
+					});
+					count++;
+				}
+				// connstatus badge color and text
+				if(data[element] == "Disconnected"){
+					$("#"+element+"label").removeClass("badge badge-success");
+    			$("#"+element+"label").addClass("badge badge-danger");
+				} else {
+					$("#"+element+"label").removeClass("badge badge-danger");
+    			$("#"+element+"label").addClass("badge badge-success");
+				}
+				$("#"+element+"label").text(data[element]);
+				// space for twin info
+				if (document.getElementById(element) == undefined){
+					$("#devices").append('<div id='+element+' class="canvas" style="display: none"></div>');
+					$("#devices").append('<button type="button" class="btn btn-info" onclick="toggle(\''+element+'\')">More Info</button><hr>');
+				} 
+			});
+		}
+
+		function twinInfo(id){
+			$.ajax({
+				url: "/router/twin/"+id,
+				success: function (data, textStatus, request) {
+					// console.log("data type: "+typeof(data));
+					// console.log("data: "+data);
+					var str =''
+					Object.keys(data).forEach(element =>{
+						// console.log(element)
+						str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapData(data[element], 1);
+					});
+					$("#"+id).html(str);
+				}
+			});
+		}
+
+		function unwrapData(data, indent) {
+			if (data== null || ['string', 'number', 'boolean'].indexOf(typeof(data)) >= 0){
+				return data == null ? "null" : data;
+			} else {
+				var str = "";
+				Object.keys(data).forEach(element => {
+					var ele = typeof(element)=="string" ? element.replace("$","") : element;
+					str += "</p><p style=\"text-indent:"+(indent*20)+"px;margin-top:-15px;\">"+
+								ele+": "+unwrapData(data[element], indent+1)+"</p>";
+				});
+				return str;
+			}
+		}
+					
+		function insertData(chart, lb, dat) {
+			if (typeof(dat) == "boolean" || typeof(dat) == "number") {
+				var found = false;
+				for (const [index, element] of chart.data.datasets.entries()) {
+					// console.log(element.label);
+					// console.log(lb)
+					if (element.label == lb) {
+						var found = true;
+						element.data.push(dat);
+						if(element.data.length > MAX_PTS){
+							element.data.shift();
+						}
+						break;
+					}
+				}
+				if (!found) {
+					chart.data.datasets.push({
+						"label":lb,
+						"data":[dat],
+						"fill":false,
+						"borderColor":COLORS[chart.data.datasets.length%COLORS.length],
+						"lineTension":0.1
+					});
+				}
+			}
+		}
+
+		function drawChart(msg, title, brokerprop){
+				var chart = charts[title];
+				// console.log("brokerprop"+brokerprop);
+				var count = 0
+				Object.keys(msg).forEach(element => {
+					insertData(chart, element, JSON.parse(msg[element]));
+				});
+				chart.data.labels.push(brokerprop["EnqueuedTimeUtc"].split(" ")[4]);
+				if(chart.data.labels.length > MAX_PTS){
+					chart.data.labels.shift();
+				}
+				// chart.update({
+				// 		duration: 800,
+				// 		easing: 'easeOutBounce'
+				// });
+				chart.update();
+		}
+
+		// try peek and lock message from queue
+		var getQueue = function() {
+			$.ajax({
+				url: "/router/queue",
+				success: function (data, textStatus, request) {
+					// console.log("data type: "+typeof(data));
+					// console.log("data: "+data);
+					// draw data if not reached end of queue
+					if (request.status != 204){
+						var bp = JSON.parse(data.header['brokerproperties']);
+						drawChart(data.body,
+											JSON.parse(data.header['iothub-connection-device-id']),
+											bp);
+						// delete the message after successfully processed
+						$.ajax({
+							url: "/router/queue/"+bp['MessageId']+"/"+bp['LockToken'],
+							type: 'DELETE',
+							success: function (data, textStatus, request) {
+								console.log("message processed")
+							}
+						}).fail(function (jqXHR, textStatus, errorThrown) { 
+							console.log("error "+textStatus+" "+errorThrown)
+						});
+					}
+				},
+				complete: function () {
+					// Schedule the next
+					setTimeout(getQueue, 1000);
+				}
+			});
+		};
+
+		// get registered device list and 
+		// add html elements for each device
+		var checkConn = function() {
+			$.ajax({
+				url: "/router/devices",
+				success: function (data) {
+					// console.log("data type: "+typeof(data));
+					// console.log("data: "+data);
+					// console.log("stringify data: "+JSON.stringify(data));
+					items(JSON.parse(JSON.stringify(data)))
+				},
+				complete: function () {
+					// Schedule the nex, make sure getQueue happens after
+					// page have been initialized
+					if (!initialized) {
+						getQueue();
+						initialized = true;
+					}
+					setTimeout(checkConn, 1000);
+				}
+			});
+		};
+
+		$('.carousel').carousel()
+		checkConn();
+		
+	</script>
+</body>
+</html>
