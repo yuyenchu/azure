@@ -40,7 +40,7 @@ app.get('/home', function(req, res) {
 });
 // login page
 app.get('/login', function(req, res) {
-    res.render('pages/login',{username:""});
+    res.render('pages/login',{username:"You haven't logged in"});
 });
 
 // response to login submit

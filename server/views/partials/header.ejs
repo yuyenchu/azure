@@ -5,9 +5,16 @@
     <img class="d-inline-block" width="36" height="36" viewbox="0 0 612 612" src="logo.png" alt="logo"> 
     Andrew's Azure
   </a>
-  <p class="my-sm-0 text-white" id="username">
-    <%= username %>
-  </p>
+  <div class="dropdown" >
+    <a class="my-sm-0 nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <img class="d-inline-block" width="36" height="36" viewbox="0 0 612 612" src="user.png" alt="logo"> 
+    </a>
+    <div class="dropdown-menu mt-2 dropdown-menu-right" aria-labelledby="navbarDropdown">
+      <p class="dropdown-item" id="username"><%= username %></p>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="../login">Log out</a>
+    </div>
+  </div>
 </nav>
 
 <!-- <header class="navbar bg-dark navbar-expand flex-column flex-md-row">
