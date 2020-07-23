@@ -200,16 +200,22 @@
 			}
 		}
 
+		// draw a individual chrat based on id
+		// only update if timestamp is newer
 		function drawChart(msg, title, brokerprop){
 				var chart = charts[title];
+				var labels = chart.data.labels;
+				var timestamp = brokerprop["EnqueuedTimeUtc"].split(" ")[4];
 				// console.log("brokerprop"+brokerprop);
-				var count = 0
-				Object.keys(msg).forEach(element => {
-					insertData(chart, element, JSON.parse(msg[element]));
-				});
-				chart.data.labels.push(brokerprop["EnqueuedTimeUtc"].split(" ")[4]);
-				if(chart.data.labels.length > MAX_PTS){
-					chart.data.labels.shift();
+				console.log(timestamp+" "+labels[labels.length - 1]);
+				if (!labels[labels.length - 1] || timestamp > labels[labels.length - 1]) {
+					Object.keys(msg).forEach(element => {
+						insertData(chart, element, JSON.parse(msg[element]));
+					});
+					labels.push(timestamp);
+					if(labels.length > MAX_PTS){
+						labels.shift();
+					}
 				}
 				// chart.update({
 				// 		duration: 800,
@@ -250,6 +256,31 @@
 			});
 		};
 
+		// get telemetry data from eventhub
+		var getTele = function() {
+			$.ajax({
+				url: "/router/message/"+$("#username").text(),
+				success: function (msg, textStatus, request) {
+					// console.log("data type: "+typeof(data));
+					// console.log("data: "+data);
+					// draw data if not reached end of queue
+					if (request.status != 204){
+						msg.forEach(data => {
+							var bp = data.header['brokerproperties'];
+							drawChart(data.body,
+												data.header['iothub-connection-device-id'],
+												bp);
+
+						});
+					}
+				},
+				complete: function () {
+					// Schedule the next
+					setTimeout(getTele, 1000);
+				}
+			});
+		};
+
 		// get registered device list of user and 
 		// add html elements for each device
 		var checkConn = function() {
@@ -265,7 +296,8 @@
 					// Schedule the nex, make sure getQueue happens after
 					// page have been initialized
 					if (!initialized) {
-						getQueue();
+						// getQueue();
+						getTele();
 						initialized = true;
 					}
 					setTimeout(checkConn, 1000);

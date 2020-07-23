@@ -3,13 +3,37 @@ process.env['NODE_CONFIG_DIR'] = __dirname + '/config/';
 const request = require('request');
 const config = require('config');
 const users = require('./config/user.json');
+const { EventHubConsumerClient } = require("@azure/event-hubs");
 
 const hub = config.get('hub');
 const sb = config.get('serviceBus');
+const eh = config.get('eventhub');
 
 var express = require('express');
 var router = express.Router();
- 
+
+var teleHolder = {};
+const consumerClient = new EventHubConsumerClient("$Default", eh["connectionstr"]);
+console.log("connected")
+const subscription = consumerClient.subscribe({
+	processEvents: async (events, context) => {
+		for (const event of events) {
+			// console.log(`Received event: '${event.body}' from partition: '${context.partitionId}' and consumer group: '${context.consumerGroup}'`);
+			// console.log(typeof(event.body));
+			// console.log(event.body);
+			// console.log(event.properties);
+			// console.log(event.systemProperties)
+			dateObj = new Date(event.systemProperties["iothub-enqueuedtime"]); 
+			utcString = dateObj.toUTCString();
+			teleHolder[event.systemProperties['iothub-connection-device-id']]={"time": utcString,
+																																				"body": event.body};
+		}
+	},
+	processError: async (err, context) => {
+		console.log(`Error : ${err}`);
+	}
+});
+
 router.route('/')
 	.get(function (req, res) {
 		console.log(JSON.stringify(hub));
@@ -98,4 +122,22 @@ router.route('/queue/:id?/:token?')
 					console.log("queue delete"+response.statusCode);
 		});
 	});
+
+router.route('/message/:id')
+	.get(function (req, res) {
+		result=[]
+		if (req.params.id && users[req.params.id]) {
+			users[req.params.id]["devices"].forEach(element => {
+				if (teleHolder[element]) {
+					result.push({
+						header: {"iothub-connection-device-id": element,
+											"brokerproperties": {"EnqueuedTimeUtc": teleHolder[element]["time"]}},
+						body: teleHolder[element]["body"]
+					})
+				}
+			});
+		}
+		res.json(result);
+	});
+
 module.exports = router;

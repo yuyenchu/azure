@@ -14,5 +14,9 @@
       "Authorization": "SharedAccessSignature sr=https%3A%2F%2Ftest-serbus1.servicebus.windows.net%2Ftest-queue1&sig=aMIhuiM3C5LSSyUYtDdja%2BFc3ZydlFEr/rUXzCY3d7o%3D&se=1626327881&skn=RootManageSharedAccessKey"
     },
     "queueName": "test-queue1"
+  },
+  "eventhub": {
+    "name": "iothub-ehub-hub-test1-3780350-0bfd74d500",
+    "connectionstr": "Endpoint=sb://ihsuprodblres095dednamespace.servicebus.windows.net/;SharedAccessKeyName=service;SharedAccessKey=aOQRCy8GcrQokjuJjAb7PFYc9dj9SjqPnlH1OMAzYVQ=;EntityPath=iothub-ehub-hub-test1-3780350-0bfd74d500"
   }
 }

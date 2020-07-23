@@ -6,7 +6,7 @@
 		"test": "echo \"Error: no test specified\" &&exit 1"
 	},
 	"dependencies": {
-		"@azure/event-hubs": "^5.0.0",
+		"@azure/event-hubs": "^5.2.2",
 		"@azure/service-bus": "^1.1.7",
 		"body-parser": "^1.19.0",
 		"chart.js": "^2.9.3",
