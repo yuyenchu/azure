@@ -2,6 +2,7 @@ process.env['NODE_CONFIG_DIR'] = __dirname + '/config/';
 
 const request = require('request');
 const config = require('config');
+const users = require('./config/user.json');
 
 const hub = config.get('hub');
 const sb = config.get('serviceBus');
@@ -15,17 +16,24 @@ router.route('/')
 		res.send("Connection success");
 	});
 
-router.route('/devices')
+router.route('/devices/:id')
 	.get(function (req, res) {
 		const deviceUrl = 'https://'+hub.name+'.azure-devices.net/devices?api-version=2018-06-30'
 		request.get({
 			url: deviceUrl,
 			headers: hub.head
 		}, 	function(error,response,body){
-					console.log("devices "+response.statusCode);
+					console.log("devices "+response.statusCode+" for "+req.params.id);
 					var r={};
 					var b = JSON.parse(body);
-					b.forEach(element => r[element["deviceId"]]=element["connectionState"]);
+					// b.forEach(element => r[element["deviceId"]]=element["connectionState"]);
+					if (req.params.id && users[req.params.id]) {
+						b.forEach(element => {
+							if (users[req.params.id].devices.includes(element["deviceId"])) {
+								r[element["deviceId"]]=element["connectionState"]
+							}
+						});
+					}
 					res.status(response.statusCode).send(r);
 		});
 	});

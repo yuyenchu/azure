@@ -1,0 +1,14 @@
+{
+  "root": {
+    "password": "root",
+    "devices" : ["test-device1","simulate1", "simulate2"]
+  },
+  "user1": {
+    "password": "user1",
+    "devices" : ["simulate1"]
+  },
+  "user2": {
+    "password": "user2",
+    "devices" : ["simulate2"]
+  }
+}

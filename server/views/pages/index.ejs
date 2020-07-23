@@ -250,11 +250,11 @@
 			});
 		};
 
-		// get registered device list and 
+		// get registered device list of user and 
 		// add html elements for each device
 		var checkConn = function() {
 			$.ajax({
-				url: "/router/devices",
+				url: "/router/devices/"+$("#username").text(),
 				success: function (data) {
 					// console.log("data type: "+typeof(data));
 					// console.log("data: "+data);

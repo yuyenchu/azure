@@ -5,7 +5,10 @@ var path = require('path');
 var router = require('./router');
 var bodyparser = require('body-parser');
 var app = express();
+const users = require('./config/user.json');
 
+// console.log(users["root"])
+// console.log(users["root"].password)
 // console.log(process.env);
 app.set('views', path.join(__dirname, '/views'))
 app.set('view engine', 'ejs');
@@ -33,14 +36,14 @@ app.get('/', function(req, res) {
 // home page
 app.get('/home', function(req, res) {
     if (req.session.loggedin) {
-        res.render('pages/index',{username:"andrew"});
+        res.render('pages/index',{username:req.session.username, disable:""});
 	} else {
         res.send('Please login to view this page!');
 	}
 });
 // login page
 app.get('/login', function(req, res) {
-    res.render('pages/login',{username:"You haven't logged in"});
+    res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:""});
 });
 
 // response to login submit
@@ -58,13 +61,20 @@ app.post('/auth', function(req, res) {
 		// 	}			
 		// 	response.end();
         // });
-        if (username=="andrew" && password=="andrew") {
+        // console.log(username==users[username])
+        // console.log(password==users[username].password)
+        if (users[username] && password==users[username].password) {
             req.session.loggedin = true;
             req.session.username = username;
             res.redirect('/home');
-        }
+        } else {
+            res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
+            // res.send('Incorrect Username and/or Password!');
+        }			
+        res.end();
 	} else {
-		res.send('Please enter Username and Password!');
+        res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Please enter Username and Password!"});
+		// res.send('Please enter Username and Password!');
 		res.end();
 	}
 });
