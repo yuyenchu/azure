@@ -9,6 +9,7 @@ var io = require('socket.io')(server);
 
 const request = require('request');
 const { EventHubConsumerClient } = require("@azure/event-hubs");
+const { Registry } = require('azure-iothub');
 const config = require('config');
 const eh = config.get('eventhub');
 const hub = config.get('hub');
@@ -61,11 +62,35 @@ getDevices();
 io.on('connection', function(socket) {
     console.log('a user connected');
     Object.keys(devices).forEach(element => {
-        // toSend={};
-        // toSend[element]=devices[element];
         io.emit('device', devices);
+        toSend={};
+        toSend[element] = twins[element];
+        io.emit('twin', toSend);
     });
 });
+
+var twins = {}
+const registry = Registry.fromConnectionString(hub.connectionstr);
+function getTwins() {
+    Object.keys(devices).forEach(element => {
+        registry.getTwin(element, function(err, twin){
+            if (err) {
+                console.error(err.constructor.name + ': ' + err.message);
+            } else {
+                if (!twins[element] || JSON.stringify(twins[element]) != JSON.stringify(twin)) {
+                    console.log("twin "+element);
+                    twins[element] = twin;
+                    toSend={};
+                    toSend[element] = twin;
+                    io.emit('twin', toSend);
+                }
+            }
+        });
+    });
+    setTimeout(getTwins, 1000);
+}
+getTwins();
+
 // console.log(users["root"])
 // console.log(users["root"].password)
 // console.log(process.env);

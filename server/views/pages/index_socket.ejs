@@ -44,7 +44,6 @@
 		function toggle(id) {
 				var x = document.getElementById(id);
 				if (x.style.display === "none") {
-						twinInfo(id)
 						x.style.display = "block";
 				} else {
 						x.style.display = "none";
@@ -139,29 +138,11 @@
 					$("#"+element+"label").addClass("badge badge-success");
 					$("#"+element+"label").text(data[element]["state"]);
 				}
-				
-
 				// space for twin info
 				if (document.getElementById(element) == undefined){
 					$("#devices").append('<div id='+element+' class="canvas" style="display: none"></div>');
 					$("#devices").append('<button type="button" class="btn btn-info" onclick="toggle(\''+element+'\')">More Info</button><hr>');
 				} 
-			});
-		}
-
-		function twinInfo(id){
-			$.ajax({
-				url: "/router/twin/"+id,
-				success: function (data, textStatus, request) {
-					// console.log("data type: "+typeof(data));
-					// console.log("data: "+data);
-					var str =''
-					Object.keys(data).forEach(element =>{
-						// console.log(element)
-						str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapData(data[element], 1);
-					});
-					$("#"+id).html(str);
-				}
 			});
 		}
 
@@ -246,6 +227,18 @@
 			console.log("receive device");
 			items(data);
 			initialized = true;
+		});
+
+		socket.on('twin', function(data){
+			console.log("receive twin");
+			id = Object.keys(data)[0];
+			data = data[id];
+			var str ='';
+			Object.keys(data).forEach(element =>{
+				// console.log(element)
+				str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapData(data[element], 1);
+			});
+			$("#"+id).html(str);
 		});
 
 		$('.carousel').carousel();
