@@ -54,11 +54,11 @@ router.route('/devices/:id')
 					if (req.params.id && users[req.params.id]) {
 						b.forEach(element => {
 							if (users[req.params.id].devices.includes(element["deviceId"])) {
-								r[element["deviceId"]]=element["connectionState"]
+								r[element["deviceId"]]={"state":element["connectionState"], "lastActive":element["lastActivityTime"]}
 							}
 						});
 					}
-					res.status(response.statusCode).send(r);
+					res.status(response.statusCode).json(r);
 		});
 	});
 

@@ -14,6 +14,7 @@
 		<h3 style="text-align:center"><b>Registered Devices</b></h3>
 		<br>
 		<hr>
+		<ul id="messages"></ul>
 		<div id="devices"></div>
 
 		<div id="carousel" class="carousel slide p-5 border" data-interval="false">
@@ -39,7 +40,7 @@
 										"rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
 		var charts = {};
 		var initialized = false;
-
+		
 		function toggle(id) {
 				var x = document.getElementById(id);
 				if (x.style.display === "none") {
@@ -77,6 +78,7 @@
 		function items(data){
 			var count = 0;
 			Object.keys(data).forEach(element =>{
+				console.log(count);
 				if (document.getElementById(element+"label") == undefined){
 					// device name and conn status
 					$("#devices").append(	'<p class="p-3 mb-2 bg-light">'+element+
@@ -206,10 +208,13 @@
 
 		// draw a individual chrat based on id
 		// only update if timestamp is newer
-		function drawChart(msg, title, brokerprop){
+		// title = device id
+		// time = full time stamp
+		// msg = data to plot
+		function drawChart(msg, title, time){
 				var chart = charts[title];
 				var labels = chart.data.labels;
-				var timestamp = brokerprop["EnqueuedTimeUtc"].split(" ")[4];
+				var timestamp = time.split(" ")[4];
 				// console.log("brokerprop"+brokerprop);
 				console.log(timestamp+" "+labels[labels.length - 1]);
 				if (!labels[labels.length - 1] || timestamp > labels[labels.length - 1]) {
@@ -228,91 +233,22 @@
 				chart.update();
 		}
 
-		// try peek and lock message from queue
-		var getQueue = function() {
-			$.ajax({
-				url: "/router/queue",
-				success: function (data, textStatus, request) {
-					// console.log("data type: "+typeof(data));
-					// console.log("data: "+data);
-					// draw data if not reached end of queue
-					if (request.status != 204){
-						var bp = JSON.parse(data.header['brokerproperties']);
-						drawChart(data.body,
-											JSON.parse(data.header['iothub-connection-device-id']),
-											bp);
-						// delete the message after successfully processed
-						$.ajax({
-							url: "/router/queue/"+bp['MessageId']+"/"+bp['LockToken'],
-							type: 'DELETE',
-							success: function (data, textStatus, request) {
-								console.log("message processed")
-							}
-						}).fail(function (jqXHR, textStatus, errorThrown) { 
-							console.log("error "+textStatus+" "+errorThrown)
-						});
-					}
-				},
-				complete: function () {
-					// Schedule the next
-					setTimeout(getQueue, 1000);
-				}
-			});
-		};
+		var socket = io();
+		socket.on('telemtry', function(msg){
+			if (initialized) {
+				var data = JSON.parse(msg);
+				console.log("receive telemtry");
+				drawChart(data["body"],data["id"],data["time"]);
+			}
+		});
 
-		// get telemetry data from eventhub
-		var getTele = function() {
-			$.ajax({
-				url: "/router/message/"+$("#username").text(),
-				success: function (msg, textStatus, request) {
-					// console.log("data type: "+typeof(data));
-					// console.log("data: "+data);
-					// draw data if not reached end of queue
-					if (request.status != 204){
-						msg.forEach(data => {
-							var bp = data.header['brokerproperties'];
-							drawChart(data.body,
-												data.header['iothub-connection-device-id'],
-												bp);
+		socket.on('device', function(data){
+			console.log("receive device");
+			items(data);
+			initialized = true;
+		});
 
-						});
-					}
-				},
-				complete: function () {
-					// Schedule the next
-					setTimeout(getTele, 1000);
-				}
-			});
-		};
-
-		// get registered device list of user and 
-		// add html elements for each device
-		var checkConn = function() {
-			$.ajax({
-				url: "/router/devices/"+$("#username").text(),
-				success: function (data) {
-					// console.log("data type: "+typeof(data));
-					// console.log("data: "+data);
-					// console.log("stringify data: "+JSON.stringify(data));
-					// items(JSON.parse(JSON.stringify(data)))
-					items(data)
-				},
-				complete: function () {
-					// Schedule the nex, make sure getQueue happens after
-					// page have been initialized
-					if (!initialized) {
-						// getQueue();
-						getTele();
-						initialized = true;
-					}
-					setTimeout(checkConn, 1000);
-				}
-			});
-		};
-
-		$('.carousel').carousel()
-		checkConn();
-		
+		$('.carousel').carousel();
 	</script>
 </body>
 </html>

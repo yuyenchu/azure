@@ -1,12 +1,71 @@
 var express = require('express');
 var session = require('express-session');
-// var cors = require('cors');
 var path = require('path');
 var router = require('./router');
 var bodyparser = require('body-parser');
 var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+
+const request = require('request');
+const { EventHubConsumerClient } = require("@azure/event-hubs");
+const config = require('config');
+const eh = config.get('eventhub');
+const hub = config.get('hub');
 const users = require('./config/user.json');
 
+const consumerClient = new EventHubConsumerClient("$Default", eh["connectionstr"]);
+console.log("connected")
+const subscription = consumerClient.subscribe({
+	processEvents: async (events, context) => {
+		for (const event of events) {
+			dateObj = new Date(event.systemProperties["iothub-enqueuedtime"]); 
+			utcString = dateObj.toUTCString();
+            io.emit('telemtry', JSON.stringify({"id":event.systemProperties['iothub-connection-device-id'],
+                                                "time": utcString,"body": event.body
+                                                }));
+		}
+	},
+	processError: async (err, context) => {
+		console.log(`Error : ${err}`);
+	}
+});
+
+var devices = {};
+const deviceUrl = 'https://'+hub.name+'.azure-devices.net/devices?api-version=2018-06-30'
+function getDevices() {
+    // console.log("looping")
+    request.get({
+        url: deviceUrl,
+        headers: hub.head
+    }, 	function(error,response,body){
+            // console.log(body);
+            // console.log("devices "+response.statusCode);
+            var b = JSON.parse(body);
+            b.forEach(element => {
+                var id = element["deviceId"];
+                if (!devices[id] || devices[id]["state"] != element["connectionState"]) {
+                    devices[id]={"state":element["connectionState"], "lastActive":element["connectionStateUpdatedTime"]};
+                    toSend={};
+                    toSend[id]=devices[id];
+                    io.emit('device', toSend);
+                    console.log(id);
+                }
+            });
+    });
+    setTimeout(getDevices, 1000);
+}
+
+getDevices();
+
+io.on('connection', function(socket) {
+    console.log('a user connected');
+    Object.keys(devices).forEach(element => {
+        // toSend={};
+        // toSend[element]=devices[element];
+        io.emit('device', devices);
+    });
+});
 // console.log(users["root"])
 // console.log(users["root"].password)
 // console.log(process.env);
@@ -36,7 +95,7 @@ app.get('/', function(req, res) {
 // home page
 app.get('/home', function(req, res) {
     if (req.session.loggedin) {
-        res.render('pages/index',{username:req.session.username, disable:""});
+        res.render('pages/index_socket',{username:req.session.username, disable:""});
 	} else {
         res.send('Please login to view this page!');
 	}
@@ -79,6 +138,6 @@ app.post('/auth', function(req, res) {
 	}
 });
 
-app.listen(3000, function () {
+server.listen(3000, function () {
     console.log('app listening on port 3000!');
 });
