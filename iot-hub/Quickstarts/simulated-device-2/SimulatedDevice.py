@@ -12,6 +12,7 @@ import sys
 #   https://github.com/Azure/azure-iot-sdk-python
 # The sample connects to a device-specific MQTT endpoint on your IoT Hub.
 from azure.iot.device import IoTHubDeviceClient, Message, MethodResponse
+from optparse import OptionParser
 
 # The device connection string to authenticate the device with your IoT hub.
 # Using the Azure CLI:
@@ -19,11 +20,13 @@ from azure.iot.device import IoTHubDeviceClient, Message, MethodResponse
 CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate2;SharedAccessKey=ZWosSuCL4pHgXGmhRKm4QHG9yJKB0y72ctPDFv02Qqg="
 
 # Define the JSON message to send to IoT Hub.
+NAME="simulate2"
 TEMPERATURE = 20.0
 HUMIDITY = 60
 POWER = 50
 MSG_TXT = '{{"temperature": {temperature},"humidity": {humidity},"power_level": {power}}}'
 
+ALLOWINPUT = False
 INTERVAL = 1
 
 def iothub_client_init():
@@ -73,16 +76,28 @@ def device_method_listener(device_client):
         device_client.send_method_response(method_response)
 
 def twin_update_listener(client):
-    global POWER
+    global POWER, NAME
     while True:
         patch = client.receive_twin_desired_properties_patch()  # blocking call
         print("Twin patch received:")
+        reported_patch = {}
         print(patch)
-        POWER=patch["Power"]
-        print("power level is set to",POWER)
-        reported_patch = {"Power": POWER}
+        if "Power" in patch:
+            POWER = patch["Power"]
+            reported_patch["Power"]=POWER
+            print("power level is set to",POWER)
+        if "Name" in patch:
+            NAME = patch["Name"]
+            reported_patch["Name"]=NAME
+            print("name is set to",NAME)
+        print(reported_patch)
         client.patch_twin_reported_properties(reported_patch)
 
+def twin_name_change(client):
+    global NAME
+    while True:
+        NAME = input("Please enter new twin name")
+        client.patch_twin_reported_properties({"Name":NAME})
 
 def iothub_client_telemetry_sample_run():
     try:
@@ -97,6 +112,11 @@ def iothub_client_telemetry_sample_run():
         twin_update_thread = threading.Thread(target=twin_update_listener, args=(client,))
         twin_update_thread.daemon = True
         twin_update_thread.start()
+        # start a thread for setting new device name
+        if ALLOWINPUT:
+            twin_name_thread = threading.Thread(target=twin_name_change, args=(client,))
+            twin_name_thread.daemon = True
+            twin_name_thread.start()
         temperature = 20.0
         while True:
             # Build the message with simulated telemetry values.
@@ -110,9 +130,10 @@ def iothub_client_telemetry_sample_run():
             # An IoT hub can filter on these properties without access to the message body.
             message.custom_properties["temperatureAlert"] = "true" if temperature > 30 else "false"
             # Send the message.
-            print( "Sending message: {}".format(message))
             client.send_message(message)
-            print( "Message sent" )
+            if not ALLOWINPUT: 
+                print( "Sending message: {}".format(message))
+                print( "Message sent" )
             # update temperature
             temperature = min(60.0,temperature+POWER/100) if POWER>0 else max(10.0,temperature-1)
             time.sleep(INTERVAL)
@@ -123,4 +144,8 @@ def iothub_client_telemetry_sample_run():
 if __name__ == '__main__':
     print ( "IoT Hub Quickstart #2 - Simulated device" )
     print ( "Press Ctrl-C to exit" )
+    parser = OptionParser()
+    parser.add_option("-e", "--enable", action="store_true", dest="input")
+    (options, args) = parser.parse_args()
+    ALLOWINPUT = options.input
     iothub_client_telemetry_sample_run()

@@ -14,7 +14,10 @@
       "Content-Type": "application/json",
       "Authorization": "SharedAccessSignature sr=https%3A%2F%2Ftest-serbus1.servicebus.windows.net%2Ftest-queue1&sig=aMIhuiM3C5LSSyUYtDdja%2BFc3ZydlFEr/rUXzCY3d7o%3D&se=1626327881&skn=RootManageSharedAccessKey"
     },
-    "queueName": "test-queue1",
+    "queueNames": {
+      "twin": "test-queue1",
+      "state": "test-queue2"
+    },
     "connectionstr":"Endpoint=sb://test-serbus1.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SRfu30BTAd6PsNF1QPdkglOFd+Ye6qkL/O76Gvmmu9s="
   },
   "eventhub": {

@@ -44,4 +44,4 @@ def get_auth_token(sb_name, eh_name, sas_name, sas_value):
     return  "token: SharedAccessSignature sr={}&sig={}&se={}&skn={}".format(uri, signature, expiry, sas_name)
 
 get_token()
-get_auth_token("test-serbus1","test-queue1","RootManageSharedAccessKey","SRfu30BTAd6PsNF1QPdkglOFd+Ye6qkL/O76Gvmmu9s=")
+get_auth_token("test-serbus1","test-queue2","RootManageSharedAccessKey","SRfu30BTAd6PsNF1QPdkglOFd+Ye6qkL/O76Gvmmu9s=")

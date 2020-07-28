@@ -1,0 +1,11 @@
+{
+  "test_device1": {
+    "users": ["root"]
+  },
+  "simulate1": {
+    "users": ["root", "user1"]
+  },
+  "simulate2": {
+    "users": ["root", "user2"]
+  }
+}

@@ -3,6 +3,7 @@
 
 import random
 import time
+import threading
 
 # Using the Python Device SDK for IoT Hub:
 #   https://github.com/Azure/azure-iot-sdk-python
@@ -18,18 +19,31 @@ CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate1;Sha
 TEMPERATURE = 20.0
 HUMIDITY = 60
 MSG_TXT = '{{"temperature": {temperature},"humidity": {humidity}}}'
+NAME = "simulate1"
 
 def iothub_client_init():
     # Create an IoT Hub client
     client = IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)
     return client
 
+def twin_update_listener(client):
+    global NAME
+    while True:
+        patch = client.receive_twin_desired_properties_patch()  # blocking call
+        print("Twin patch received:")
+        NAME=patch["Name"]
+        print("name level is set to",NAME)
+        reported_patch = {"Name":NAME}
+        client.patch_twin_reported_properties(reported_patch)
+
 def iothub_client_telemetry_sample_run():
 
     try:
         client = iothub_client_init()
         print ( "IoT Hub device sending periodic messages, press Ctrl-C to exit" )
-
+        twin_update_thread = threading.Thread(target=twin_update_listener, args=(client,))
+        twin_update_thread.daemon = True
+        twin_update_thread.start()
         while True:
             # Build the message with simulated telemetry values.
             temperature = TEMPERATURE + (random.random() * 15)

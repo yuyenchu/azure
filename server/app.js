@@ -9,87 +9,167 @@ var io = require('socket.io')(server);
 
 const request = require('request');
 const { EventHubConsumerClient } = require("@azure/event-hubs");
+const { ServiceBusClient, ReceiveMode } = require("@azure/service-bus"); 
 const { Registry } = require('azure-iothub');
 const config = require('config');
 const eh = config.get('eventhub');
 const hub = config.get('hub');
+const sb = config.get('serviceBus');
 const users = require('./config/user.json');
 
-const consumerClient = new EventHubConsumerClient("$Default", eh["connectionstr"]);
-console.log("connected")
-const subscription = consumerClient.subscribe({
-	processEvents: async (events, context) => {
-		for (const event of events) {
-			dateObj = new Date(event.systemProperties["iothub-enqueuedtime"]); 
-			utcString = dateObj.toUTCString();
-            io.emit('telemtry', JSON.stringify({"id":event.systemProperties['iothub-connection-device-id'],
-                                                "time": utcString,"body": event.body
-                                                }));
-		}
-	},
-	processError: async (err, context) => {
-		console.log(`Error : ${err}`);
-	}
-});
+var loggedinUsers = {};
+
+
 
 var devices = {};
-const deviceUrl = 'https://'+hub.name+'.azure-devices.net/devices?api-version=2018-06-30'
-function getDevices() {
-    // console.log("looping")
+var twins = {};
+
+function getAllDevices() {
     request.get({
-        url: deviceUrl,
+        url: 'https://'+hub.name+'.azure-devices.net/devices?api-version=2018-06-30',
         headers: hub.head
     }, 	function(error,response,body){
-            // console.log(body);
-            // console.log("devices "+response.statusCode);
-            var b = JSON.parse(body);
-            b.forEach(element => {
-                var id = element["deviceId"];
-                if (!devices[id] || devices[id]["state"] != element["connectionState"]) {
+            if (error) {
+                console.error(err.constructor.name + ': ' + err.message);
+            } else {
+                var b = JSON.parse(body);
+                b.forEach(element => {
+                    var id = element["deviceId"];
                     devices[id]={"state":element["connectionState"], "lastActive":element["connectionStateUpdatedTime"]};
-                    toSend={};
-                    toSend[id]=devices[id];
-                    io.emit('device', toSend);
-                    console.log(id);
-                }
-            });
+                    console.log("device "+id);
+                });
+                getAllTwins();
+            }
     });
-    setTimeout(getDevices, 1000);
 }
 
-getDevices();
-
-io.on('connection', function(socket) {
-    console.log('a user connected');
-    Object.keys(devices).forEach(element => {
-        io.emit('device', devices);
-        toSend={};
-        toSend[element] = twins[element];
-        io.emit('twin', toSend);
-    });
-});
-
-var twins = {}
 const registry = Registry.fromConnectionString(hub.connectionstr);
-function getTwins() {
+function getAllTwins() {
     Object.keys(devices).forEach(element => {
         registry.getTwin(element, function(err, twin){
             if (err) {
                 console.error(err.constructor.name + ': ' + err.message);
             } else {
-                if (!twins[element] || JSON.stringify(twins[element]) != JSON.stringify(twin)) {
-                    console.log("twin "+element);
-                    twins[element] = twin;
-                    toSend={};
-                    toSend[element] = twin;
-                    io.emit('twin', toSend);
-                }
+                console.log("twin "+element);
+                twins[element] = twin;
             }
         });
     });
-    setTimeout(getTwins, 1000);
 }
-getTwins();
+
+function updateTwin(twinPath, data, key) {
+    if (!twinPath[key] || typeof(data[key])!= "object"){
+        twinPath[key] = data[key];
+    } else {
+        Object.keys(data[key]).forEach(element => {
+            updateTwin(twinPath[key], data[key], element);
+        });
+    }
+}
+
+async function twinListener(receiver) {
+    // console.log(receiver);
+    try {
+        const messages = await receiver.receiveMessages(10);
+        messages.forEach(msg => {
+            var id = msg.userProperties.deviceId;
+            console.log("twin queue "+id);
+            // console.log("twin: "+twins[id]);
+            if (msg.body["properties"]["reported"] && msg.body["properties"]["reported"]["Name"] &&
+            msg.body["properties"]["reported"]["Name"] != twins[id]["properties"]["desired"]["Name"]) {
+                const twinUrl = 'https://'+hub.name+'.azure-devices.net/twins/'+id+'?api-version=2020-03-13'
+                request.patch({
+                    url: twinUrl,
+                    headers: hub.head,
+                    json: {
+                        "properties": {
+                            "desired": {
+                                    "Name": msg.body["properties"]["reported"]["Name"]
+                            }
+                        }
+                    }
+                }, 	function(error,response){
+                    console.log("TwinUpdate to match report name "+response.statusCode);
+                });
+            } else {
+                Object.keys(msg.body).forEach(key => {
+                    updateTwin(twins[id], msg.body, key);
+                });
+                io.emit('twin',toSend(twins,id));
+            }
+            // io.emit(id,msg.body);
+            msg.complete();
+        });
+    } catch(err) {
+        console.log(err);
+    }
+    setTimeout(function() {twinListener(receiver);}, 1000);
+}
+
+async function stateListener(receiver) {
+    // console.log(receiver);
+    try {
+        const messages = await receiver.receiveMessages(10);
+        messages.forEach(msg => {
+            var id = msg.body.data.deviceId;
+            if(msg.body.eventType == "Microsoft.Devices.DeviceDisconnected"){
+                devices[id]["state"] = "Disconnected";
+            } else {
+                devices[id]["state"] = "Connected";
+            }
+            console.log("device queue "+id+": "+devices[id]["state"]);
+            devices[id]["lastActive"] = msg.body.eventTime;
+            io.emit('device',msg.body);
+            msg.complete();
+        });
+    } catch(err) {
+        // console.log(err);
+    }
+    setTimeout(function() {stateListener(receiver);}, 1000);
+}
+
+async function initialize(){
+    console.log("---start initializing---");
+    getAllDevices();
+
+    const sbClient = ServiceBusClient.createFromConnectionString(sb.connectionstr); 
+    const twinQueueClient = sbClient.createQueueClient(sb.queueNames.twin);
+    const twinReceiver = twinQueueClient.createReceiver(ReceiveMode.peekLock);
+    const stateQueueClient = sbClient.createQueueClient(sb.queueNames.state);
+    const stateReceiver = stateQueueClient.createReceiver(ReceiveMode.peekLock);
+    console.log("service bus connected");
+    twinListener(twinReceiver);
+    console.log("start listening twin update");
+    stateListener(stateReceiver);
+    console.log("start listening device state");
+
+    const consumerClient = new EventHubConsumerClient("$Default", eh["connectionstr"]);
+    console.log("event hub connected");
+    const subscription = consumerClient.subscribe({
+        processEvents: async (events, context) => {
+            for (const event of events) {
+                dateObj = new Date(event.systemProperties["iothub-enqueuedtime"]); 
+                utcString = dateObj.toUTCString();
+                io.emit('telemtry', JSON.stringify({"id":event.systemProperties['iothub-connection-device-id'],
+                                                    "time": utcString,"body": event.body
+                                                    }));
+            }
+        },
+        processError: async (err, context) => {
+            console.log(`Error : ${err}`);
+        }
+    });
+    console.log("start listening telemtry");
+
+    console.log("---initialization end---");
+}
+initialize();
+
+function toSend(dict, ele) {
+    result = {};
+    result[ele] = dict[ele];
+    return result;
+}
 
 // console.log(users["root"])
 // console.log(users["root"].password)
@@ -106,9 +186,6 @@ app.use(session({
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
-// routing for CORS issue
-app.use('/router', router);
-
 // decide which page to go
 app.get('/', function(req, res) {
     if (req.session.loggedin) {
@@ -120,7 +197,12 @@ app.get('/', function(req, res) {
 // home page
 app.get('/home', function(req, res) {
     if (req.session.loggedin) {
-        res.render('pages/index_socket',{username:req.session.username, disable:""});
+        res.render('pages/index_socket',{
+            username: req.session.username, 
+            disable: "",
+            devices: devices,
+            twins: twins
+        });
 	} else {
         res.send('Please login to view this page!');
 	}
@@ -130,39 +212,101 @@ app.get('/login', function(req, res) {
     res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:""});
 });
 
-// response to login submit
+// respond to login submit
 app.post('/auth', function(req, res) {
 	var username = req.body.username.trim();
 	var password = req.body.password.trim();
 	if (username && password) {
-		// connection.query('SELECT * FROM accounts WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
-		// 	if (results.length > 0) {
-		// 		request.session.loggedin = true;
-		// 		request.session.username = username;
-		// 		response.redirect('/home');
-		// 	} else {
-		// 		response.send('Incorrect Username and/or Password!');
-		// 	}			
-		// 	response.end();
-        // });
-        // console.log(username==users[username])
-        // console.log(password==users[username].password)
         if (users[username] && password==users[username].password) {
-            req.session.loggedin = true;
-            req.session.username = username;
-            res.redirect('/home');
+            if (loggedinUsers[username]) {
+                res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"This account have already logged in!"});
+            } else {
+                req.session.loggedin = true;
+                req.session.username = username;
+                loggedinUsers[username] = true;
+                res.redirect('/home');
+            }
         } else {
             res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
-            // res.send('Incorrect Username and/or Password!');
         }			
         res.end();
 	} else {
         res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Please enter Username and Password!"});
-		// res.send('Please enter Username and Password!');
 		res.end();
 	}
+});
+
+// respond to logout submit
+app.get('/logout', function(req, res) {
+    var username = req.session.username;
+	if (req.session.loggedin && loggedinUsers[username]) {
+        req.session.destroy();
+        loggedinUsers[username] = false
+        res.redirect('/login');
+	} else {
+        console.log('Unexpected error when logout!')
+    }
+});
+
+// respond to invoke direct method
+app.get('/method/:id/:methodname/:payload', function (req, res) {
+    const methodUrl = 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'/methods?api-version=2020-03-13'
+    request.post({
+        url: methodUrl,
+        headers: hub.head,
+        json: {
+                "methodName": req.params.methodname,
+                "responseTimeoutInSeconds": 200,
+                "payload": req.params.payload
+        }
+    }, 	function(error,response,body){
+                console.log("Invoke "+response.statusCode);
+                res.status(response.statusCode).json(body);
+    });
+});
+
+// respond to twin desired name update
+app.get('/twin/:id/:newname', function (req, res) {
+    const twinUrl = 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'?api-version=2020-03-13'
+    request.patch({
+        url: twinUrl,
+        headers: hub.head,
+        json: {
+            "properties": {
+                "desired": {
+                        "Name": req.params.newname
+                }
+            }
+        }
+    }, 	function(error,response){
+        console.log("TwinUpdate "+response.statusCode);
+        res.status(response.statusCode).send("success");
+    });
 });
 
 server.listen(3000, function () {
     console.log('app listening on port 3000!');
 });
+
+
+
+//// handle type listener
+    // stateReceiver.registerMessageHandler(
+    //     async (msg, context) => {
+    //         // console.log(msg);
+    //         var id = msg.body.data.deviceId;
+    //         io.emit('device',msg.body);
+    //         if(msg.body.eventType == "Microsoft.Devices.DeviceDisconnected"){
+    //             devices[id]["state"] = "Disconnected";
+    //         } else {
+    //             devices[id]["state"] = "Connected";
+    //         }
+    //         console.log("device queue "+id+": "+devices[id]["state"]);
+    //         devices[id]["lastActive"] = msg.body.eventTime;
+    //         await msg.complete();
+    //     },
+    //     async (err, context) => {
+    //         console.log(`Error : ${err}`);
+    //     },
+    //     { autoComplete: false }
+    // );

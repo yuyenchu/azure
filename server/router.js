@@ -12,27 +12,27 @@ const eh = config.get('eventhub');
 var express = require('express');
 var router = express.Router();
 
-var teleHolder = {};
-const consumerClient = new EventHubConsumerClient("$Default", eh["connectionstr"]);
-console.log("connected")
-const subscription = consumerClient.subscribe({
-	processEvents: async (events, context) => {
-		for (const event of events) {
-			// console.log(`Received event: '${event.body}' from partition: '${context.partitionId}' and consumer group: '${context.consumerGroup}'`);
-			// console.log(typeof(event.body));
-			// console.log(event.body);
-			// console.log(event.properties);
-			// console.log(event.systemProperties)
-			dateObj = new Date(event.systemProperties["iothub-enqueuedtime"]); 
-			utcString = dateObj.toUTCString();
-			teleHolder[event.systemProperties['iothub-connection-device-id']]={"time": utcString,
-																																				"body": event.body};
-		}
-	},
-	processError: async (err, context) => {
-		console.log(`Error : ${err}`);
-	}
-});
+// var teleHolder = {};
+// const consumerClient = new EventHubConsumerClient("$Default", eh["connectionstr"]);
+// console.log("connected")
+// const subscription = consumerClient.subscribe({
+// 	processEvents: async (events, context) => {
+// 		for (const event of events) {
+// 			// console.log(`Received event: '${event.body}' from partition: '${context.partitionId}' and consumer group: '${context.consumerGroup}'`);
+// 			// console.log(typeof(event.body));
+// 			// console.log(event.body);
+// 			// console.log(event.properties);
+// 			// console.log(event.systemProperties)
+// 			dateObj = new Date(event.systemProperties["iothub-enqueuedtime"]); 
+// 			utcString = dateObj.toUTCString();
+// 			teleHolder[event.systemProperties['iothub-connection-device-id']]={"time": utcString,
+// 																																				"body": event.body};
+// 		}
+// 	},
+// 	processError: async (err, context) => {
+// 		console.log(`Error : ${err}`);
+// 	}
+// });
 
 router.route('/')
 	.get(function (req, res) {
@@ -101,7 +101,7 @@ router.route('/queue/:id?/:token?')
 		}, 	function(error, response, body) {
 					// console.log(response.headers);
 					console.log("queue peek "+response.statusCode);
-					if (response.statusCode<204) {
+					if (response.statusCode < 204) {
 						res.status(response.statusCode).json({
 							header: response.headers,
 							body: JSON.parse(body)
@@ -123,21 +123,21 @@ router.route('/queue/:id?/:token?')
 		});
 	});
 
-router.route('/message/:id')
-	.get(function (req, res) {
-		result=[]
-		if (req.params.id && users[req.params.id]) {
-			users[req.params.id]["devices"].forEach(element => {
-				if (teleHolder[element]) {
-					result.push({
-						header: {"iothub-connection-device-id": element,
-											"brokerproperties": {"EnqueuedTimeUtc": teleHolder[element]["time"]}},
-						body: teleHolder[element]["body"]
-					})
-				}
-			});
-		}
-		res.json(result);
-	});
+// router.route('/message/:id')
+// 	.get(function (req, res) {
+// 		result=[]
+// 		if (req.params.id && users[req.params.id]) {
+// 			users[req.params.id]["devices"].forEach(element => {
+// 				if (teleHolder[element]) {
+// 					result.push({
+// 						header: {"iothub-connection-device-id": element,
+// 											"brokerproperties": {"EnqueuedTimeUtc": teleHolder[element]["time"]}},
+// 						body: teleHolder[element]["body"]
+// 					})
+// 				}
+// 			});
+// 		}
+// 		res.json(result);
+// 	});
 
 module.exports = router;
