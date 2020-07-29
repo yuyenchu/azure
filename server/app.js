@@ -98,9 +98,9 @@ async function twinListener(receiver) {
                 Object.keys(msg.body).forEach(key => {
                     updateTwin(twins[id], msg.body, key);
                 });
-                io.emit('twin',toSend(twins,id));
+                // io.emit('twin',toSend(twins,id));
+                io.emit(id+"/twin",twins[id]);
             }
-            // io.emit(id,msg.body);
             msg.complete();
         });
     } catch(err) {
@@ -121,7 +121,8 @@ async function stateListener(receiver) {
             }
             console.log("device queue "+id+": "+devices[id]["state"]);
             devices[id]["lastActive"] = msg.body.eventTime;
-            io.emit('device', toSend(devices, id));
+            // io.emit('device', toSend(devices, id));
+            io.emit(id+"/device",devices[id]);
             msg.complete();
         });
     } catch(err) {
@@ -303,26 +304,3 @@ app.get('/twin/:id/:newname', function (req, res) {
 server.listen(3000, function () {
     console.log('app listening on port 3000!');
 });
-
-
-
-//// handle type listener
-    // stateReceiver.registerMessageHandler(
-    //     async (msg, context) => {
-    //         // console.log(msg);
-    //         var id = msg.body.data.deviceId;
-    //         io.emit('device',msg.body);
-    //         if(msg.body.eventType == "Microsoft.Devices.DeviceDisconnected"){
-    //             devices[id]["state"] = "Disconnected";
-    //         } else {
-    //             devices[id]["state"] = "Connected";
-    //         }
-    //         console.log("device queue "+id+": "+devices[id]["state"]);
-    //         devices[id]["lastActive"] = msg.body.eventTime;
-    //         await msg.complete();
-    //     },
-    //     async (err, context) => {
-    //         console.log(`Error : ${err}`);
-    //     },
-    //     { autoComplete: false }
-    // );

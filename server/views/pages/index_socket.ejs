@@ -158,7 +158,7 @@
 					});
 					count++;
 				}
-				drawState(data, element);
+				drawState(data[element], element);
 				// space for twin info
 				if (document.getElementById(element) == undefined){
 					$("#devices").append('<div id='+element+' class="canvas" style="display: none"></div>');
@@ -240,15 +240,15 @@
 		// draw connection state badge
 		function drawState(data, element) {
 			// connstatus badge color and text
-			if(data[element]["state"] == "Disconnected"){
+			if(data["state"] == "Disconnected"){
 					$("#"+element+"label").removeClass("badge badge-success");
 					$("#"+element+"label").addClass("badge badge-danger");
-					$("#"+element+"label").text(data[element]["state"]+" at "+
-						data[element]["lastActive"].split(".")[0].replace("T", " "));
+					$("#"+element+"label").text("Disconnected at "+
+						data["lastActive"].split(".")[0].replace("T", " "));
 				} else {
 					$("#"+element+"label").removeClass("badge badge-danger");
 					$("#"+element+"label").addClass("badge badge-success");
-					$("#"+element+"label").text(data[element]["state"]);
+					$("#"+element+"label").text(data["state"]);
 				}
 		}
 
@@ -280,24 +280,26 @@
 			
 		// listen to web socket
 		var socket = io();
+		Object.keys(devices).forEach(id =>{
+			socket.on(id+"/device", function(data){
+				console.log("receive device");
+				drawState(data, id)
+			});
+
+			socket.on(id+"/twin", function(data){
+				console.log("receive twin");
+				console.log(data+": "+id);
+				drawTwin(data, id);
+			});
+		});
+
 		socket.on('telemtry', function(msg){
 			var data = JSON.parse(msg);
 			console.log("receive telemtry");
 			drawChart(data["body"],data["id"],data["time"]);
 		});
 
-		socket.on('device', function(data){
-			console.log("receive device");
-			id = Object.keys(data)[0];
-			drawState(data, id)
-		});
-
-		socket.on('twin', function(data){
-			console.log("receive twin");
-			id = Object.keys(data)[0];
-			console.log(data[id]+": "+id);
-			drawTwin(data[id], id);
-		});
+		
 	</script>
 </body>
 </html>
