@@ -207,12 +207,12 @@ app.get('/home', function(req, res) {
         twinsToRender = {};
         connection.query('SELECT device AS result FROM viewControl WHERE username = ?', [req.session.username], function(error, results, fields) {
             results.forEach(element => {
-                console.log("ele['result']="+element['result']);
                 devicesToRender.push(element['result']);
                 twinsToRender[element['result']] = twins[element['result']];
                 console.log(devicesToRender);
             })
         });
+        console.log("before render"+devicesToRender);
         res.render('pages/index_socket',{
             username: req.session.username, 
             disable: "",
