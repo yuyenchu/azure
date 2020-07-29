@@ -27,7 +27,7 @@ var connection = mysql.createConnection({
 	password : ms.password,
 	database : ms.database
 });
-const validUser = "select count(username) from users where username="root" and password="root";"
+
 function getAllDevices() {
     request.get({
         url: 'https://'+hub.name+'.azure-devices.net/devices?api-version=2018-06-30',
