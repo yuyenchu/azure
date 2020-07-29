@@ -224,10 +224,10 @@ app.post('/auth', function(req, res) {
 	var password = req.body.password.trim();
 	if (username && password) {
         connection.query('SELECT COUNT(*) AS result FROM users WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
-            console.log(results);
             console.log(results[0]);
+            console.log(results[0]["result"]);
             console.log(Object.keys(results[0]));
-            if (results["result"] == 1) {
+            if (results[0]["result"] == 1) {
 				if (loggedinUsers[username]) {
                     res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"This account have already logged in!"});
                 } else {
