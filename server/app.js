@@ -206,12 +206,11 @@ app.get('/home', function(req, res) {
         devicesToRender = [];
         twinsToRender = {};
         connection.query('SELECT device AS result FROM viewControl WHERE username = ?', [req.session.username], function(error, results, fields) {
-            console.log(results);
             results.forEach(element => {
-                console.log("ele="+element);
                 console.log("ele['result']="+element['result']);
                 devicesToRender.push(element['result']);
                 twinsToRender[element['result']] = twins[element['result']];
+                console.log(devicesToRender);
             })
         });
         res.render('pages/index_socket',{
