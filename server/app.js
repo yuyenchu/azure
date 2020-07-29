@@ -155,9 +155,11 @@ async function initialize(){
             for (const event of events) {
                 dateObj = new Date(event.systemProperties["iothub-enqueuedtime"]); 
                 utcString = dateObj.toUTCString();
-                io.emit('telemtry', JSON.stringify({"id":event.systemProperties['iothub-connection-device-id'],
-                                                    "time": utcString,"body": event.body
-                                                    }));
+                id = event.systemProperties['iothub-connection-device-id'];
+                // io.emit('telemtry', JSON.stringify({"id":event.systemProperties['iothub-connection-device-id'],
+                //                                     "time": utcString,"body": event.body
+                //                                     }));
+                io.emit(id+"/telemtry", JSON.stringify({"time": utcString,"body": event.body}));
             }
         },
         processError: async (err, context) => {

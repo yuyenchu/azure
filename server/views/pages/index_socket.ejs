@@ -288,16 +288,17 @@
 
 			socket.on(id+"/twin", function(data){
 				console.log("receive twin");
-				console.log(data+": "+id);
 				drawTwin(data, id);
+			});
+
+			socket.on(id+"/telemtry", function(msg){
+				data = JSON.parse(msg);
+				console.log("receive telemtry");
+				drawChart(data["body"], id, data["time"]);
 			});
 		});
 
-		socket.on('telemtry', function(msg){
-			var data = JSON.parse(msg);
-			console.log("receive telemtry");
-			drawChart(data["body"],data["id"],data["time"]);
-		});
+		
 
 		
 	</script>
