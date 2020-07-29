@@ -223,9 +223,9 @@ app.post('/auth', function(req, res) {
 	var username = req.body.username.trim();
 	var password = req.body.password.trim();
 	if (username && password) {
-        connection.query('SELECT COUNT(*) FROM users WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
+        connection.query('SELECT COUNT(*) AS result FROM users WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
             console.log(results);
-            if (results == 1) {
+            if (results["result"] == 1) {
 				if (loggedinUsers[username]) {
                     res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"This account have already logged in!"});
                 } else {
