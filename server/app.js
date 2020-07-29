@@ -7,16 +7,15 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+const config = require('config');
 const request = require('request');
 const { EventHubConsumerClient } = require("@azure/event-hubs");
 const { ServiceBusClient, ReceiveMode } = require("@azure/service-bus"); 
 const { Registry } = require('azure-iothub');
-const config = require('config');
 const eh = config.get('eventhub');
 const hub = config.get('hub');
-const sb = config.get('serviceBus');
 const ms = config.get('mysql');
-const users = require('./config/user.json');
+const sb = config.get('serviceBus');
 
 var loggedinUsers = {};
 var devices = {};
@@ -77,7 +76,6 @@ async function twinListener(receiver) {
         messages.forEach(msg => {
             var id = msg.userProperties.deviceId;
             console.log("twin queue "+id);
-            // console.log("twin: "+twins[id]);
             if (msg.body["properties"]["reported"] && msg.body["properties"]["reported"]["Name"] &&
             msg.body["properties"]["reported"]["Name"] != twins[id]["properties"]["desired"]["Name"]) {
                 const twinUrl = 'https://'+hub.name+'.azure-devices.net/twins/'+id+'?api-version=2020-03-13'
@@ -98,7 +96,6 @@ async function twinListener(receiver) {
                 Object.keys(msg.body).forEach(key => {
                     updateTwin(twins[id], msg.body, key);
                 });
-                // io.emit('twin',toSend(twins,id));
                 io.emit(id+"/twin",twins[id]);
             }
             msg.complete();
@@ -121,7 +118,6 @@ async function stateListener(receiver) {
             }
             console.log("device queue "+id+": "+devices[id]["state"]);
             devices[id]["lastActive"] = msg.body.eventTime;
-            // io.emit('device', toSend(devices, id));
             io.emit(id+"/device",devices[id]);
             msg.complete();
         });
@@ -156,9 +152,6 @@ async function initialize(){
                 dateObj = new Date(event.systemProperties["iothub-enqueuedtime"]); 
                 utcString = dateObj.toUTCString();
                 id = event.systemProperties['iothub-connection-device-id'];
-                // io.emit('telemtry', JSON.stringify({"id":event.systemProperties['iothub-connection-device-id'],
-                //                                     "time": utcString,"body": event.body
-                //                                     }));
                 io.emit(id+"/telemtry", JSON.stringify({"time": utcString,"body": event.body}));
             }
         },
