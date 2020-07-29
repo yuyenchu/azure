@@ -203,15 +203,13 @@ app.get('/', function(req, res) {
 // home page
 app.get('/home', function(req, res) {
     if (req.session.loggedin) {
-        devicesToRender = [];
+        devicesToRender = {};
         twinsToRender = {};
         connection.query('SELECT device AS result FROM viewControl WHERE username = ?', [req.session.username], function(error, results, fields) {
             results.forEach(element => {
-                devicesToRender.push(element['result']);
+                devicesToRender[element['result']] = devices[element['result']];
                 twinsToRender[element['result']] = twins[element['result']];
-                console.log(devicesToRender);
             });
-            console.log("before render"+devicesToRender);
             res.render('pages/index_socket',{
                 username: req.session.username, 
                 disable: "",
@@ -247,19 +245,7 @@ app.post('/auth', function(req, res) {
 				res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
             }	
             res.end();		
-		});
-        // if (users[username] && password==users[username].password) {
-        //     if (loggedinUsers[username]) {
-        //         res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"This account have already logged in!"});
-        //     } else {
-        //         req.session.loggedin = true;
-        //         req.session.username = username;
-        //         loggedinUsers[username] = true;
-        //         res.redirect('/home');
-        //     }
-        // } else {
-        //     res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
-        // }			
+		});		
 	} else {
         res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Please enter Username and Password!"});
 		res.end();
