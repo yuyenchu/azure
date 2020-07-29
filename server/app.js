@@ -234,7 +234,8 @@ app.post('/auth', function(req, res) {
                 }
 			} else {
 				res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
-			}			
+            }	
+            res.end();		
 		});
         // if (users[username] && password==users[username].password) {
         //     if (loggedinUsers[username]) {
@@ -248,7 +249,6 @@ app.post('/auth', function(req, res) {
         // } else {
         //     res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
         // }			
-        res.end();
 	} else {
         res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Please enter Username and Password!"});
 		res.end();
