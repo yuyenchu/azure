@@ -132,8 +132,10 @@ async function stateListener(receiver) {
 
 async function initialize(){
     console.log("---start initializing---");
+    connection.connect();
+    console.log("database connected");
     getAllDevices();
-
+    console.log("get all registered devices");
     const sbClient = ServiceBusClient.createFromConnectionString(sb.connectionstr); 
     const twinQueueClient = sbClient.createQueueClient(sb.queueNames.twin);
     const twinReceiver = twinQueueClient.createReceiver(ReceiveMode.peekLock);
