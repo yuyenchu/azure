@@ -27,7 +27,7 @@
   "mysql": {
     "host": "localhost",
     "user": "root",
-    "password" : "rootROOT!@#$",
+    "password" : "Password123#@!",
     "database" : "iotInfodb"
   }
 }
