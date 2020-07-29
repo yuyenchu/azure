@@ -203,11 +203,21 @@ app.get('/', function(req, res) {
 // home page
 app.get('/home', function(req, res) {
     if (req.session.loggedin) {
+        devicesToRender = [];
+        twinsToRender = {};
+        connection.query('SELECT device AS result FROM viewControl WHERE username = ?', [req.session.username], function(error, results, fields) {
+            console.log(results);
+            results.forEach(element => {
+                console.log("ele="+element);
+                devicesToRender.push(element);
+                twinsToRender[element] = twins[element];
+            })
+        });
         res.render('pages/index_socket',{
             username: req.session.username, 
             disable: "",
-            devices: devices,
-            twins: twins
+            devices: devicesToRender,
+            twins: twinsToRender
         });
 	} else {
         res.send('Please login to view this page!');
@@ -224,9 +234,6 @@ app.post('/auth', function(req, res) {
 	var password = req.body.password.trim();
 	if (username && password) {
         connection.query('SELECT COUNT(*) AS result FROM users WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
-            console.log(results[0]);
-            console.log(results[0]["result"]);
-            console.log(Object.keys(results[0]));
             if (results[0]["result"] == 1) {
 				if (loggedinUsers[username]) {
                     res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"This account have already logged in!"});
