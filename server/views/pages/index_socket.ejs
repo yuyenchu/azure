@@ -51,6 +51,7 @@
 				}
 		}
 
+		// http requests for invoke direct method
 		function invoke(id) {
 			$("#r"+id).html("");
 			var methodname = $("#m"+id).val().trim();
@@ -75,6 +76,7 @@
 			});
 		}
 
+		// http requests for update desired device name in twin
 		function updateTwin(id) {
 			$("#r2"+id).html("");
 			var newname = $("#n"+id).val().trim();
@@ -95,6 +97,7 @@
 			});
 		}
 
+		// initialize html elements
 		function items(data){
 			var count = 0;
 			Object.keys(data).forEach(element =>{
@@ -155,17 +158,7 @@
 					});
 					count++;
 				}
-				// connstatus badge color and text
-				if(data[element]["state"] == "Disconnected"){
-					$("#"+element+"label").removeClass("badge badge-success");
-					$("#"+element+"label").addClass("badge badge-danger");
-					$("#"+element+"label").text(data[element]["state"]+" at "+
-						data[element]["lastActive"].split(".")[0].replace("T", " "));
-				} else {
-					$("#"+element+"label").removeClass("badge badge-danger");
-					$("#"+element+"label").addClass("badge badge-success");
-					$("#"+element+"label").text(data[element]["state"]);
-				}
+				drawState(data, element);
 				// space for twin info
 				if (document.getElementById(element) == undefined){
 					$("#devices").append('<div id='+element+' class="canvas" style="display: none"></div>');
@@ -174,6 +167,7 @@
 			});
 		}
 
+		// unwrapping twin data
 		function unwrapData(data, indent) {
 			if (data== null || ['string', 'number', 'boolean'].indexOf(typeof(data)) >= 0){
 				return data == null ? "null" : data;
@@ -188,6 +182,7 @@
 			}
 		}
 					
+		// insert data to chart
 		function insertData(chart, lb, dat) {
 			if (typeof(dat) == "boolean" || typeof(dat) == "number") {
 				var found = false;
@@ -242,6 +237,22 @@
 				chart.update();
 		}
 
+		// draw connection state badge
+		function drawState(data, element) {
+			// connstatus badge color and text
+			if(data[element]["state"] == "Disconnected"){
+					$("#"+element+"label").removeClass("badge badge-success");
+					$("#"+element+"label").addClass("badge badge-danger");
+					$("#"+element+"label").text(data[element]["state"]+" at "+
+						data[element]["lastActive"].split(".")[0].replace("T", " "));
+				} else {
+					$("#"+element+"label").removeClass("badge badge-danger");
+					$("#"+element+"label").addClass("badge badge-success");
+					$("#"+element+"label").text(data[element]["state"]);
+				}
+		}
+
+		// draw twin info block
 		function drawTwin(twin, id){
 			var str ='';
 			Object.keys(twin).forEach(element =>{
@@ -260,13 +271,14 @@
 			}
 		}
 
-		// main
+		// initialization
 		items(devices);
 		Object.keys(twins).forEach(id =>{
 			drawTwin(twins[id], id)
 		});
+		$('.carousel').carousel();
 			
-		
+		// listen to web socket
 		var socket = io();
 		socket.on('telemtry', function(msg){
 			var data = JSON.parse(msg);
@@ -276,17 +288,8 @@
 
 		socket.on('device', function(data){
 			console.log("receive device");
-			id = data.data.deviceId;
-			if(data.eventType == "Microsoft.Devices.DeviceDisconnected"){
-				$("#"+id+"label").removeClass("badge badge-success");
-				$("#"+id+"label").addClass("badge badge-danger");
-				$("#"+id+"label").text("Disconnected at "+
-					data.eventTime.split(".")[0].replace("T", " "));
-			} else {
-				$("#"+id+"label").removeClass("badge badge-danger");
-				$("#"+id+"label").addClass("badge badge-success");
-				$("#"+id+"label").text("Connected");
-			}
+			id = Object.keys(data)[0];
+			drawState(data, id)
 		});
 
 		socket.on('twin', function(data){
@@ -295,8 +298,6 @@
 			console.log(data[id]+": "+id);
 			drawTwin(data[id], id);
 		});
-
-		$('.carousel').carousel();
 	</script>
 </body>
 </html>

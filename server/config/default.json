@@ -23,5 +23,11 @@
   "eventhub": {
     "name": "iothub-ehub-hub-test1-3780350-0bfd74d500",
     "connectionstr": "Endpoint=sb://ihsuprodblres095dednamespace.servicebus.windows.net/;SharedAccessKeyName=service;SharedAccessKey=aOQRCy8GcrQokjuJjAb7PFYc9dj9SjqPnlH1OMAzYVQ=;EntityPath=iothub-ehub-hub-test1-3780350-0bfd74d500"
+  },
+  "mysql": {
+    "host": "localhost",
+    "user": "root",
+    "password" : "rootROOT!@#$",
+    "database" : "iotInfodb"
   }
 }

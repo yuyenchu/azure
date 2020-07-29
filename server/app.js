@@ -1,7 +1,7 @@
 var express = require('express');
 var session = require('express-session');
 var path = require('path');
-var router = require('./router');
+var mysql = require('mysql');
 var bodyparser = require('body-parser');
 var app = express();
 var server = require('http').createServer(app);
@@ -15,15 +15,19 @@ const config = require('config');
 const eh = config.get('eventhub');
 const hub = config.get('hub');
 const sb = config.get('serviceBus');
+const ms = config.get('mysql');
 const users = require('./config/user.json');
 
 var loggedinUsers = {};
-
-
-
 var devices = {};
 var twins = {};
-
+var connection = mysql.createConnection({
+    host     : ms.host,
+	user     : ms.user,
+	password : ms.password,
+	database : ms.database
+});
+const validUser = "select count(username) from users where username="root" and password="root";"
 function getAllDevices() {
     request.get({
         url: 'https://'+hub.name+'.azure-devices.net/devices?api-version=2018-06-30',
@@ -68,7 +72,6 @@ function updateTwin(twinPath, data, key) {
 }
 
 async function twinListener(receiver) {
-    // console.log(receiver);
     try {
         const messages = await receiver.receiveMessages(10);
         messages.forEach(msg => {
@@ -107,7 +110,6 @@ async function twinListener(receiver) {
 }
 
 async function stateListener(receiver) {
-    // console.log(receiver);
     try {
         const messages = await receiver.receiveMessages(10);
         messages.forEach(msg => {
@@ -119,11 +121,11 @@ async function stateListener(receiver) {
             }
             console.log("device queue "+id+": "+devices[id]["state"]);
             devices[id]["lastActive"] = msg.body.eventTime;
-            io.emit('device',msg.body);
+            io.emit('device', toSend(devices, id));
             msg.complete();
         });
     } catch(err) {
-        // console.log(err);
+        console.log(err);
     }
     setTimeout(function() {stateListener(receiver);}, 1000);
 }
@@ -161,19 +163,21 @@ async function initialize(){
     });
     console.log("start listening telemtry");
 
-    console.log("---initialization end---");
+    console.log("---initialize complete---");
 }
 initialize();
 
+// helper method
 function toSend(dict, ele) {
     result = {};
     result[ele] = dict[ele];
     return result;
 }
 
-// console.log(users["root"])
-// console.log(users["root"].password)
+// // investigate node env variables
 // console.log(process.env);
+
+// app setup
 app.set('views', path.join(__dirname, '/views'))
 app.set('view engine', 'ejs');
 
@@ -217,18 +221,33 @@ app.post('/auth', function(req, res) {
 	var username = req.body.username.trim();
 	var password = req.body.password.trim();
 	if (username && password) {
-        if (users[username] && password==users[username].password) {
-            if (loggedinUsers[username]) {
-                res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"This account have already logged in!"});
-            } else {
-                req.session.loggedin = true;
-                req.session.username = username;
-                loggedinUsers[username] = true;
-                res.redirect('/home');
-            }
-        } else {
-            res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
-        }			
+        connection.query('SELECT COUNT(*) FROM users WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
+            console.log(results);
+            if (results == 1) {
+				if (loggedinUsers[username]) {
+                    res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"This account have already logged in!"});
+                } else {
+                    req.session.loggedin = true;
+                    req.session.username = username;
+                    loggedinUsers[username] = true;
+                    res.redirect('/home');
+                }
+			} else {
+				res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
+			}			
+		});
+        // if (users[username] && password==users[username].password) {
+        //     if (loggedinUsers[username]) {
+        //         res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"This account have already logged in!"});
+        //     } else {
+        //         req.session.loggedin = true;
+        //         req.session.username = username;
+        //         loggedinUsers[username] = true;
+        //         res.redirect('/home');
+        //     }
+        // } else {
+        //     res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
+        // }			
         res.end();
 	} else {
         res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Please enter Username and Password!"});
