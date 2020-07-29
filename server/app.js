@@ -209,8 +209,9 @@ app.get('/home', function(req, res) {
             console.log(results);
             results.forEach(element => {
                 console.log("ele="+element);
-                devicesToRender.push(element);
-                twinsToRender[element] = twins[element];
+                console.log("ele['result']="+element['result']);
+                devicesToRender.push(element['result']);
+                twinsToRender[element['result']] = twins[element['result']];
             })
         });
         res.render('pages/index_socket',{
