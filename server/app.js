@@ -210,14 +210,14 @@ app.get('/home', function(req, res) {
                 devicesToRender.push(element['result']);
                 twinsToRender[element['result']] = twins[element['result']];
                 console.log(devicesToRender);
-            })
-        });
-        console.log("before render"+devicesToRender);
-        res.render('pages/index_socket',{
-            username: req.session.username, 
-            disable: "",
-            devices: devicesToRender,
-            twins: twinsToRender
+            });
+            console.log("before render"+devicesToRender);
+            res.render('pages/index_socket',{
+                username: req.session.username, 
+                disable: "",
+                devices: devicesToRender,
+                twins: twinsToRender
+            });
         });
 	} else {
         res.send('Please login to view this page!');
