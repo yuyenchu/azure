@@ -5,6 +5,7 @@ languages:
 - python
 - node.js
 - html
+- ejs
 products:
 - azure
 - azure-iot-hub
