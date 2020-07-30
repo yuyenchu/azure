@@ -298,9 +298,10 @@
 			});
 		});
 
-		
-
-		
+		// listen for close tab or browser
+		$(window).unload(function () { 
+			$.get('/session/destroy');
+		});
 	</script>
 </body>
 </html>

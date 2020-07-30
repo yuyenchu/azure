@@ -249,15 +249,11 @@ app.post('/auth', function(req, res) {
 			} else {
                 req.session.message = "Incorrect Username and/or Password!";
                 res.redirect('/login');
-				// res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
-            }	
-            // res.end();		
+            }		
 		});		
 	} else {
         req.session.message = "Please enter Username and Password!";
         res.redirect('/login');
-        // res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Please enter Username and Password!"});
-		// res.end();
 	}
 });
 
@@ -271,6 +267,12 @@ app.get('/logout', function(req, res) {
 	} else {
         console.log('Unexpected error when logout!')
     }
+});
+
+// respond to tab close
+app.get('/session/destroy', function(req, res) {
+    req.session.destroy();
+    res.status(200).send('session ended');
 });
 
 // respond to invoke direct method
