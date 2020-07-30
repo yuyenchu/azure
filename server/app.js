@@ -237,24 +237,31 @@ app.post('/auth', function(req, res) {
 	var username = req.body.username.trim();
 	var password = req.body.password.trim();
 	if (username && password) {
-        connection.query('SELECT COUNT(*) AS result FROM users WHERE username = ? AND password = ?', 
-                        [username, password], 
-                        function(error, results, fields) {
-            if (results[0]["result"] == 1) {
-				if (loggedinUsers[username]) {
-                    req.session.message = "This account have already logged in!";
-                    res.redirect('/login');
+        if (req.session.loggedin && username!=req.session.username){
+            req.session.message = "You have already logged in as"+
+                                req.session.username+
+                                ", please logout before login another account!";
+            res.redirect('/login');
+        } else {
+            connection.query('SELECT COUNT(*) AS result FROM users WHERE username = ? AND password = ?', 
+                            [username, password], 
+                            function(error, results, fields) {
+                if (results[0]["result"] == 1) {
+                    if (loggedinUsers[username]) {
+                        req.session.message = "This account have already logged in!";
+                        res.redirect('/login');
+                    } else {
+                        req.session.loggedin = true;
+                        req.session.username = username;
+                        loggedinUsers[username] = true;
+                        res.redirect('/home');
+                    }
                 } else {
-                    req.session.loggedin = true;
-                    req.session.username = username;
-                    loggedinUsers[username] = true;
-                    res.redirect('/home');
-                }
-			} else {
-                req.session.message = "Incorrect Username and/or Password!";
-                res.redirect('/login');
-            }		
-		});		
+                    req.session.message = "Incorrect Username and/or Password!";
+                    res.redirect('/login');
+                }		
+            });
+        }		
 	} else {
         req.session.message = "Please enter Username and Password!";
         res.redirect('/login');
