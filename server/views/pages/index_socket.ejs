@@ -285,7 +285,7 @@
 				console.log("receive device");
 				drawState(data, id)
 			});
-
+		
 			socket.on(id+"/twin", function(data){
 				console.log("receive twin");
 				drawTwin(data, id);

@@ -7,6 +7,8 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+// declare config file path
+process.env['NODE_CONFIG_DIR'] = __dirname + '/config/';
 const config = require('config');
 const request = require('request');
 const { EventHubConsumerClient } = require("@azure/event-hubs");
@@ -16,6 +18,9 @@ const eh = config.get('eventhub');
 const hub = config.get('hub');
 const ms = config.get('mysql');
 const sb = config.get('serviceBus');
+const PORT = config.get('port');
+const MAX_LISTEN = 10;
+const LISTEN_INTERVAL = 1000;
 
 var loggedinUsers = {};
 var devices = {};
@@ -72,7 +77,7 @@ function updateTwin(twinPath, data, key) {
 
 async function twinListener(receiver) {
     try {
-        const messages = await receiver.receiveMessages(10);
+        const messages = await receiver.receiveMessages(MAX_LISTEN);
         messages.forEach(msg => {
             var id = msg.userProperties.deviceId;
             console.log("twin queue "+id);
@@ -101,14 +106,14 @@ async function twinListener(receiver) {
             msg.complete();
         });
     } catch(err) {
-        console.log(err);
+        console.log('Twin Error : '+err);
     }
-    setTimeout(function() {twinListener(receiver);}, 1000);
+    setTimeout(function() {twinListener(receiver);}, LISTEN_INTERVAL);
 }
 
 async function stateListener(receiver) {
     try {
-        const messages = await receiver.receiveMessages(10);
+        const messages = await receiver.receiveMessages(MAX_LISTEN);
         messages.forEach(msg => {
             var id = msg.body.data.deviceId;
             if(msg.body.eventType == "Microsoft.Devices.DeviceDisconnected"){
@@ -122,9 +127,9 @@ async function stateListener(receiver) {
             msg.complete();
         });
     } catch(err) {
-        console.log(err);
+        console.log('State Error : '+err);
     }
-    setTimeout(function() {stateListener(receiver);}, 1000);
+    setTimeout(function() {stateListener(receiver);}, LISTEN_INTERVAL);
 }
 
 async function initialize(){
@@ -144,7 +149,7 @@ async function initialize(){
     stateListener(stateReceiver);
     console.log("start listening device state");
 
-    const consumerClient = new EventHubConsumerClient("$Default", eh["connectionstr"]);
+    const consumerClient = new EventHubConsumerClient("$Default", eh.connectionstr);
     console.log("event hub connected");
     const subscription = consumerClient.subscribe({
         processEvents: async (events, context) => {
@@ -156,7 +161,7 @@ async function initialize(){
             }
         },
         processError: async (err, context) => {
-            console.log(`Error : ${err}`);
+            console.log('Tele Error : '+err);
         }
     });
     console.log("start listening telemtry");
@@ -165,12 +170,12 @@ async function initialize(){
 }
 initialize();
 
-// helper method
-function toSend(dict, ele) {
-    result = {};
-    result[ele] = dict[ele];
-    return result;
-}
+// // helper method
+// function toSend(dict, ele) {
+//     result = {};
+//     result[ele] = dict[ele];
+//     return result;
+// }
 
 // // investigate node env variables
 // console.log(process.env);
@@ -215,6 +220,7 @@ app.get('/home', function(req, res) {
         });
 	} else {
         res.send('Please login to view this page!');
+        res.redirect('/login');
 	}
 });
 // login page
@@ -227,7 +233,9 @@ app.post('/auth', function(req, res) {
 	var username = req.body.username.trim();
 	var password = req.body.password.trim();
 	if (username && password) {
-        connection.query('SELECT COUNT(*) AS result FROM users WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
+        connection.query('SELECT COUNT(*) AS result FROM users WHERE username = ? AND password = ?', 
+                        [username, password], 
+                        function(error, results, fields) {
             if (results[0]["result"] == 1) {
 				if (loggedinUsers[username]) {
                     res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"This account have already logged in!"});
@@ -296,6 +304,6 @@ app.get('/twin/:id/:newname', function (req, res) {
     });
 });
 
-server.listen(3000, function () {
-    console.log('app listening on port 3000!');
+server.listen(PORT, function () {
+    console.log('app listening on port '+PORT+'!');
 });

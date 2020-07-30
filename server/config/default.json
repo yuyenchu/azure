@@ -29,5 +29,6 @@
     "user": "root",
     "password" : "Password123#@!",
     "database" : "iotInfodb"
-  }
+  },
+  "port": 3000
 }
