@@ -269,7 +269,7 @@ app.get('/logout', function(req, res) {
             res.clearCookie(SESS_NAME, {path: '/'})
             return res.send({ 'clearSession': 'success' })
         });
-        req.session.loggedin = false;
+        // req.session.loggedin = false;
         loggedinUsers[username] = false;
         res.redirect('/login');
 	} else {
