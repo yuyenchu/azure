@@ -191,7 +191,7 @@ app.use(session({
 	saveUninitialized: true
 }));
 app.use((req, res, next) => {
-    res.set('Cache-Control', 'no-cache')
+    res.set('Cache-Control', 'no-store')
     next()
 });
 app.use(bodyparser.urlencoded({ extended: false }));
