@@ -262,7 +262,8 @@ app.get('/logout', function(req, res) {
     var username = req.session.username;
 	if (req.session.loggedin && loggedinUsers[username]) {
         req.session.destroy();
-        loggedinUsers[username] = false
+        req.session.loggedin = false;
+        loggedinUsers[username] = false;
         res.redirect('/login');
 	} else {
         console.log('Unexpected error when logout!')
