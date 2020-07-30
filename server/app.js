@@ -238,7 +238,7 @@ app.post('/auth', function(req, res) {
 	var password = req.body.password.trim();
 	if (username && password) {
         if (req.session.loggedin && username!=req.session.username){
-            req.session.message = "You have already logged in as"+
+            req.session.message = "You have already logged in as "+
                                 req.session.username+
                                 ", please logout before login another account!";
             res.redirect('/login');
