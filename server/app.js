@@ -219,13 +219,13 @@ app.get('/home', function(req, res) {
             });
         });
 	} else {
-        res.send('Please login to view this page!');
+        req.session.message = "Please login to view home page";
         res.redirect('/login');
 	}
 });
 // login page
 app.get('/login', function(req, res) {
-    res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:""});
+    res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:req.session.message?req.session.message:""});
 });
 
 // respond to login submit
@@ -238,7 +238,8 @@ app.post('/auth', function(req, res) {
                         function(error, results, fields) {
             if (results[0]["result"] == 1) {
 				if (loggedinUsers[username]) {
-                    res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"This account have already logged in!"});
+                    req.session.message = "This account have already logged in!";
+                    res.redirect('/login');
                 } else {
                     req.session.loggedin = true;
                     req.session.username = username;
@@ -246,13 +247,17 @@ app.post('/auth', function(req, res) {
                     res.redirect('/home');
                 }
 			} else {
-				res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
+                req.session.message = "Incorrect Username and/or Password!";
+                res.redirect('/login');
+				// res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Incorrect Username and/or Password!"});
             }	
-            res.end();		
+            // res.end();		
 		});		
 	} else {
-        res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Please enter Username and Password!"});
-		res.end();
+        req.session.message = "Please enter Username and Password!";
+        res.redirect('/login');
+        // res.render('pages/login',{username:"You haven't logged in", disable:"disabled",result:"Please enter Username and Password!"});
+		// res.end();
 	}
 });
 
