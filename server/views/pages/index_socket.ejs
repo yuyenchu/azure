@@ -278,6 +278,11 @@
 		});
 		$('.carousel').carousel();
 			
+		// listen for close tab or browser
+		$(window).on("unload", function() {
+			$.get('/session/destroy');
+		});
+
 		// listen to web socket
 		var socket = io();
 		Object.keys(devices).forEach(id =>{
@@ -296,11 +301,6 @@
 				console.log("receive telemtry");
 				drawChart(data["body"], id, data["time"]);
 			});
-		});
-
-		// listen for close tab or browser
-		$(window).unload(function () { 
-			$.get('/session/destroy');
 		});
 	</script>
 </body>
