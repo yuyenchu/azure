@@ -277,11 +277,6 @@
 			drawTwin(twins[id], id)
 		});
 		$('.carousel').carousel();
-			
-		// listen for close tab or browser
-		$(window).on("unload", function() {
-			$.get('/session/destroy');
-		});
 
 		// listen to web socket
 		var socket = io();

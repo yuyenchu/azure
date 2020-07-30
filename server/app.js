@@ -270,12 +270,6 @@ app.get('/logout', function(req, res) {
     }
 });
 
-// respond to tab close
-app.get('/session/destroy', function(req, res) {
-    req.session.destroy();
-    res.status(200).send('session ended');
-});
-
 // respond to invoke direct method
 app.get('/method/:id/:methodname/:payload', function (req, res) {
     const methodUrl = 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'/methods?api-version=2020-03-13'
