@@ -309,6 +309,8 @@ app.get('/twin/:id/:newname', function (req, res) {
     });
 });
 
+app.get('/users', function (req, res) {res.json(loggedinUsers)});
+
 server.listen(PORT, function () {
     console.log('app listening on port '+PORT+'!');
 });
