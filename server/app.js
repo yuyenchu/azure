@@ -243,7 +243,7 @@ app.post('/auth', function(req, res) {
             if (results[0]["result"] == 1) {
 				if (loggedinUsers[username]) {
                     req.session.message = "This account have already logged in!";
-                    // res.redirect('/login');
+                    res.redirect('/login');
                 } else {
                     req.session.loggedin = true;
                     req.session.username = username;
@@ -252,14 +252,13 @@ app.post('/auth', function(req, res) {
                 }
 			} else {
                 req.session.message = "Incorrect Username and/or Password!";
-                // res.redirect('/login');
-            }
-            res.redirect('/login');		
+                res.redirect('/login');
+            }		
 		});		
 	} else {
         req.session.message = "Please enter Username and Password!";
         res.redirect('/login');
-    }
+	}
 });
 
 // respond to logout submit
