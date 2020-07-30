@@ -261,10 +261,7 @@ app.post('/auth', function(req, res) {
 app.get('/logout', function(req, res) {
     var username = req.session.username;
 	if (req.session.loggedin && loggedinUsers[username]) {
-        req.session.destroy(err => {
-            res.clearCookie("session-cookie-name", { path: "/" });
-          });
-        // req.session.Views = null;
+        req.session.destroy();
         req.session.loggedin = false;
         loggedinUsers[username] = false;
         res.redirect('/login');
