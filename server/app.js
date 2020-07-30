@@ -190,6 +190,10 @@ app.use(session({
 	resave: true,
 	saveUninitialized: true
 }));
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-cache')
+    next()
+});
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
