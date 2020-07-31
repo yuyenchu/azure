@@ -2,7 +2,7 @@ const { SecretClient } = require("@azure/keyvault-secrets");
 const { DefaultAzureCredential } = require("@azure/identity");
 
 // Load the .env file if it exists
-require("dotenv").config();
+require("dotenv").config({ path: __dirname+'/sample.env' });
 
 async function main() {
   // DefaultAzureCredential expects the following three environment variables:
