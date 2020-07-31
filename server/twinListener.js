@@ -2,7 +2,7 @@ var express = require('express');
 var bodyparser = require('body-parser');
 var app = express();
 var server = require('http').createServer(app);
-
+var helper = require('helper.js');
 // declare config file path
 process.env['NODE_CONFIG_DIR'] = __dirname + '/config/';
 const config = require('config');
@@ -17,24 +17,31 @@ const LISTEN_INTERVAL = 1000;   // listen rate
 // pre: receiver != null, config valid
 // post: call main app with http, schedule next receive
 async function twinListener(receiver) {
-    try {
-        const messages = await receiver.receiveMessages(MAX_LISTEN);
-        messages.forEach(msg => {
-            var id = msg.userProperties.deviceId;
-            console.log("twin queue "+id);
-                request.post({
-                    url: "http://localhost:3000/twin/"+id,
-                    json: msg.body
-                }, 	function(error,response){
-                    console.log("Twin  :"+id+" ("+response.statusCode+")");
-                });
-            
-            msg.complete();
-        });
-    } catch(err) {
-        console.log('Twin Error : '+err);
+    while (true) {
+        const messages;
+        try {
+            messages = await receiver.receiveMessages(MAX_LISTEN);
+        } catch(err) {
+            console.log('Twin Error : '+err);
+        }
+        if (messages) {
+            messages.forEach(msg => {
+                var id = msg.userProperties.deviceId;
+                console.log("twin queue "+id);
+                    request.post({
+                        url: "http://localhost:3000/twin/"+id,
+                        json: msg.body
+                    }, 	function(error,response){
+                        console.log("Twin  :"+id+" ("+response.statusCode+")");
+                    });
+                msg.complete();
+            });
+        } else {
+            console.log('Twin Error : message undefine');
+        }
+        helper.sleep(LISTEN_INTERVAL);
     }
-    setTimeout(function() {twinListener(receiver);}, LISTEN_INTERVAL);
+    // setTimeout(function() {twinListener(receiver);}, LISTEN_INTERVAL);
 }
 
 // use client to connect to servicebus queue

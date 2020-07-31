@@ -2,7 +2,7 @@ var express = require('express');
 var bodyparser = require('body-parser');
 var app = express();
 var server = require('http').createServer(app);
-
+var helper = require('helper.js');
 // declare config file path
 process.env['NODE_CONFIG_DIR'] = __dirname + '/config/';
 const config = require('config');
@@ -17,27 +17,35 @@ const LISTEN_INTERVAL = 1000;   // listen rate
 // pre: receiver != null, config valid
 // post: call main app with http, schedule next receive
 async function stateListener(receiver) {
-    try {
-        const messages = await receiver.receiveMessages(MAX_LISTEN);
-        messages.forEach(msg => {
-            var id = msg.body.data.deviceId;
-            var conn = msg.body.eventType.replace("Microsoft.Devices.Device","");
-            console.log("device queue "+id+": "+conn);
-            request.post({
-                url: "http://localhost:3000/state/"+id,
-                json: {
-                    state: conn,
-                    lastActive: msg.body.eventTime
-                }
-            }, 	function(error,response){
-                console.log("State :"+id+" ("+response.statusCode+")");
+    while (true) {
+        const messages
+        try {
+            messages = await receiver.receiveMessages(MAX_LISTEN);
+        } catch(err) {
+            console.log('State Error : '+err);
+        }
+        if (messages) {
+            messages.forEach(msg => {
+                var id = msg.body.data.deviceId;
+                var conn = msg.body.eventType.replace("Microsoft.Devices.Device","");
+                console.log("device queue "+id+": "+conn);
+                request.post({
+                    url: "http://localhost:3000/state/"+id,
+                    json: {
+                        state: conn,
+                        lastActive: msg.body.eventTime
+                    }
+                }, 	function(error,response){
+                    console.log("State :"+id+" ("+response.statusCode+")");
+                });
+                msg.complete();
             });
-            msg.complete();
-        });
-    } catch(err) {
-        console.log('State Error : '+err);
+        } else {
+            console.log('State Error : message undefine');
+        }
+        helper.sleep(LISTEN_INTERVAL);
     }
-    setTimeout(function() {stateListener(receiver);}, LISTEN_INTERVAL);
+    // setTimeout(function() {stateListener(receiver);}, LISTEN_INTERVAL);
 }
 
 // use client to connect to servicebus queue
