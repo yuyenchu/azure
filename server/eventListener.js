@@ -1,7 +1,6 @@
 var express = require('express');
 var bodyparser = require('body-parser');
 var app = express();
-var server = require('http').createServer(app);
 
 // declare config file path
 process.env['NODE_CONFIG_DIR'] = __dirname + '/config/';
@@ -52,6 +51,6 @@ app.use(bodyparser.json());
 
 // start server
 // pre: config valid
-server.listen(PORT, function () {
+app.listen(PORT, function () {
     console.log('eventListener listening on port '+PORT+'!');
 });
