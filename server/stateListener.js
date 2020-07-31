@@ -16,7 +16,7 @@ const LISTEN_INTERVAL = 1000;   // listen rate
 // pre: receiver != null, config valid
 // post: call main app with http, schedule next receive
 async function stateListener(receiver) {
-    const messages = null;
+    var messages = null;
     while (true) {
         try {
             messages = await receiver.receiveMessages(MAX_LISTEN);
