@@ -53,5 +53,5 @@ app.use(bodyparser.json());
 // start server
 // pre: config valid
 server.listen(PORT, function () {
-    console.log('app listening on port '+PORT+'!');
+    console.log('eventListener listening on port '+PORT+'!');
 });

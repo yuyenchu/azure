@@ -1,2 +1,1 @@
-node app.js & node twinListener.js & stateListener.js & node eventListener.js
-de
+node app.js & node eventListener.js & node stateListener.js & node twinListener.js
