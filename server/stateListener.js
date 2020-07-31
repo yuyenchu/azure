@@ -9,7 +9,7 @@ const config = require('config');
 const request = require('request');
 const { ServiceBusClient, ReceiveMode } = require("@azure/service-bus"); 
 const sb = config.get('serviceBus');
-const PORT = config.get('port').main;
+const PORT = config.get('port').state;
 const MAX_LISTEN = 10;  // max message receive when listen
 const LISTEN_INTERVAL = 1000;   // listen rate
 
