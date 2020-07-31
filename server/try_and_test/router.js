@@ -1,8 +1,8 @@
-process.env['NODE_CONFIG_DIR'] = __dirname + '/config/';
+process.env['NODE_CONFIG_DIR'] = __dirname + '../config/';
 
 const request = require('request');
 const config = require('config');
-const users = require('./config/user.json');
+const users = require('../config/user.json');
 const { EventHubConsumerClient } = require("@azure/event-hubs");
 
 const hub = config.get('hub');

@@ -7,6 +7,8 @@
 	},
 	"dependencies": {
 		"@azure/event-hubs": "^5.2.2",
+		"@azure/identity": "^1.0.3",
+		"@azure/keyvault-secrets": "^4.0.4",
 		"@azure/service-bus": "^1.1.8",
 		"azure-iothub": "^1.12.4",
 		"body-parser": "^1.19.0",
