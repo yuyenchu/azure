@@ -293,7 +293,7 @@ app.route('/twin/:id/:newname?')
 // post: send state change with socket, respond to res
 app.post('/state/:id', function (req, res) {
     devices[req.params.id] = req.body;
-    io.emit(req.params.id+"/device",devices[req.params.id]);
+    io.emit(req.params.id+"/device", devices[req.params.id]);
     console.log("receive event call: "+req.params.id);
     res.status(200).send("ok")
 });
@@ -303,7 +303,7 @@ app.post('/state/:id', function (req, res) {
 // post: send telemtry with socket, respond to res
 app.post('/event/:id', function (req, res) {
     io.emit(req.params.id+"/telemtry", req.body);
-    console.log("receive event call: "+req.params.id);
+    console.log("receive event call: "+req.params.id+req.body);
     res.status(200).send("ok")
 });
 
