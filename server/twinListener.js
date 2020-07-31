@@ -31,7 +31,7 @@ async function twinListener(receiver) {
                         url: "http://localhost:3000/twin/"+id,
                         json: msg.body
                     }, 	function(error,response){
-                        console.log("Twin  :"+id+" ("+response.statusCode+")");
+                        console.log("Twin  : "+id+" ("+response.statusCode+")");
                     });
                 msg.complete();
             });
@@ -40,19 +40,18 @@ async function twinListener(receiver) {
         }
         helper.sleep(LISTEN_INTERVAL);
     }
-    // setTimeout(function() {twinListener(receiver);}, LISTEN_INTERVAL);
 }
 
 // use client to connect to servicebus queue
 // pre: config valid
-console.log("---start initializing---");
+console.log("---tL start initializing---");
 const sbClient = ServiceBusClient.createFromConnectionString(sb.connectionstr); 
 const twinQueueClient = sbClient.createQueueClient(sb.queueNames.twin);
 const twinReceiver = twinQueueClient.createReceiver(ReceiveMode.peekLock);
-console.log("service bus connected");
+console.log("tL service bus connected");
 twinListener(twinReceiver);
 console.log("start listening twin update");
-console.log("---initialize complete---");
+console.log("---tL initialize complete---");
 
 // app setup
 app.use(bodyparser.urlencoded({ extended: false }));

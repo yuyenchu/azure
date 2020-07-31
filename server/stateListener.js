@@ -35,7 +35,7 @@ async function stateListener(receiver) {
                         lastActive: msg.body.eventTime
                     }
                 }, 	function(error,response){
-                    console.log("State :"+id+" ("+response.statusCode+")");
+                    console.log("State : "+id+" ("+response.statusCode+")");
                 });
                 msg.complete();
             });
@@ -44,19 +44,18 @@ async function stateListener(receiver) {
         }
         helper.sleep(LISTEN_INTERVAL);
     }
-    // setTimeout(function() {stateListener(receiver);}, LISTEN_INTERVAL);
 }
 
 // use client to connect to servicebus queue
 // pre: config valid
-console.log("---start initializing---");
+console.log("---sL start initializing---");
 const sbClient = ServiceBusClient.createFromConnectionString(sb.connectionstr); 
 const stateQueueClient = sbClient.createQueueClient(sb.queueNames.state);
 const stateReceiver = stateQueueClient.createReceiver(ReceiveMode.peekLock);
-console.log("service bus connected");
+console.log("sL service bus connected");
 stateListener(stateReceiver);
 console.log("start listening device state");
-console.log("---initialize complete---");
+console.log("---sL initialize complete---");
 
 // app setup
 app.use(bodyparser.urlencoded({ extended: false }));

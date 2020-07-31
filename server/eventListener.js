@@ -12,7 +12,7 @@ const PORT = config.get('port').event;
 
 // use client to connect to servicebus queue
 // pre: config valid
-console.log("---start initializing---");
+console.log("---eL start initializing---");
 const consumerClient = new EventHubConsumerClient("$Default", eh.connectionstr);
 console.log("event hub connected");
 
@@ -33,7 +33,7 @@ consumerClient.subscribe({
                     "body": event.body
                 }
             }, 	function(error,response){
-                console.log("Tele :"+id+" ("+response.statusCode+")");
+                console.log("Tele : "+id+" ("+response.statusCode+")");
             });
         }
     },
@@ -42,7 +42,7 @@ consumerClient.subscribe({
     }
 });
 console.log("start listening telemtry");
-console.log("---initialize complete---");
+console.log("---eL initialize complete---");
 
 
 // app setup
