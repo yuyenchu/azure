@@ -30,5 +30,10 @@
     "password" : "Password123#@!",
     "database" : "iotInfodb"
   },
-  "port": 3000
+  "port": {
+    "main": 3000,
+    "event": 3001,
+    "state": 3002,
+    "twin": 3003
+  }
 }
