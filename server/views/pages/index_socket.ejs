@@ -292,7 +292,6 @@
 			});
 
 			socket.on(id+"/telemtry", function(data){
-				// data = JSON.parse(msg.body);
 				console.log("receive telemtry");
 				drawChart(data["body"], id, data["time"]);
 			});
