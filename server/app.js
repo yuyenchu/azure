@@ -303,7 +303,7 @@ app.post('/state/:id', function (req, res) {
 // post: send telemtry with socket, respond to res
 app.post('/event/:id', function (req, res) {
     io.emit(req.params.id+"/telemtry", req.body);
-    console.log("receive event call: "+req.params.id+req.body);
+    console.log("receive event call: "+req.params.id);
     res.status(200).send("ok")
 });
 
