@@ -2,7 +2,7 @@ var express = require('express');
 var bodyparser = require('body-parser');
 var app = express();
 var server = require('http').createServer(app);
-var helper = require('helper.js');
+var helper = require('./helper.js');
 // declare config file path
 process.env['NODE_CONFIG_DIR'] = __dirname + '/config/';
 const config = require('config');
@@ -17,8 +17,8 @@ const LISTEN_INTERVAL = 1000;   // listen rate
 // pre: receiver != null, config valid
 // post: call main app with http, schedule next receive
 async function twinListener(receiver) {
+    const messages = null;
     while (true) {
-        const messages = null;
         try {
             messages = await receiver.receiveMessages(MAX_LISTEN);
         } catch(err) {
