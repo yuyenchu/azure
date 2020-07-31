@@ -18,7 +18,7 @@ const LISTEN_INTERVAL = 1000;   // listen rate
 // post: call main app with http, schedule next receive
 async function twinListener(receiver) {
     while (true) {
-        const messages;
+        const messages = null;
         try {
             messages = await receiver.receiveMessages(MAX_LISTEN);
         } catch(err) {
