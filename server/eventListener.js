@@ -10,6 +10,31 @@ const { EventHubConsumerClient } = require("@azure/event-hubs");
 const eh = config.get('eventhub');
 const PORT = config.get('port').event;
 
+function unwrapTelemtry(data, key, out, id) {
+    Object.keys(data).forEach(ele => {
+        if (Number(data[ele])){
+            out[ele] = Number(data[ele]);
+        } else if (ele == "values" && Array.isArray(data[ele])) {
+            data[ele].forEach(element => {
+                sned = {};
+                send[key] = element["value"];
+                request.post({
+                    url: "http://localhost:3000/event/"+id,
+                    json: {
+                        "time": element["updateTimeStamp"],
+                        "body": send
+                    }
+                }, 	function(error,response){
+                    console.log("Tele : "+id+" ("+response.statusCode+")");
+                });
+                io.emit(id+"/telemtry", send);
+            })
+        } else if (typeof(ele) == "object"){
+            unwrapTelemtry(data[ele], ele, out, id);
+        }
+    });
+}
+
 // use client to connect to servicebus queue
 // pre: config valid
 console.log("---eL start initializing---");

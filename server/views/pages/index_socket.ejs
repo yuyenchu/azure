@@ -133,7 +133,7 @@
 					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), {
 						type: 'line',
 						data: {	"labels": [],
-										"datasets":[]},
+								"datasets":[]},
 						options: {
 									scales: {
 											yAxes : [{
@@ -143,6 +143,13 @@
 													}
 											}],
 											xAxes : [{
+													type: "time",
+													time: {
+														displayFormats: {
+															millisecond: "h:mm:ss a",
+															second: "h:mm:ss a"
+														}
+													},
 													ticks : {
 														callback: function(tick, index, array) {
 																return (index % 3) ? "" : tick;
@@ -183,30 +190,28 @@
 		}
 					
 		// insert data to chart
-		function insertData(chart, lb, dat) {
-			if (typeof(dat) == "boolean" || typeof(dat) == "number") {
-				var found = false;
-				for (const [index, element] of chart.data.datasets.entries()) {
-					// console.log(element.label);
-					// console.log(lb)
-					if (element.label == lb) {
-						var found = true;
-						element.data.push(dat);
-						if(element.data.length > MAX_PTS){
-							element.data.shift();
-						}
-						break;
+		function insertData(chart, lb, dat, time) {
+			var found = false;
+			for (const [index, element] of chart.data.datasets.entries()) {
+				// console.log(element.label);
+				// console.log(lb)
+				if (element.label == lb && time > element.data[element.data.length - 1].x) {
+					var found = true;
+					element.data.push({x: moment(time), y:Number(dat)});
+					if(element.data.length > MAX_PTS){
+						element.data.shift();
 					}
+					break;
 				}
-				if (!found) {
-					chart.data.datasets.push({
-						"label":lb,
-						"data":[dat],
-						"fill":false,
-						"borderColor":COLORS[chart.data.datasets.length%COLORS.length],
-						"lineTension":0.1
-					});
-				}
+			}
+			if (!found) {
+				chart.data.datasets.push({
+					"label":lb,
+					"data":[dat],
+					"fill":false,
+					"borderColor":COLORS[chart.data.datasets.length%COLORS.length],
+					"lineTension":0.1
+				});
 			}
 		}
 
@@ -216,25 +221,16 @@
 		// time = full time stamp
 		// msg = data to plot
 		function drawChart(msg, title, time){
-				var chart = charts[title];
-				var labels = chart.data.labels;
-				var timestamp = time.split(" ")[4];
-				// console.log("brokerprop"+brokerprop);
-				console.log(timestamp+" "+labels[labels.length - 1]);
-				if (!labels[labels.length - 1] || timestamp > labels[labels.length - 1]) {
-					Object.keys(msg).forEach(element => {
-						insertData(chart, element, JSON.parse(msg[element]));
-					});
-					labels.push(timestamp);
-					if(labels.length > MAX_PTS){
-						labels.shift();
-					}
-				}
-				// chart.update({
-				// 		duration: 800,
-				// 		easing: 'easeOutBounce'
-				// });
-				chart.update();
+			var chart = charts[title];
+			console.log(moment(time)+" "+title);
+			Object.keys(msg).forEach(element => {
+				insertData(chart, element, JSON.parse(msg[element]), moment(time));
+			});
+			// chart.update({
+			// 		duration: 800,
+			// 		easing: 'easeOutBounce'
+			// });
+			chart.update();
 		}
 
 		// draw connection state badge
