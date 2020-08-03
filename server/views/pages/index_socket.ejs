@@ -192,7 +192,7 @@
 		// insert data to chart
 		function insertData(chart, lb, dat, time) {
 			var found = false;
-			for (const [index, element] of chart.data.datasets.entries()) {
+			for (const element of chart.data.datasets.entries()) {
 				// console.log(element.label);
 				// console.log(lb)
 				if (element.label == lb && time > element.data[element.data.length - 1].x) {
@@ -207,7 +207,7 @@
 			if (!found) {
 				chart.data.datasets.push({
 					"label":lb,
-					"data":[dat],
+					"data":[{x: moment(time), y:Number(dat)}],
 					"fill":false,
 					"borderColor":COLORS[chart.data.datasets.length%COLORS.length],
 					"lineTension":0.1
