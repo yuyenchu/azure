@@ -195,13 +195,15 @@
 			for (const element of chart.data.datasets.entries()) {
 				// console.log(element.label);
 				// console.log(lb)
-				if (element.label == lb && time > element.data[element.data.length - 1].x) {
+				if (element.label == lb){
 					var found = true;
-					element.data.push({x: moment(time), y:Number(dat)});
-					if(element.data.length > MAX_PTS){
-						element.data.shift();
+					if(time > element.data[element.data.length - 1].x) {
+						element.data.push({x: moment(time), y:Number(dat)});
+						if(element.data.length > MAX_PTS){
+							element.data.shift();
+						}
+						break;
 					}
-					break;
 				}
 			}
 			if (!found) {
