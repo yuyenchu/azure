@@ -192,7 +192,7 @@
 		// insert data to chart
 		function insertData(chart, lb, dat, time) {
 			var found = false;
-			for (const element of chart.data.datasets.entries()) {
+			for (const [index, element] of chart.data.datasets.entries()) {
 				// console.log(element.label);
 				// console.log(lb)
 				if (element.label == lb){
