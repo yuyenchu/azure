@@ -163,14 +163,17 @@ app.get('/home', function(req, res) {
 app.get('/manage', function(req, res) {
     if (req.session.loggedin) {
         devicesToRender = {};
+        twinsToRender = {};
         connection.query('SELECT device AS result FROM viewControl WHERE username = ?', [req.session.username], function(error, results, fields) {
             results.forEach(element => {
                 devicesToRender[element['result']] = devices[element['result']];
+                twinsToRender[element['result']] = twins[element['result']];
             });
             res.render('pages/manage',{
                 username: req.session.username, 
                 disable: "",
                 devices: devicesToRender,
+                twins: twinsToRender
             });
         });
 	} else {

@@ -12,11 +12,72 @@
     </header>
     <div class="container-fluid content mb-3">
         <h3 style="text-align:center">
-            <b>Registered Devices</b>
+            <b>Device List</b>
         </h3>
+        <div class="container">
+            <div class="row">
+              <div class="col-12">
+                <table class="table table-striped ">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="select-all form-check-input" id="selectall">
+                                </div>
+                            </th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Device Id</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">ThingsPro ver.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="body">
+                        <tr>
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="select-item form-check-input" id="check1">
+                                
+                            </div>
+                        </td>
+                        <td>Name</td>
+                        <td>Device Id</td>
+                        <td>Status</td>
+                        <td>1.0.0</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
 		const buttonSpinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
         var devices = <%- JSON.stringify(devices) %>;
+        var twins = <%- JSON.stringify(twins) %>;
+
+        //column checkbox select all or cancel
+        $("input.select-all").click(function () {
+            var checked = this.checked;
+            $("input.select-item").each(function (index,item) {
+                item.checked = checked;
+            });
+        });
+        //check selected items
+        $("input.select-item").click(function () {
+            var checked = this.checked;
+            console.log(checked);
+            checkSelected();
+        });
+
+        //check is all selected
+        function checkSelected() {
+            var all = $("input.select-all")[0];
+            var total = $("input.select-item").length;
+            var len = $("input.select-item:checked:checked").length;
+            console.log("total:"+total);
+            console.log("len:"+len);
+            all.checked = len===total;
+        }
+
     </script>
 </body>
