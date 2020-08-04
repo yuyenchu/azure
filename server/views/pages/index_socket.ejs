@@ -63,18 +63,9 @@
 										"rgb(254, 27, 28)","rgb(254, 255, 51)","rgb(178, 102, 255)",
 										"rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
 		const buttonSpinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-		const devices = <%- JSON.stringify(devices) %>;
-		const twins = <%- JSON.stringify(twins) %>;
+		var devices = <%- JSON.stringify(devices) %>;
+		var twins = <%- JSON.stringify(twins) %>;
 		var charts = {};
-		
-		function toggle(id) {
-				var x = document.getElementById(id);
-				if (x.style.display === "none") {
-						x.style.display = "block";
-				} else {
-						x.style.display = "none";
-				}
-		}
 
 		function invokeall() {
 			$("#resultall"+id).html("");
@@ -232,7 +223,7 @@
 				// space for twin info
 				if (document.getElementById(element) == undefined){
 					$("#devices").append('<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#'+element+'")">More Info</button>');
-					$("#devices").append('<div id='+element+' class="canvas collapse" style="display: none"></div><hr>');
+					$("#devices").append('<div id='+element+' class="canvas collapse"></div><hr>');
 				} 
 			});
 		}
@@ -301,22 +292,24 @@
 		}
 
 		// draw connection state badge
-		function drawState(data, element) {
+		function drawState(data, id) {
 			// connstatus badge color and text
+			devices[id] = data;
 			if(data["state"] == "Disconnected"){
-					$("#"+element+"label").removeClass("badge badge-success");
-					$("#"+element+"label").addClass("badge badge-danger");
-					$("#"+element+"label").text("Disconnected at "+
+					$("#"+id+"label").removeClass("badge badge-success");
+					$("#"+id+"label").addClass("badge badge-danger");
+					$("#"+id+"label").text("Disconnected at "+
 						data["lastActive"].split(".")[0].replace("T", " "));
 				} else {
-					$("#"+element+"label").removeClass("badge badge-danger");
-					$("#"+element+"label").addClass("badge badge-success");
-					$("#"+element+"label").text(data["state"]);
+					$("#"+id+"label").removeClass("badge badge-danger");
+					$("#"+id+"label").addClass("badge badge-success");
+					$("#"+id+"label").text(data["state"]);
 				}
 		}
 
 		// draw twin info block
 		function drawTwin(twin, id){
+			twins[id] = twin;
 			var str ='';
 			Object.keys(twin).forEach(element =>{
 				// console.log(element)
