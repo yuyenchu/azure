@@ -11,10 +11,34 @@
     <%- include('../partials/header') %>
   </header>
 	<div class="container-fluid content mb-3">
-		<h3 style="text-align:center"><b>Registered Devices</b></h3>
+		<h3 style="text-align:center">
+			<a data-toggle="collapse" href="#controlall" class="text-dark nav-link">
+				<b>Registered Devices</b>
+			</a>
+		</h3>
+		<div id="controlall" class="collapse">
+			<hr class="double-line">
+			<p style="text-align:center">Direct Method to All Devices</p>
+			<div class="input-group mb-3 mt-3 d-flex justify-content-center">
+				<input type="text" class="form-control" placeholder="Method Name" id="methodall" style="max-width: 200px">
+				<input type="text" class="form-control" placeholder="Payload" id="payloadall" style="max-width: 200px">
+			</div>
+			<div class="mb-3 d-flex justify-content-center">
+				<button type="button" class="btn btn-danger" onclick="invokeall()">submit</button>
+			</div>
+			<label id="resultall" class="mt-1 ml-3"></label>
+			<hr class="double-line">
+			<p style="text-align:center">Twin Patch to All Devices</p>
+			<div class="form-group">
+				<textarea class="form-control" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px; height: 148px;"></textarea>
+			</div>
+			<div class="mb-3 d-flex justify-content-center">
+				<button type="button" class="btn btn-danger" onclick="invokeall()">submit</button>
+			</div>
+		</div>
 		<br>
 		<hr>
-		<ul id="messages"></ul>
+		<div id="messages"></div>
 		<div id="devices"></div>
 
 		<div id="carousel" class="carousel slide p-5 border" data-interval="false">
@@ -159,7 +183,7 @@
 									},
 									title: {
 											display: true,
-											text: element
+											text: twins["properties"]["reported"]["Name"]?twin["properties"]["reported"]["Name"]:element
 									}
 							}
 					});
@@ -168,8 +192,8 @@
 				drawState(data[element], element);
 				// space for twin info
 				if (document.getElementById(element) == undefined){
-					$("#devices").append('<div id='+element+' class="canvas" style="display: none"></div>');
 					$("#devices").append('<button type="button" class="btn btn-info" onclick="toggle(\''+element+'\')">More Info</button><hr>');
+					$("#devices").append('<div id='+element+' class="canvas collapse" style="display: none"></div>');
 				} 
 			});
 		}
@@ -182,8 +206,10 @@
 				var str = "";
 				Object.keys(data).forEach(element => {
 					var ele = typeof(element)=="string" ? element.replace("$","") : element;
-					str += "</p><p style=\"text-indent:"+(indent*20)+"px;margin-top:-15px;\">"+
-								ele+": "+unwrapData(data[element], indent+1)+"</p>";
+					if (ele != "metadata") {
+						str += "</p><p style=\"text-indent:"+(indent*20)+"px;margin-top:-15px;\">"+
+									ele+": "+unwrapData(data[element], indent+1)+"</p>";
+					}
 				});
 				return str;
 			}
@@ -261,6 +287,8 @@
 			try {
 				if (twin["properties"]["reported"]["Name"]) {
 					$("#"+id+"name").text(twin["properties"]["reported"]["Name"]);
+					charts[id].options.title.text = twin["properties"]["reported"]["Name"];
+					charts[id].update();
 				} else {
 					$("#"+id+"name").text(id);
 				}
