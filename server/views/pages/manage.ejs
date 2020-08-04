@@ -55,7 +55,7 @@
         var devices = <%- JSON.stringify(devices) %>;
         var twins = <%- JSON.stringify(twins) %>;
 
-        Object.keys(deviced).forEach(element => {
+        Object.keys(devices).forEach(element => {
             $("#tbody").append('<tr><td><div class="custom-control custom-checkbox">'+
                 '<input type="checkbox" class="select-item form-check-input" id="c'+
                 element+'"></div></td><td>'+displayName(twins[element], element)+
