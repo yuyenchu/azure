@@ -31,18 +31,17 @@
                             <th scope="col">ThingsPro ver.</th>
                         </tr>
                     </thead>
-                    <tbody id="body">
+                    <tbody id="tbody">
                         <tr>
-                        <td>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="select-item form-check-input" id="check1">
-                                
-                            </div>
-                        </td>
-                        <td>Name</td>
-                        <td>Device Id</td>
-                        <td>Status</td>
-                        <td>1.0.0</td>
+                            <td>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="select-item form-check-input" id="check1">
+                                </div>
+                            </td>
+                            <td>Name</td>
+                            <td>Device Id</td>
+                            <td>Status</td>
+                            <td>1.0.0</td>
                         </tr>
                         </tbody>
                     </table>
@@ -50,10 +49,20 @@
             </div>
         </div>
     </div>
+    <script src="helper.js"></script>
     <script>
 		const buttonSpinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
         var devices = <%- JSON.stringify(devices) %>;
         var twins = <%- JSON.stringify(twins) %>;
+        twins[element]["reported"]["general"]["thingsproVersion"]
+
+        Object.keys(deviced).forEach(element => {
+            $("#tbody").append('<tr><td><div class="custom-control custom-checkbox">'+
+                '<input type="checkbox" class="select-item form-check-input" id="c'+
+                element+'"></div></td><td>'+displayName(twins[element], element)+
+                '</td><td>'+element+'</td><td>'+devices[element]["state"]+'</td><td>'+
+                displayTPEVer(twins[element], element)+'</td></tr>');
+        });
 
         //column checkbox select all or cancel
         $("input.select-all").click(function () {

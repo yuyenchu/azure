@@ -57,6 +57,7 @@
 		</div>
 
 	</div>
+	<script src="helper.js"></script>
 	<script>
 		const MAX_PTS = 31;
 		const COLORS = ["rgb(255, 159, 0)","rgb(0, 59, 174)","rgb(75, 192, 192)",
@@ -141,14 +142,6 @@
 				$("#r2"+id).html("&#10007; "+jqXHR.status+" "+jqXHR.statusText);
 				$("#tpb"+id).html("submit");
 			});
-		}
-
-		function displayName(twin, id) {
-			if (twin["properties"]["reported"] && twin["properties"]["reported"]["Name"]) {
-				return twin["properties"]["reported"]["Name"];
-			} else {
-				return id;
-			}
 		}
 
 		// initialize html elements
