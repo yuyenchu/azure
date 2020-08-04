@@ -24,7 +24,7 @@
 				<input type="text" class="form-control" placeholder="Payload" id="payloadall" style="max-width: 200px">
 			</div>
 			<div class="mb-3 d-flex justify-content-center">
-				<button type="button" class="btn btn-danger" onclick="invokeall()">submit</button>
+				<button type="button" id="dmbuttonall" class="btn btn-danger" onclick="invokeall()">submit</button>
 			</div>
 			<label id="resultall" class="mt-1 ml-3"></label>
 			<hr class="double-line">
@@ -33,7 +33,7 @@
 				<textarea class="form-control" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px; height: 148px;"></textarea>
 			</div>
 			<div class="mb-3 d-flex justify-content-center">
-				<button type="button" class="btn btn-danger" onclick="invokeall()">submit</button>
+				<button type="button" id="tpbuttonall" class="btn btn-danger" onclick="invokeall()">submit</button>
 			</div>
 		</div>
 		<br>
@@ -62,6 +62,7 @@
 		const COLORS = ["rgb(255, 159, 0)","rgb(0, 59, 174)","rgb(75, 192, 192)",
 										"rgb(254, 27, 28)","rgb(254, 255, 51)","rgb(178, 102, 255)",
 										"rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
+		const buttonSpinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 		const devices = <%- JSON.stringify(devices) %>;
 		const twins = <%- JSON.stringify(twins) %>;
 		var charts = {};
@@ -75,9 +76,38 @@
 				}
 		}
 
+		function invokeall() {
+			$("#resultall"+id).html("");
+			$("#dmbuttonall").html(buttonSpinner);
+			var methodname = $("#methodall").val().trim();
+			var payload = $("#payloadall").val().trim();
+			Object.keys(deveices).forEach(ele => {
+				$.ajax({
+				url: "/method/"+id+"/"+methodname+"/"+payload,
+				success: function (data, textStatus, request) {
+					// console.log("data type: "+typeof(data));
+					console.log("data: "+data);
+					if (data.status == 200) {
+						$("#r"+id).css('color', 'green');
+						$("#r"+id).html("&#10003; "+data.payload.Response);
+					} else {
+						$("#r"+id).css('color', 'red');
+						$("#r"+id).html("&#10007; "+data.status+data.payload.Response);
+					}
+					$("#dmbuttonall").html("submit");
+				}
+				}).fail(function (jqXHR, textStatus, errorThrown) { 
+					$("#r"+id).css('color', 'red');
+					$("#r"+id).html("&#10007; "+jqXHR.status+jqXHR.statusText);
+					$("#dmbuttonall").html("submit");
+				});
+			})
+		}
+
 		// http requests for invoke direct method
 		function invoke(id) {
 			$("#r"+id).html("");
+			$("#dmb"+id).html(buttonSpinner);
 			var methodname = $("#m"+id).val().trim();
 			var payload = $("#p"+id).val().trim();
 			$.ajax({
@@ -92,11 +122,12 @@
 						$("#r"+id).css('color', 'red');
 						$("#r"+id).html("&#10007; "+data.status+data.payload.Response);
 					}
-					
+					$("#dmb"+id).html("submit");
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
 				$("#r"+id).css('color', 'red');
 				$("#r"+id).html("&#10007; "+jqXHR.status+jqXHR.statusText);
+				$("#dmb"+id).html("submit");
 			});
 		}
 
@@ -128,25 +159,25 @@
 				console.log(count);
 				if (document.getElementById(element+"label") == undefined){
 					// device name and conn status
-					$("#devices").append(	'<div class="p-3 mb-2 bg-light"><p class="mt-3 d-inline-block" '+
-																'id="'+element+'name"></p>'+
-																'<span class="m-2" id = "'+element+
-																'label"></span></div>');
+					$("#devices").append('<div class="p-3 mb-2 bg-light"><p class="mt-3 d-inline-block" '+
+										'id="'+element+'name"></p>'+
+										'<span class="m-2" id = "'+element+
+										'label"></span></div>');
 					// input group for invoke direcjt method
-					$("#devices").append(	'<div class="input-group mb-3 mt-3"><input type="text" class='+
-																'"form-control" placeholder="Method Name" id="m'+
-																element+'" style="max-width: 200px">'+
-																'<input type="text" class="form-control" placeholder="Payload" id="p'+
-																element+'" style="max-width: 175px">'+
-																'<button type="button" class="btn btn-primary ml-3" onclick="invoke(\''+
-																element+'\')">submit</button>'+
-																'<label id="r'+element+'" class="mt-1 ml-3"></label></div>'+
-																'<div class="input-group mb-3 mt-3"><input type="text" class='+
-																'"form-control" placeholder="New Device Name" id="n'+
-																element+'" style="max-width: 200px">'+
-																'<button type="button" class="btn btn-primary ml-3" onclick="updateTwin(\''+
-																element+'\')">submit</button>'+
-																'<label id="r2'+element+'" class="mt-1 ml-3"></label></div>');
+					$("#devices").append('<div class="input-group mb-3 mt-3"><input type="text" class='+
+										'"form-control" placeholder="Method Name" id="m'+
+										element+'" style="max-width: 200px">'+
+										'<input type="text" class="form-control" placeholder="Payload" id="p'+
+										element+'" style="max-width: 175px">'+
+										'<button type="button" id="dmb'+element+'"class="btn btn-primary ml-3" onclick="invoke(\''+
+										element+'\')">submit</button>'+
+										'<label id="r'+element+'" class="mt-1 ml-3"></label></div>'+
+										'<div class="input-group mb-3 mt-3"><input type="text" class='+
+										'"form-control" placeholder="New Device Name" id="n'+
+										element+'" style="max-width: 200px">'+
+										'<button type="button" id="tpb'+element+'class="btn btn-primary ml-3" onclick="updateTwin(\''+
+										element+'\')">submit</button>'+
+											'<label id="r2'+element+'" class="mt-1 ml-3"></label></div>');
 					// insert carousel indicator
 					$("#indicator").append(	'<li data-target="#carousel" data-slide-to="0"'+
 																	(count==0?'class="active"':' ')+'></li>');
