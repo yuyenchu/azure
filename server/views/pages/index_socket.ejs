@@ -72,7 +72,7 @@
 			$("#dmbuttonall").html(buttonSpinner);
 			var methodname = $("#methodall").val().trim();
 			var payload = $("#payloadall").val().trim();
-			Object.keys(deveices).forEach(ele => {
+			Object.keys(devices).forEach(ele => {
 				$.ajax({
 				url: "/method/"+ele+"/"+methodname+"/"+payload,
 				success: function (data, textStatus, request) {
