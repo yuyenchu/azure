@@ -30,7 +30,7 @@
 			<hr class="double-line">
 			<p style="text-align:center">Twin Patch to All Devices</p>
 			<div class="form-group">
-				<textarea class="form-control" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px; height: 148px;"></textarea>
+				<textarea class="form-control" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px; height: 148px;" placeholder="desired: {}"></textarea>
 			</div>
 			<div class="mb-3 d-flex justify-content-center">
 				<button type="button" id="tpbuttonall" class="btn btn-danger" onclick="invokeall()">submit</button>
@@ -125,6 +125,7 @@
 		// http requests for update desired device name in twin
 		function updateTwin(id) {
 			$("#r2"+id).html("");
+			$("#tpb"+id).html(buttonSpinner);
 			var newname = $("#n"+id).val().trim();
 			$.ajax({
 				url: "/twin/"+id+"/"+newname,
@@ -136,10 +137,12 @@
 						$("#r2"+id).css('color', 'red');
 						$("#r2"+id).html("&#10007; Unable to update "+request.status);
 					}
+					$("#tpb"+id).html("submit");
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
 				$("#r2"+id).css('color', 'red');
 				$("#r2"+id).html("&#10007; "+jqXHR.status+jqXHR.statusText);
+				$("#tpb"+id).html("submit");
 			});
 		}
 
