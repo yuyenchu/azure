@@ -12,6 +12,7 @@
     <div class="dropdown-menu mt-2 dropdown-menu-right" aria-labelledby="navbarDropdown">
       <p class="dropdown-item" id="username"><%= username %></p>
       <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="/manage">Manage Devices</a>
       <form action="out" method="POST">
         <a class="dropdown-item <%= disable %>" href="/logout" type="submit">Log out</a>
       </form>

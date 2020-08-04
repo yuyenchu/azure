@@ -159,6 +159,26 @@ app.get('/home', function(req, res) {
 	}
 });
 
+// 
+app.get('/manage', function(req, res) {
+    if (req.session.loggedin) {
+        devicesToRender = {};
+        connection.query('SELECT device AS result FROM viewControl WHERE username = ?', [req.session.username], function(error, results, fields) {
+            results.forEach(element => {
+                devicesToRender[element['result']] = devices[element['result']];
+            });
+            res.render('pages/manage',{
+                username: req.session.username, 
+                disable: "",
+                devices: devicesToRender,
+            });
+        });
+	} else {
+        req.session.message = "Please login to view manage page";
+        res.redirect('/login');
+	}
+});
+
 // login page
 // pre: views/pages/login exists
 // post: respond to res
