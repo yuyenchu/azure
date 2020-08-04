@@ -152,6 +152,14 @@
 			});
 		}
 
+		function displayName(twin, id) {
+			if (twin["properties"]["reported"] && twin["properties"]["reported"]["Name"]) {
+				return twin["properties"]["reported"]["Name"];
+			} else {
+				return id;
+			}
+		}
+
 		// initialize html elements
 		function items(data){
 			var count = 0;
@@ -214,7 +222,7 @@
 									},
 									title: {
 											display: true,
-											text: twins["properties"]["reported"]["Name"]?twin["properties"]["reported"]["Name"]:element
+											text: displayName(twins[element], element)
 									}
 							}
 					});
@@ -316,13 +324,9 @@
 			});
 			$("#"+id).html(str);
 			try {
-				if (twin["properties"]["reported"]["Name"]) {
-					$("#"+id+"name").text(twin["properties"]["reported"]["Name"]);
-					charts[id].options.title.text = twin["properties"]["reported"]["Name"];
-					charts[id].update();
-				} else {
-					$("#"+id+"name").text(id);
-				}
+				$("#"+id+"name").text(displayName(twin, id));
+				charts[id].options.title.text = displayName(twin, id);
+				charts[id].update();
 			} catch(err) {
 				console.log(err)
 			}
