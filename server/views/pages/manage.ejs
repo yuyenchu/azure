@@ -54,7 +54,6 @@
 		const buttonSpinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
         var devices = <%- JSON.stringify(devices) %>;
         var twins = <%- JSON.stringify(twins) %>;
-        twins[element]["reported"]["general"]["thingsproVersion"]
 
         Object.keys(deviced).forEach(element => {
             $("#tbody").append('<tr><td><div class="custom-control custom-checkbox">'+
