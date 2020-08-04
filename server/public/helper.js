@@ -9,7 +9,7 @@ function displayName(twin, id) {
 function displayTPEVer(twin) {
     if (twin["properties"]["reported"] && twin["properties"]["reported"]["general"] 
         && twin["properties"]["reported"]["general"]["thingsproVersion"]) {
-        return twin["properties"]["general"]["thingsproVersion"];
+        return twin["properties"]["reported"]["general"]["thingsproVersion"];
     } else {
         return "-";
     }
