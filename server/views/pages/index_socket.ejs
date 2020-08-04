@@ -68,28 +68,25 @@
 		var charts = {};
 
 		function invokeall() {
-			$("#resultall"+id).html("");
+			$("#resultall").html("");
 			$("#dmbuttonall").html(buttonSpinner);
 			var methodname = $("#methodall").val().trim();
 			var payload = $("#payloadall").val().trim();
 			Object.keys(deveices).forEach(ele => {
 				$.ajax({
-				url: "/method/"+id+"/"+methodname+"/"+payload,
+				url: "/method/"+ele+"/"+methodname+"/"+payload,
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					console.log("data: "+data);
 					if (data.status == 200) {
-						$("#r"+id).css('color', 'green');
-						$("#r"+id).html("&#10003; "+data.payload.Response);
+						$("#resultall").append('<label style="color:green">&#10003;'+data.payload.Response+'</label>');
 					} else {
-						$("#r"+id).css('color', 'red');
-						$("#r"+id).html("&#10007; "+data.status+data.payload.Response);
+						$("#resultall").append('<label style="color:red">&#10007;'+data.payload.Response+'</label>');
 					}
 					$("#dmbuttonall").html("submit");
 				}
 				}).fail(function (jqXHR, textStatus, errorThrown) { 
-					$("#r"+id).css('color', 'red');
-					$("#r"+id).html("&#10007; "+jqXHR.status+jqXHR.statusText);
+					$("#resultall").append('<label style="color:red">&#10007;'+jqXHR.status+" "+jqXHR.statusText+'</label>');
 					$("#dmbuttonall").html("submit");
 				});
 			})
@@ -117,7 +114,7 @@
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
 				$("#r"+id).css('color', 'red');
-				$("#r"+id).html("&#10007; "+jqXHR.status+jqXHR.statusText);
+				$("#r"+id).html("&#10007; "+jqXHR.status+" "+jqXHR.statusText);
 				$("#dmb"+id).html("submit");
 			});
 		}
@@ -141,7 +138,7 @@
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
 				$("#r2"+id).css('color', 'red');
-				$("#r2"+id).html("&#10007; "+jqXHR.status+jqXHR.statusText);
+				$("#r2"+id).html("&#10007; "+jqXHR.status+" "+jqXHR.statusText);
 				$("#tpb"+id).html("submit");
 			});
 		}
