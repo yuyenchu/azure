@@ -231,8 +231,8 @@
 				drawState(data[element], element);
 				// space for twin info
 				if (document.getElementById(element) == undefined){
-					$("#devices").append('<button type="button" class="btn btn-info" onclick="toggle(\''+element+'\')">More Info</button><hr>');
-					$("#devices").append('<div id='+element+' class="canvas collapse" style="display: none"></div>');
+					$("#devices").append('<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#'+element+'")">More Info</button>');
+					$("#devices").append('<div id='+element+' class="canvas collapse" style="display: none"></div><hr>');
 				} 
 			});
 		}
