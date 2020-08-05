@@ -37,7 +37,7 @@
                         </tr>
                     </thead>
                     <tbody id="tbody">
-                        </tbody>
+                    </tbody>
                     </table>
                 </div>
             </div>
@@ -75,6 +75,7 @@
         var twins = <%- JSON.stringify(twins) %>;
 
         function drawTable() {
+            $("#tbody").html("");
             Object.keys(devices).forEach(element => {
                 $("#tbody").append('<tr><td><div class="custom-control custom-checkbox">'+
                     '<input type="checkbox" class="select-item form-check-input" id="'+
