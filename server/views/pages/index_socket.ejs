@@ -19,9 +19,9 @@
 		<div id="controlall" class="collapse">
 			<hr class="double-line">
 			<p style="text-align:center">Direct Method to All Devices</p>
-			<div class="input-group mb-3 mt-3 d-flex justify-content-center">
+			<div class="mb-3 mt-3 d-flex justify-content-center">
 				<input type="text" class="form-control" placeholder="Method Name" id="methodall" style="max-width: 200px">
-				<input type="text" class="form-control" placeholder="Payload" id="payloadall" style="max-width: 200px">
+				<textarea class="form-control mt-3" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px;" placeholder="desired: {}"></textarea>
 			</div>
 			<div class="mb-3 d-flex justify-content-center">
 				<button type="button" id="dmbuttonall" class="btn btn-danger" onclick="invokeall()">submit</button>
@@ -29,9 +29,7 @@
 			<label id="resultall" class="mt-1 ml-3"></label>
 			<hr class="double-line">
 			<p style="text-align:center">Twin Patch to All Devices</p>
-			<div class="form-group">
-				<textarea class="form-control" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px;" placeholder="desired: {}"></textarea>
-			</div>
+			<textarea class="form-control mb-3" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px;" placeholder="desired: {}"></textarea>
 			<div class="mb-3 d-flex justify-content-center">
 				<button type="button" id="tpbuttonall" class="btn btn-danger" onclick="invokeall()">submit</button>
 			</div>
@@ -95,7 +93,7 @@
 
 		// http requests for invoke direct method
 		function invoke(id) {
-			// $("#r"+id).html("");
+			$("#r"+id).val("");
 			$("#dmb"+id).html(buttonSpinner);
 			var methodname = $("#m"+id).val().trim();
 			var payload = $("#p"+id).val().trim();
