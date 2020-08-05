@@ -183,10 +183,10 @@ app.get('/manage', function(req, res) {
 });
 
 app.post('/addView/:id', function(req, res) {
-    console.log("addView"+req.params.id);
+    console.log("addView "+req.params.id);
     if (req.session.loggedin) {
         connection.query('SELECT COUNT(*) AS result FROM viewControl WHERE username = ? AND device = ?', 
-                            [req.session.loggedin, req.params.id], 
+                            [req.session.username, req.params.id], 
                             function(error, results, fields) {
             if (results[0]["result"] == 0) {
                 console.log("view not already exist");
