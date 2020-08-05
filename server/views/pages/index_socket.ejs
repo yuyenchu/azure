@@ -91,8 +91,7 @@
 													}]
 											},
 											title: {
-													display: true,
-													text: displayName(twins[element], element)
+													display: true
 											}
 									}
 							}
@@ -231,6 +230,7 @@
 					// labeling charts
 					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), chartTemplate);
 					smCharts[element] = new Chart(document.getElementById('smchart'+element).getContext('2d'), chartTemplate);
+					charts[element].options.title.text = smCharts[element].options.title.text = displayName(twins[element], element);
 					count++;
 
 					$("#modalHolder").append(`<div id="modal`+element+`" class="modal fade bd-example-modal-lg show" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-modal="true">
