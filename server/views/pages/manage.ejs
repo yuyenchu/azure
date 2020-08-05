@@ -104,7 +104,7 @@
             $("#addBtn").html(buttonSpinner);
             $.ajax({
                 type: 'POST',
-				url: "/view/"+$("#idInput").val().trim,
+				url: "/view/"+$("#idInput").val().trim(),
 				success: function (response, textStatus, request) {
                     $("#addResult").text(response);
                     $("#addBtn").html("Add view");
@@ -120,9 +120,9 @@
                 if (item.checked){
                     $.ajax({
                         type: 'DELETE',
-                        url: "/view/"+$("#idInput").attr('id'),
+                        url: "/view/"+item.id,
                         success: function (response, textStatus, request) {
-                            delete devices[$("#idInput").attr('id')];
+                            delete devices[item.id];
                             $("#deleResult").text(response);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) { 
