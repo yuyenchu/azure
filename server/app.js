@@ -206,11 +206,11 @@ app.post('/addView/:id', function(req, res) {
                             }
                         });
                     } else {
-                        res.status(304).send("device not found");
+                        res.status(200).send("device not found");
                     }
                 });
             } else {
-                res.status(304).send("view already exist");
+                res.status(200).send("view already exist");
             }
         });
     } else {
