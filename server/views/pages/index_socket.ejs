@@ -224,15 +224,10 @@
 					// insert carousel indicator
 					$("#indicator").append(	'<li data-target="#carousel" data-slide-to="0"'+
 																	(count==0?'class="active"':' ')+'></li>');
-					// carousel items (chart)
+					// insert carousel items (chart)
 					$("#inner").append(	'<div class="carousel-item'+(count==0?' active"':' ')+
 															'"><canvas id="chart'+element+'" width="400" height="400"></canvas></div>')
-					// labeling charts
-					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), chartTemplate);
-					smCharts[element] = new Chart(document.getElementById('smchart'+element).getContext('2d'), chartTemplate);
-					charts[element].options.title.text = smCharts[element].options.title.text = displayName(twins[element], element);
-					count++;
-
+					// insert modals
 					$("#modalHolder").append(`<div id="modal`+element+`" class="modal fade bd-example-modal-lg show" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-modal="true">
 						<div class="modal-dialog modal-xl modal-dialog-centered" role="document">
 							<div class="modal-content">
@@ -269,13 +264,20 @@
 								<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 								</div></div></div></div>`);
-				$("#mT"+element).dblclick(function() {
-					$("#modalTitle").prop('contenteditable', true);
-				});
-				$("#mT"+element).blur(function() {
-					$("#modalTitle").prop('contenteditable', false);
-					updateTwin(id);
-				});
+					$("#mT"+element).dblclick(function() {
+						$("#modalTitle").prop('contenteditable', true);
+					});
+					$("#mT"+element).blur(function() {
+						$("#modalTitle").prop('contenteditable', false);
+						updateTwin(id);
+					});
+					// labeling charts
+					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), chartTemplate);
+					smCharts[element] = new Chart(document.getElementById('smchart'+element).getContext('2d'), chartTemplate);
+					charts[element].options.title.text = smCharts[element].options.title.text = displayName(twins[element], element);
+					count++;
+
+					
 				}
 				drawState(data[element], element);
 				// space for twin info
