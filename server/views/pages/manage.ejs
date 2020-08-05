@@ -97,7 +97,7 @@
                 type: 'POST',
 				url: "/addView/"+$("#idInput").val(),
 				success: function (response, textStatus, request) {
-                    $("#result").text(data.body);
+                    $("#result").text(response);
                     $("#addBtn").html("Add view");
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
