@@ -96,7 +96,7 @@
             $.ajax({
                 type: 'POST',
 				url: "/addView/"+$("#idInput").val(),
-				success: function (data, textStatus, request) {
+				success: function (response, textStatus, request) {
                     $("#result").text(data.body);
                     $("#addBtn").html("Add view");
 				}
