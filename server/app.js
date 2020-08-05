@@ -196,7 +196,7 @@ app.route('/view/:id')
                     console.log("second query end "+results[0]["result"]); 
                     if (results[0]["result"] == 1) {
                         console.log("device exist");
-                        connection.query('INSERT INTO viewControl VALUES(?,?)', [req.session.loggedin, req.params.id], 
+                        connection.query('INSERT INTO viewControl VALUES(?,?)', [req.session.username, req.params.id], 
                                         function(error, results, fields) {
                             if (error) {
                                 console.log("Insert error: "+error);
@@ -225,7 +225,7 @@ app.route('/view/:id')
                             function(error, results, fields) {
             if (results[0]["result"] == 1) {
                 connection.query('DELETE FROM viewControl WHERE username = ? AND device = ?', 
-                                [req.session.loggedin, req.params.id], 
+                                [req.session.username, req.params.id], 
                                 function(error, results, fields) {
                     if (error) {
                         console.log("Dlete error: "+error);
