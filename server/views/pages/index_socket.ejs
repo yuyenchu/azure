@@ -68,7 +68,7 @@
 								data: {	"labels": [],
 										"datasets":[]},
 								options: {
-									aspectRatio: 0.5,
+									aspectRatio: 0.8,
 									scales: {
 											yAxes : [{
 													ticks : {
@@ -235,7 +235,7 @@
 					});
 					$("#mT"+element).blur(function() {
 						$("#mT"+element).prop('contenteditable', false);
-						updateTwin(id);
+						updateTwin(element);
 					});
 					// labeling charts
 					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), chartTemplate);
