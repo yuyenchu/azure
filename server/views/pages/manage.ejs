@@ -114,7 +114,7 @@
 				url: "/view/"+$("#idInput").val().trim(),
 				success: function (response, textStatus, request) {
                     $("#addResult").text(response);
-                    if (response == "view deleted successfully") {
+                    if (response == "view added successfully") {
                         added = true;
                     }
                     $("#addBtn").html("Add view");
