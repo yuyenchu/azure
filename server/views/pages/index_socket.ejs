@@ -235,7 +235,7 @@
 					});
 					$("#mT"+element).blur(function() {
 						$("#mT"+element).prop('contenteditable', false);
-						updateTwin(element);
+						updateTwin(this.id.substring(2,this.id.length));
 					});
 					// labeling charts
 					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), chartTemplate);
