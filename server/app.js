@@ -193,18 +193,24 @@ app.post('/addView/:id', function(req, res) {
                 connection.query('SELECT COUNT(*) AS result FROM devices WHERE id = ?',
                                     [req.params.id], 
                                     function(error, results, fields) {
-                    console.log("device exist");
-                    connection.query('INSERT INTO viewControl VALUES(?,?)', 
-                                [req.session.loggedin, req.params.id], 
-                                function(error, results, fields) {
-                        if (error) {
-                            console.log("Insert error: "+error);
-                        } else {
-                            console.log("insert success");
-                            res.status(200).send("view added successfully");
-                        }
-                    });
+                    if (results[0]["result"] == 1) {
+                        console.log("device exist");
+                        connection.query('INSERT INTO viewControl VALUES(?,?)', 
+                                    [req.session.loggedin, req.params.id], 
+                                    function(error, results, fields) {
+                            if (error) {
+                                console.log("Insert error: "+error);
+                            } else {
+                                console.log("insert success");
+                                res.status(200).send("view added successfully");
+                            }
+                        });
+                    } else {
+                        res.status(304).send("device not found");
+                    }
                 });
+            } else {
+                res.status(304).send("view already exist");
             }
         });
     } else {
