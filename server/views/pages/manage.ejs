@@ -48,7 +48,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                 <h5 class="modal-title" id="addModalTitle">Add view</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="checkReload()">
                     <span aria-hidden="true">×</span>
                 </button>
                 </div>
@@ -62,7 +62,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="checkReload()">Close</button>
                 <button type="button" class="btn btn-primary" id="addBtn">Add</button>
                 </div>
             </div>
@@ -73,6 +73,13 @@
 		const buttonSpinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
         var devices = <%- JSON.stringify(devices) %>;
         var twins = <%- JSON.stringify(twins) %>;
+        var added = flase;
+
+        function checkReload() {
+            if (added) {
+                location.reload();
+            }
+        }
 
         function drawTable() {
             $("#tbody").html("");
@@ -107,6 +114,9 @@
 				url: "/view/"+$("#idInput").val().trim(),
 				success: function (response, textStatus, request) {
                     $("#addResult").text(response);
+                    if (response == "view deleted successfully") {
+                        added = true;
+                    }
                     $("#addBtn").html("Add view");
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
@@ -124,13 +134,13 @@
                         success: function (response, textStatus, request) {
                             delete devices[item.id];
                             $("#deleResult").text(response);
+                            drawTable();
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) { 
                         $("#deleResult").text(jqXHR.status+" "+jqXHR.statusText);
                     });
                 }
             });
-            drawTable();
         });
         //check is all selected
         function checkSelected() {
