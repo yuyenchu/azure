@@ -40,7 +40,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade show" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="display: block;" aria-modal="true">
+    <div class="modal fade show" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-modal="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -94,13 +94,14 @@
         $("#addBtn").click(function () {
             $("#addBtn").html(buttonSpinner);
             $.ajax({
+                type: 'POST',
 				url: "/addView/"+$("#idInput").val(),
 				success: function (data, textStatus, request) {
                     $("#result").text(data.body);
                     $("#addBtn").html("Add view");
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
-                $("#result").text(data.body);
+                $("#result").text(jqXHR.status+" "+jqXHR.statusText);
                 $("#addBtn").html("Add view");
 			});
         });
