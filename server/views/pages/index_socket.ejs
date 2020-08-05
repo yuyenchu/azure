@@ -227,7 +227,7 @@
 													<canvas id="chart2`+element+`" class="p-1" style="max-height: 300px;"></canvas>     
 												</div>
 												<div class="row overflow-auto">Telemetry
-													<textarea readonly="" class="form-control" id="tele`+element+`" rows="5" style="margin-top: 0px; margin-bottom: 0px; max-height: 250px;" placeholder="result: {}"></textarea>
+													<textarea readonly class="form-control" id="tele`+element+`" rows="5" style="margin-top: 0px; margin-bottom: 0px; max-height: 250px; min-height: 40px;" placeholder="result: {}"></textarea>
 												</div>
 											</div>
 											<div class="col-8">
@@ -240,7 +240,7 @@
 														<label for="input">Method Name</label>
 														<input class="form-control" id="input" placeholder="Reboot">
 														<label for="textarea">Payload</label>
-														<textarea class="form-control" id="textarea" rows="5" style="max-height: 200px;"></textarea>
+														<textarea class="form-control" id="textarea" rows="5" style="max-height: 200px; min-height: 40px;"></textarea>
 														<button type="button" id="dmb`+element+`" class="btn btn-primary mt-3" onclick="onclick(`+element+`)">submit</button>
 														<button type="button" class="btn btn-primary mt-3 ml-3">clear</button>
 													</div>
@@ -261,7 +261,7 @@
 				// space for twin info
 				if (document.getElementById(element) == undefined){
 					$("#devices").append('<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#'+element+'">Full Twin</button>');
-					$("#devices").append('<button type="button" class="btn btn-info d-inline" data-toggle="modal" data-target="#modal'+element+'">Control Panel</button>');
+					$("#devices").append('<button type="button" class="btn btn-info d-inline ml-3" data-toggle="modal" data-target="#modal'+element+'">Control Panel</button>');
 					$("#devices").append('<div id='+element+' class="canvas collapse"></div><hr>');
 				} 
 			});
@@ -387,7 +387,7 @@
 			socket.on(id+"/telemtry", function(data){
 				console.log("receive telemtry");
 				drawChart(data["body"], id, data["time"]);
-				$("#tele"+id).val(data.body);
+				$("#tele"+id).val(JSON.stringify(data.body));
 			});
 		});
 	</script>
