@@ -121,7 +121,6 @@
 		function updateTwin(id) {
 			$("#r2"+id).html("");
 			$("#tpb"+id).html(buttonSpinner);
-			$("#n"+id).val($("#n"+id).val().trim());
 			var newname = $("#n"+id).val().trim();
 			$.ajax({
 				url: "/twin/"+id+"/"+newname,
@@ -129,6 +128,28 @@
 					if (request.status == 200) {
 						$("#r2"+id).css('color', 'green');
 						$("#r2"+id).html("&#10003; Twin updated");
+					} else {
+						$("#r2"+id).css('color', 'red');
+						$("#r2"+id).html("&#10007; Unable to update "+request.status);
+					}
+					$("#tpb"+id).html("submit");
+				}
+			}).fail(function (jqXHR, textStatus, errorThrown) { 
+				$("#r2"+id).css('color', 'red');
+				$("#r2"+id).html("&#10007; "+jqXHR.status+" "+jqXHR.statusText);
+				$("#tpb"+id).html("submit");
+			});
+		}
+
+		function updateTwin(id) {
+			var newname = $("#mT"+element).text().trim();
+			$("#mT"+element).text(newname);
+			$.ajax({
+				url: "/twin/"+id+"/"+newname,
+				success: function (data, textStatus, request) {
+					if (request.status == 200) {
+						$("#r2"+id).css('color', 'green');
+						$("#r2"+id).html("&#10003; Device name updated");
 					} else {
 						$("#r2"+id).css('color', 'red');
 						$("#r2"+id).html("&#10007; Unable to update "+request.status);
@@ -153,21 +174,21 @@
 										'id="'+element+'name"></p>'+
 										'<span class="m-2" id = "'+element+
 										'label"></span></div>');
-					// input group for invoke direcjt method
-					$("#devices").append('<div class="input-group mb-3 mt-3"><input type="text" class='+
-										'"form-control" placeholder="Method Name" id="m'+
-										element+'" style="max-width: 200px">'+
-										'<input type="text" class="form-control" placeholder="Payload" id="p'+
-										element+'" style="max-width: 175px">'+
-										'<button type="button" id="dmb'+element+'"class="btn btn-primary ml-3" onclick="invoke(\''+
-										element+'\')">submit</button>'+
-										'<label id="r'+element+'" class="mt-1 ml-3"></label></div>'+
-										'<div class="input-group mb-3 mt-3"><input type="text" class='+
-										'"form-control" placeholder="New Device Name" id="n'+
-										element+'" style="max-width: 200px">'+
-										'<button type="button" id="tpb'+element+'"class="btn btn-primary ml-3" onclick="updateTwin(\''+
-										element+'\')">submit</button>'+
-											'<label id="r2'+element+'" class="mt-1 ml-3"></label></div>');
+					// // input group for invoke direcjt method
+					// $("#devices").append('<div class="input-group mb-3 mt-3"><input type="text" class='+
+					// 					'"form-control" placeholder="Method Name" id="m'+
+					// 					element+'" style="max-width: 200px">'+
+					// 					'<input type="text" class="form-control" placeholder="Payload" id="p'+
+					// 					element+'" style="max-width: 175px">'+
+					// 					'<button type="button" id="dmb'+element+'"class="btn btn-primary ml-3" onclick="invoke(\''+
+					// 					element+'\')">submit</button>'+
+					// 					'<label id="r'+element+'" class="mt-1 ml-3"></label></div>'+
+					// 					'<div class="input-group mb-3 mt-3"><input type="text" class='+
+					// 					'"form-control" placeholder="New Device Name" id="n'+
+					// 					element+'" style="max-width: 200px">'+
+					// 					'<button type="button" id="tpb'+element+'"class="btn btn-primary ml-3" onclick="updateTwin(\''+
+					// 					element+'\')">submit</button>'+
+					// 						'<label id="r2'+element+'" class="mt-1 ml-3"></label></div>');
 					// insert carousel indicator
 					$("#indicator").append(	'<li data-target="#carousel" data-slide-to="0"'+
 																	(count==0?'class="active"':' ')+'></li>');
@@ -217,8 +238,7 @@
 								<h5 class="modal-title" id="mT`+element+`">`+displayName(twins[element], element)+`</h5>
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">×</span>
-								</button>
-								</div>
+								</button></div>
 								<div class="modal-body overflow-auto">
 									<div class="container">
 										<div class="row">
@@ -228,34 +248,32 @@
 												</div>
 												<div class="row overflow-auto">Telemetry
 													<textarea readonly class="form-control" id="tele`+element+`" rows="5" style="margin-top: 0px; margin-bottom: 0px; max-height: 250px; min-height: 40px;" placeholder="result: {}"></textarea>
-												</div>
-											</div>
+												</div></div>
 											<div class="col-8">
 												<div class="row overflow-auto" style="height: 300px;">
 													twin
-												</div>
-												<hr>
+												</div><hr>
 												<div class="row overflow-auto" style="height: 250px;">
 													<div class="form-group col">
 														<label for="input">Method Name</label>
-														<input class="form-control" id="input" placeholder="Reboot">
+														<input class="form-control" id="m`+element+`" placeholder="Reboot">
 														<label for="textarea">Payload</label>
-														<textarea class="form-control" id="textarea" rows="5" style="max-height: 200px; min-height: 40px;"></textarea>
-														<button type="button" id="dmb`+element+`" class="btn btn-primary mt-3" onclick="onclick(`+element+`)">submit</button>
+														<textarea class="form-control" id="p`+element+`" rows="5" style="max-height: 200px; min-height: 40px;"></textarea>
+														<button type="button" id="dmb`+element+`" class="btn btn-primary mt-3" onclick="invoke(`+element+`)">submit</button>
 														<button type="button" class="btn btn-primary mt-3 ml-3">clear</button>
 													</div>
 													<textarea readonly="" class="form-control mr-2 ml-2" id="r`+element+`" rows="2" style="margin-top: 0px; margin-bottom: 0px; max-height: 150px;" placeholder="result: {}"></textarea>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
+												</div></div></div></div></div>
 								<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-								</div>
-							</div>
-						</div>
-					</div>`);
+								</div></div></div></div>`);
+				("#mT"+element).dbclick(function() {
+					$("#modalTitle").prop('contenteditable', true);
+				});
+				$("#mT"+element).blur(function() {
+					$("#modalTitle").prop('contenteditable', false);
+					updateTwin(id);
+				});
 				}
 				drawState(data[element], element);
 				// space for twin info
