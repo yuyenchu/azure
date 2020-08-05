@@ -19,14 +19,16 @@
 		<div id="controlall" class="collapse">
 			<hr class="double-line">
 			<p style="text-align:center">Direct Method to All Devices</p>
-			<div class="mb-3 mt-3 d-flex justify-content-center">
+			<div class="mt-3 d-flex justify-content-center">
 				<input type="text" class="form-control" placeholder="Method Name" id="methodall" style="max-width: 200px">
-				<textarea class="form-control mt-3" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px;" placeholder="desired: {}"></textarea>
 			</div>
-			<div class="mb-3 d-flex justify-content-center">
+			<div class="mt-3 d-flex justify-content-center">
+				<textarea class="form-control" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px;" placeholder="desired: {}"></textarea>
+			</div>
+			<div class="mt-3 d-flex justify-content-center">
 				<button type="button" id="dmbuttonall" class="btn btn-danger" onclick="invokeall()">submit</button>
 			</div>
-			<label id="resultall" class="mt-1 ml-3"></label>
+			<label id="resultall" class="mt-4 ml-3"></label>
 			<hr class="double-line">
 			<p style="text-align:center">Twin Patch to All Devices</p>
 			<textarea class="form-control mb-3" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px;" placeholder="desired: {}"></textarea>
@@ -62,9 +64,42 @@
 										"rgb(254, 27, 28)","rgb(254, 255, 51)","rgb(178, 102, 255)",
 										"rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
 		const buttonSpinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+		const chartTemplate = {	type: 'line',
+								data: {	"labels": [],
+										"datasets":[]},
+								options: {
+											scales: {
+													yAxes : [{
+															ticks : {
+																	max : 100,    
+																	min : 0,
+															}
+													}],
+													xAxes : [{
+															type: "time",
+															time: {
+																displayFormats: {
+																	millisecond: "h:mm:ss a",
+																	second: "h:mm:ss a"
+																}
+															},
+															ticks : {
+																callback: function(tick, index, array) {
+																		return (index % 3) ? "" : tick;
+																}
+															}
+													}]
+											},
+											title: {
+													display: true,
+													text: displayName(twins[element], element)
+											}
+									}
+							}
 		var devices = <%- JSON.stringify(devices) %>;
 		var twins = <%- JSON.stringify(twins) %>;
 		var charts = {};
+		var smCharts = {};
 
 		function invokeall() {
 			$("#resultall").html("");
@@ -194,39 +229,8 @@
 					$("#inner").append(	'<div class="carousel-item'+(count==0?' active"':' ')+
 															'"><canvas id="chart'+element+'" width="400" height="400"></canvas></div>')
 					// labeling charts
-					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), {
-						type: 'line',
-						data: {	"labels": [],
-								"datasets":[]},
-						options: {
-									scales: {
-											yAxes : [{
-													ticks : {
-															max : 100,    
-															min : 0,
-													}
-											}],
-											xAxes : [{
-													type: "time",
-													time: {
-														displayFormats: {
-															millisecond: "h:mm:ss a",
-															second: "h:mm:ss a"
-														}
-													},
-													ticks : {
-														callback: function(tick, index, array) {
-																return (index % 3) ? "" : tick;
-														}
-													}
-											}]
-									},
-									title: {
-											display: true,
-											text: displayName(twins[element], element)
-									}
-							}
-					});
+					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), chartTemplate);
+					smCharts[element] = new Chart(document.getElementById('smchart'+element).getContext('2d'), chartTemplate);
 					count++;
 
 					$("#modalHolder").append(`<div id="modal`+element+`" class="modal fade bd-example-modal-lg show" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-modal="true">
@@ -242,7 +246,7 @@
 										<div class="row">
 											<div class="col">
 												<div class="row">
-													<canvas id="chart2`+element+`" class="p-1" style="max-height: 300px;"></canvas>     
+													<canvas id="smchart`+element+`" class="p-1" style="max-height: 300px;"></canvas>     
 												</div>
 												<div class="row overflow-auto">Telemetry
 													<textarea readonly class="form-control" id="tele`+element+`" rows="5" style="margin-top: 0px; margin-bottom: 0px; max-height: 250px; min-height: 40px;" placeholder="result: {}"></textarea>
@@ -335,15 +339,20 @@
 		// msg = data to plot
 		function drawChart(msg, title, time){
 			var chart = charts[title];
+			var smChart = smCharts[title];
 			console.log(moment(time)+" "+title);
 			Object.keys(msg).forEach(element => {
 				insertData(chart, element, JSON.parse(msg[element]), moment(time));
+			});
+			Object.keys(msg).forEach(element => {
+				insertData(smChart, element, JSON.parse(msg[element]), moment(time));
 			});
 			// chart.update({
 			// 		duration: 800,
 			// 		easing: 'easeOutBounce'
 			// });
 			chart.update();
+			smChart.update();
 		}
 
 		// draw connection state badge
