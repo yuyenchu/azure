@@ -15,7 +15,10 @@
             <b>Device List</b>
         </h3>
         <button type="button" class="btn btn-outline-primary m-2" data-toggle="modal" data-target="#addModal">add view</button>
-        <button type="button" class="btn btn-outline-primary m-2">delete view</button>
+        <button type="button" class="btn btn-outline-primary m-2" id ="deleBtn">delete view</button>
+        <div class="d-flex justify-content-center">
+            <label id="deleResult"></label>
+        </div>
         <div class="container">
             <div class="row">
               <div class="col-12">
@@ -53,7 +56,9 @@
                     <div class="form-group">
                         <label for="idInput">Device Id</label>
                         <input type="deviceId" class="form-control" id="idInput">
-                        <label id="result"></label>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <label id="addResult"></label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -69,13 +74,16 @@
         var devices = <%- JSON.stringify(devices) %>;
         var twins = <%- JSON.stringify(twins) %>;
 
-        Object.keys(devices).forEach(element => {
-            $("#tbody").append('<tr><td><div class="custom-control custom-checkbox">'+
-                '<input type="checkbox" class="select-item form-check-input" id="c'+
-                element+'"></div></td><td>'+displayName(twins[element], element)+
-                '</td><td>'+element+'</td><td>'+devices[element]["state"]+'</td><td>'+
-                displayTPEVer(twins[element])+'</td></tr>');
-        });
+        function drawTable() {
+            Object.keys(devices).forEach(element => {
+                $("#tbody").append('<tr><td><div class="custom-control custom-checkbox">'+
+                    '<input type="checkbox" class="select-item form-check-input" id="'+
+                    element+'"></div></td><td>'+displayName(twins[element], element)+
+                    '</td><td>'+element+'</td><td>'+devices[element]["state"]+'</td><td>'+
+                    displayTPEVer(twins[element])+'</td></tr>');
+            });
+        }      
+        drawTable();
 
         //column checkbox select all or cancel
         $("input.select-all").click(function () {
@@ -95,17 +103,34 @@
             $("#addBtn").html(buttonSpinner);
             $.ajax({
                 type: 'POST',
-				url: "/addView/"+$("#idInput").val(),
+				url: "/view/"+$("#idInput").val().trim,
 				success: function (response, textStatus, request) {
-                    $("#result").text(response);
+                    $("#addResult").text(response);
                     $("#addBtn").html("Add view");
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
-                $("#result").text(jqXHR.status+" "+jqXHR.statusText);
+                $("#addResult").text(jqXHR.status+" "+jqXHR.statusText);
                 $("#addBtn").html("Add view");
 			});
         });
 
+        $("#deleBtn").click(function () {
+            $("input.select-item").each(function (index,item) {
+                if (item.checked){
+                    $.ajax({
+                        type: 'DELETE',
+                        url: "/view/"+$("#idInput").attr('id'),
+                        success: function (response, textStatus, request) {
+                            delete devices[$("#idInput").attr('id')];
+                            $("#deleResult").text(response);
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) { 
+                        $("#deleResult").text(jqXHR.status+" "+jqXHR.statusText);
+                    });
+                }
+            });
+            drawTable();
+        });
         //check is all selected
         function checkSelected() {
             var all = $("input.select-all")[0];
