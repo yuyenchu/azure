@@ -188,11 +188,12 @@ app.post('/addView/:id', function(req, res) {
         connection.query('SELECT COUNT(*) AS result FROM viewControl WHERE username = ? AND device = ?', 
                             [req.session.username, req.params.id], 
                             function(error, results, fields) {
-            console.log("first query end");               
+            console.log("first query end "+results[0]["result"]);               
             if (results[0]["result"] == 0) {
                 console.log("view not already exist");
                 connection.query('SELECT COUNT(*) AS result FROM devices WHERE id = ?', [req.params.id], 
                                     function(error, results, fields) {
+                    console.log("second query end "+results[0]["result"]); 
                     if (results[0]["result"] == 1) {
                         console.log("device exist");
                         connection.query('INSERT INTO viewControl VALUES(?,?)', [req.session.loggedin, req.params.id], 
