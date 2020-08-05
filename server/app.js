@@ -159,7 +159,7 @@ app.get('/home', function(req, res) {
 	}
 });
 
-// 
+// manage page
 app.get('/manage', function(req, res) {
     if (req.session.loggedin) {
         devicesToRender = {};
@@ -180,6 +180,28 @@ app.get('/manage', function(req, res) {
         req.session.message = "Please login to view manage page";
         res.redirect('/login');
 	}
+});
+
+app.post('/addView/:id', function(req, res) {
+    if (req.session.loggedin) {
+        connection.query('SELECT COUNT(*) AS result FROM viewControl WHERE username = ? AND device = ?', 
+                            [req.session.loggedin, req.params.id], 
+                            function(error, results, fields) {
+            if (results[0]["result"] == 0) {
+                connection.query('INSERT INTO viewControl VALUES(?,?)', 
+                            [req.session.loggedin, req.params.id], 
+                            function(error, results, fields) {
+                    if (error) {
+                        console.log("Insert error: "+error);
+                    } else {
+                        res.status(200).send("view added successfully");
+                    }
+                });
+            }
+        });
+    } else {
+        res.status(403).send("Please login");
+    }
 });
 
 // login page

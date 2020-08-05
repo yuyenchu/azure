@@ -30,7 +30,7 @@
 			<hr class="double-line">
 			<p style="text-align:center">Twin Patch to All Devices</p>
 			<div class="form-group">
-				<textarea class="form-control" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px; height: 148px;" placeholder="desired: {}"></textarea>
+				<textarea class="form-control" id="txtarea" rows="5" style="margin-top: 0px; margin-bottom: 0px;" placeholder="desired: {}"></textarea>
 			</div>
 			<div class="mb-3 d-flex justify-content-center">
 				<button type="button" id="tpbuttonall" class="btn btn-danger" onclick="invokeall()">submit</button>
@@ -55,7 +55,7 @@
 				<span class="sr-only ml-5">Next</span>
 			</a>
 		</div>
-
+		<div id="modalHolder"></div>
 	</div>
 	<script src="helper.js"></script>
 	<script>
@@ -105,17 +105,14 @@
 					// console.log("data type: "+typeof(data));
 					console.log("data: "+data);
 					if (data.status == 200) {
-						$("#r"+id).css('color', 'green');
-						$("#r"+id).html("&#10003; "+data.payload.Response);
+						$("#r"+id).val(data);
 					} else {
-						$("#r"+id).css('color', 'red');
-						$("#r"+id).html("&#10007; "+data.status+data.payload.Response);
+						$("#r"+id).val(data);
 					}
 					$("#dmb"+id).html("submit");
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
-				$("#r"+id).css('color', 'red');
-				$("#r"+id).html("&#10007; "+jqXHR.status+" "+jqXHR.statusText);
+				$("#r"+id).val(jqXHR.status+" "+jqXHR.statusText);
 				$("#dmb"+id).html("submit");
 			});
 		}
@@ -124,6 +121,7 @@
 		function updateTwin(id) {
 			$("#r2"+id).html("");
 			$("#tpb"+id).html(buttonSpinner);
+			$("#n"+id).val($("#n"+id).val().trim());
 			var newname = $("#n"+id).val().trim();
 			$.ajax({
 				url: "/twin/"+id+"/"+newname,
@@ -211,6 +209,53 @@
 							}
 					});
 					count++;
+
+					$("#modalHolder").append(`<div class="modal fade bd-example-modal-lg show" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="display: block;" aria-modal="true">
+						<div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+								<h5 class="modal-title" id="mT`+element+`">`+displayName(twins[element], element)+`</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">×</span>
+								</button>
+								</div>
+								<div class="modal-body overflow-auto">
+									<div class="container">
+										<div class="row">
+											<div class="col">
+												<div class="row">
+													<canvas id="chart2`+element+`" class="p-1" style="max-height: 300px;"></canvas>     
+												</div>
+												<div class="row overflow-auto">Telemetry
+													<textarea readonly="" class="form-control" id="tele`+element+`" rows="5" style="margin-top: 0px; margin-bottom: 0px; max-height: 250px;" placeholder="result: {}"></textarea>
+												</div>
+											</div>
+											<div class="col-8">
+												<div class="row overflow-auto" style="height: 300px;">
+													twin
+												</div>
+												<hr>
+												<div class="row overflow-auto" style="height: 250px;">
+													<div class="form-group col">
+														<label for="input">Method Name</label>
+														<input class="form-control" id="input" placeholder="Reboot">
+														<label for="textarea">Payload</label>
+														<textarea class="form-control" id="textarea" rows="5" style="max-height: 200px;"></textarea>
+														<button type="button" id="dmb`+element+`" class="btn btn-primary mt-3" onclick="onclick(`+element+`)">submit</button>
+														<button type="button" class="btn btn-primary mt-3 ml-3">clear</button>
+													</div>
+													<textarea readonly="" class="form-control mr-2 ml-2" id="r`+element+`" rows="2" style="margin-top: 0px; margin-bottom: 0px; max-height: 150px;" placeholder="result: {}"></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>`);
 				}
 				drawState(data[element], element);
 				// space for twin info
@@ -341,6 +386,7 @@
 			socket.on(id+"/telemtry", function(data){
 				console.log("receive telemtry");
 				drawChart(data["body"], id, data["time"]);
+				$("#tele"+id).val(data.body);
 			});
 		});
 	</script>
