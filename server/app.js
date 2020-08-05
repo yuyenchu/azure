@@ -193,9 +193,7 @@ app.route('/view/:id')
             if (results[0]["result"] == 0) {
                 connection.query('SELECT COUNT(*) AS result FROM devices WHERE id = ?', [req.params.id], 
                                     function(error, results, fields) {
-                    console.log("second query end "+results[0]["result"]); 
                     if (results[0]["result"] == 1) {
-                        console.log("device exist");
                         connection.query('INSERT INTO viewControl VALUES(?,?)', [req.session.username, req.params.id], 
                                         function(error, results, fields) {
                             if (error) {
