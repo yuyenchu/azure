@@ -4,7 +4,7 @@ USE iotInfodb;
 CREATE TABLE users(
     username varchar(30) NOT NULL,
     password varchar(30) NOT NULL,
-    PRIMARY(username)
+    PRIMARY KEY(username)
 );
 
 CREATE TABLE viewControl(
@@ -13,6 +13,6 @@ CREATE TABLE viewControl(
 );
 
 CREATE TABLE devices(
-    device varchar(30) NOT NULL,
-    PRIMARY(device)
+    id varchar(30) NOT NULL,
+    PRIMARY KEY(id)
 );
