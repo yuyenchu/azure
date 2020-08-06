@@ -170,6 +170,7 @@
 					$("#tr"+id).css('color', 'red');
 					$("#tr"+id).html("&#10007; "+jqXHR.status+" "+jqXHR.statusText);
 				});
+				setTimeout(()=>{ $("#tr"+id).html(""); }, 5000);
 			}
 		}
 
