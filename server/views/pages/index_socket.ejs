@@ -154,21 +154,23 @@
 		function updateTwin(id) {
 			var newname = $("#mT"+id).text().trim();
 			$("#mT"+id).text(newname);
-			$.ajax({
-				url: "/twin/"+id+"/"+newname,
-				success: function (data, textStatus, request) {
-					if (request.status == 200) {
-						$("#tr"+id).css('color', 'green');
-						$("#tr"+id).html("&#10003; Device name updated");
-					} else {
-						$("#tr"+id).css('color', 'red');
-						$("#tr"+id).html("&#10007; Unable to update "+request.status);
+			if (displayName(twins[id], id) != newname) {
+				$.ajax({
+					url: "/twin/"+id+"/"+newname,
+					success: function (data, textStatus, request) {
+						if (request.status == 200) {
+							$("#tr"+id).css('color', 'green');
+							$("#tr"+id).html("&#10003; Device name updated");
+						} else {
+							$("#tr"+id).css('color', 'red');
+							$("#tr"+id).html("&#10007; Unable to update "+request.status);
+						}
 					}
-				}
-			}).fail(function (jqXHR, textStatus, errorThrown) { 
-				$("#tr"+id).css('color', 'red');
-				$("#tr"+id).html("&#10007; "+jqXHR.status+" "+jqXHR.statusText);
-			});
+				}).fail(function (jqXHR, textStatus, errorThrown) { 
+					$("#tr"+id).css('color', 'red');
+					$("#tr"+id).html("&#10007; "+jqXHR.status+" "+jqXHR.statusText);
+				});
+			}
 		}
 
 		// initialize html elements
@@ -194,7 +196,7 @@
 							<div class="modal-content">
 								<div class="modal-header">
 								<h5 class="modal-title" id="mT`+element+`">`+displayName(twins[element], element)+`</h5>
-								<label class="d-inline ml-4" id="tr`+element+`"></label>
+								<label class="d-inline ml-4 mt-1" id="tr`+element+`"></label>
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">×</span>
 								</button></div>
