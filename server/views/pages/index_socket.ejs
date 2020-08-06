@@ -152,8 +152,8 @@
 
 		// http requests for update desired device name in twin
 		function updateTwin(id) {
-			var newname = $("#mT"+element).text().trim();
-			$("#mT"+element).text(newname);
+			var newname = $("#mT"+id).text().trim();
+			$("#mT"+id).text(newname);
 			$.ajax({
 				url: "/twin/"+id+"/"+newname,
 				success: function (data, textStatus, request) {
