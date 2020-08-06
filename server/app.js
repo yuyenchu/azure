@@ -159,7 +159,7 @@ app.get('/home', function(req, res) {
 	}
 });
 
-// manage page
+// manage page (manage device view & add new device to iot hub)
 app.get('/manage', function(req, res) {
     if (req.session.loggedin) {
         devicesToRender = {};
@@ -319,11 +319,29 @@ app.get('/method/:id/:methodname/:payload', function (req, res) {
     });
 });
 
+app.post('/device/:id/:edge', function (req, res) {
+    console.log("Createdevice "+req.params.id+" "+req.params.edge);
+    const deviceMgmtUrl = 'https://'+hub.name+'.azure-devices.net/devices/'+req.params.id+'?api-version=2020-05-31-preview'
+    request.put({
+        url: deviceMgmtUrl,
+        headers: hub.head,
+        json: {
+                "deviceId": "DeviceX",
+                "capabilities": {
+                    "iotEdge": req.params.edge
+                }
+        }
+    }, 	function(error,response){
+        console.log("Createdevice "+response.statusCode);
+        res.status(response.statusCode).send("ok");
+    });
+});
+
 // respond to twin desired name update and receive twin queue update call
 app.route('/twin/:id/:newname?')
 // pre: id and newname and res != null, config valid
 // post: send http call to iot hub, respond call status to res
-    .get(function (req, res) {
+.get(function (req, res) {
     const twinUrl = 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'?api-version=2020-03-13'
     request.patch({
         url: twinUrl,
@@ -339,10 +357,11 @@ app.route('/twin/:id/:newname?')
         console.log("TwinUpdate "+response.statusCode);
         res.status(response.statusCode).send("ok");
     });
+})
 // pre: id and req.body and res and io != null, config valid, twins set
 // post: process and send twin patch with socket (update if desired and
 //       reported match, else update desired to match reported), respond res
-}).post(function (req, res) {
+.post(function (req, res) {
     if (req.body["properties"]["reported"] && req.body["properties"]["reported"]["Name"] &&
     req.body["properties"]["reported"]["Name"] != twins[req.params.id]["properties"]["desired"]["Name"]) {
         const twinUrl = 'https://'+hub.name+'.azure-devices.net/twins/'+id+'?api-version=2020-03-13'
