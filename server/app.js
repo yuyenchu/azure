@@ -81,6 +81,9 @@ function getDevice(id) {
                 console.error("device "+err);
             } else {
                 devices[id]={"state":body["connectionState"], "lastActive":body["connectionStateUpdatedTime"]};
+                console.log("device "+id+" : "+typeof(body));
+                console.log("device "+id+" : "+Object.keys(body));
+                console.log("device "+id+" : "+body.connectionState+", "+body.connectionStateUpdatedTime);
                 console.log("device "+id+" : "+body["connectionState"]+", "+body["connectionStateUpdatedTime"]);
             }
     });
