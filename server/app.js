@@ -54,7 +54,7 @@ function syncDatabase() {
     });
 }
 
-// get all registered devices at iot hub for initialization
+// get all viewed devices at iot hub for initialization
 // skip when encounter http errors
 // pre: config.hub valid, devices != null
 // post: call getAllTwins on complete, set devices
@@ -120,8 +120,10 @@ async function initialize(){
     console.log("---start initializing---");
     connection.connect();
     console.log("database connected");
+    syncDatabase();
+    console.log("database synced");
     getAllDevices();
-    console.log("get all registered devices");
+    console.log("get all view devices");
     console.log("---initialize complete---");
 }
 initialize();
