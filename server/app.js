@@ -389,7 +389,7 @@ app.post('/device/:id/:edge', function (req, res) {
             });
             res.status(200).json({"connectionString":connStr});
         } else {
-            console.log("Createdevice "+body.message);
+            console.log("Createdevice "+body);
             res.status(200).json(body);
         }
     });

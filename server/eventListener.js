@@ -61,17 +61,17 @@ consumerClient.subscribe({
             utcString = dateObj.toUTCString();
             id = event.systemProperties['iothub-connection-device-id'];
             
-            unwrapTelemtry(dateObj, id, utcString, id)
+            unwrapTelemtry(dateObj, id, utcString, id);
 
-            request.post({
-                url: "http://localhost:3000/event/"+id,
-                json: {
-                    "time": utcString,
-                    "body": event.body
-                }
-            }, 	function(error,response){
-                console.log("Tele : "+id+" ("+response.statusCode+")");
-            });
+            // request.post({
+            //     url: "http://localhost:3000/event/"+id,
+            //     json: {
+            //         "time": utcString,
+            //         "body": event.body
+            //     }
+            // }, 	function(error,response){
+            //     console.log("Tele : "+id+" ("+response.statusCode+")");
+            // });
         }
     },
     processError: async (err, context) => {
