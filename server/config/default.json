@@ -6,7 +6,7 @@
       "Content-Type": "application/json",
       "Authorization": "SharedAccessSignature sr=hub-test1.azure-devices.net&sig=ttX9fT38ugddM5g%2BISLKQaHL5Y2zrq5McsDzMVJ70yA%3D&se=1626159394&skn=iothubowner"
     },
-    "connectionstr":"HostName=hub-test1.azure-devices.net;SharedAccessKeyName=service;SharedAccessKey=aOQRCy8GcrQokjuJjAb7PFYc9dj9SjqPnlH1OMAzYVQ=",
+    "connectionstr":"HostName=hub-test1.azure-devices.net;SharedAccessKeyName=service;SharedAccessKey=aOQRCy8GcrQokjuJjAb7PFYc9dj9SjqPnlH1OMAzYVQ="
   },
   "hub": {  
     "name": "thingspro-IoTHub-newTwin",
