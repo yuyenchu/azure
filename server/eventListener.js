@@ -18,7 +18,7 @@ function unwrapTelemtry(data, key, eqtime, id) {
             data[ele].forEach(element => {
                 send = {};
                 send[key] = element["value"];
-                console.log(id+" val/arr : "+JSON.stringify(send)+" at "+element["updateTimeStamp"]?element["updateTimeStamp"]:eqtime);
+                console.log(id+" val/arr : "+JSON.stringify(send)+" at "+(element["updateTimeStamp"]?element["updateTimeStamp"]:eqtime));
                 request.post({
                     url: "http://localhost:3000/event/"+id,
                     json: {
@@ -36,7 +36,7 @@ function unwrapTelemtry(data, key, eqtime, id) {
         } else if (Number(data[ele])){
             send = {};
             send[ele] = Number(data[ele]);
-            console.log(id+" number : "+JSON.stringify(send)+" at "+element["updateTimeStamp"]?element["updateTimeStamp"]:eqtime);
+            console.log(id+" number : "+JSON.stringify(send)+" at "+(element["updateTimeStamp"]?element["updateTimeStamp"]:eqtime));
             request.post({
                 url: "http://localhost:3000/event/"+id,
                 json: {
