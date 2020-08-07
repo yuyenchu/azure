@@ -63,7 +63,7 @@ consumerClient.subscribe({
             utcString = dateObj.toUTCString();
             id = event.systemProperties['iothub-connection-device-id'];
             console.log("Tele : "+id);
-            unwrapTelemtry(dateObj, id, utcString, id);
+            unwrapTelemtry(event.body, id, utcString, id);
 
             // request.post({
             //     url: "http://localhost:3000/event/"+id,
