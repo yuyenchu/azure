@@ -371,10 +371,12 @@ app.post('/device/:id/:edge', function (req, res) {
                     "iotEdge": req.params.edge
                 }
         }
-    }, 	function(error,response){
+    }, 	function(error,response,body){
         console.log("Createdevice "+response.statusCode);
-        connStr = 'HostName='+hub.name+'.azure-devices.net;DeviceId='+req.params.id+';SharedAccessKey='+response.body["authentication"]["symmetricKey"]["primaryKey"]
-        res.status(response.statusCode).send(connStr);
+        if (!error) {
+            connStr = 'HostName='+hub.name+'.azure-devices.net;DeviceId='+req.params.id+';SharedAccessKey='+body["authentication"]["symmetricKey"]["primaryKey"]
+        }
+        res.status(response.statusCode).send(connStr||"error");
     });
 });
 
