@@ -1,14 +1,23 @@
 {
-  "hub": {
+  "oldhub": {
     "name": "hub-test1",
     "head" : {
       "User-Agent": "request",
       "Content-Type": "application/json",
       "Authorization": "SharedAccessSignature sr=hub-test1.azure-devices.net&sig=ttX9fT38ugddM5g%2BISLKQaHL5Y2zrq5McsDzMVJ70yA%3D&se=1626159394&skn=iothubowner"
     },
-    "connectionstr":"HostName=hub-test1.azure-devices.net;SharedAccessKeyName=service;SharedAccessKey=aOQRCy8GcrQokjuJjAb7PFYc9dj9SjqPnlH1OMAzYVQ="
+    "connectionstr":"HostName=hub-test1.azure-devices.net;SharedAccessKeyName=service;SharedAccessKey=aOQRCy8GcrQokjuJjAb7PFYc9dj9SjqPnlH1OMAzYVQ=",
   },
-  "serviceBus" : { 
+  "hub": {  
+    "name": "thingspro-IoTHub-newTwin",
+    "head" : {
+      "User-Agent": "request",
+      "Content-Type": "application/json",
+      "Authorization": "SharedAccessSignature sr=thingspro-iothub-newtwin.azure-devices.net&sig=qFI%2BEq%2FOLKYMD2IpYnKlUBZT71%2BCAyR0kdFkmytLBi8%3D&se=1628234612&skn=iothubowner"
+    },
+    "connectionstr": "HostName=thingspro-IoTHub-newTwin.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=/2LO5sUFm0BZqEiKLW6i8q4696k2FWJVH++U3IthJMs="
+  },
+  "oldserviceBus" : { 
     "name": "test-serbus1",
     "head" : {
       "Content-Type": "application/json",
@@ -20,9 +29,25 @@
     },
     "connectionstr":"Endpoint=sb://test-serbus1.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SRfu30BTAd6PsNF1QPdkglOFd+Ye6qkL/O76Gvmmu9s="
   },
-  "eventhub": {
+  "serviceBus" : { 
+    "name": "andrew-serbus1",
+    "head" : {
+      "Content-Type": "application/json",
+      "Authorization": "SharedAccessSignature sr=https%3A%2F%2Fandrew-serbus1.servicebus.windows.net%2Ftwin-queue1&sig=3ToC47WSQ5Dj8DfTXF/V6yYvUHu2yBfRTix3ulSlnqY%3D&se=1628235004&skn=RootManageSharedAccessKey"
+    },
+    "queueNames": {
+      "twin": "twin-queue1",
+      "state": "state-queue1"
+    },
+    "connectionstr":"Endpoint=sb://andrew-serbus1.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=dKEM47RWGwc96uyV23QR24iKLEp5zTV/qv3UZP7sS38="
+  },
+  "oldeventhub": {
     "name": "iothub-ehub-hub-test1-3780350-0bfd74d500",
     "connectionstr": "Endpoint=sb://ihsuprodblres095dednamespace.servicebus.windows.net/;SharedAccessKeyName=service;SharedAccessKey=aOQRCy8GcrQokjuJjAb7PFYc9dj9SjqPnlH1OMAzYVQ=;EntityPath=iothub-ehub-hub-test1-3780350-0bfd74d500"
+  },
+  "eventhub": {
+    "name": "thingspro-iothub-newtwin",
+    "connectionstr": "Endpoint=sb://iothub-ns-thingspro-1700362-4e5159c118.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=/2LO5sUFm0BZqEiKLW6i8q4696k2FWJVH++U3IthJMs=;EntityPath=thingspro-iothub-newtwin"
   },
   "mysql": {
     "host": "localhost",

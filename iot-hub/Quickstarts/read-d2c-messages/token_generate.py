@@ -12,7 +12,7 @@ TOKEN_FORMAT = 'SharedAccessSignature sr=%s&sig=%s&se=%s&skn=%s'
 # iot hub token
 def get_token():
     CONNECTION_STRING = """
-    HostName=hub-test1.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=Ul8DDbKWKcfZIR5nzEIHw+D6N0l3itJLNgnRqR8FeMQ=
+    HostName=thingspro-IoTHub-newTwin.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=/2LO5sUFm0BZqEiKLW6i8q4696k2FWJVH++U3IthJMs=
     """
     IOTHOST, KEYNAME, KEYVLAUE = [
         sub[sub.index('=') + 1:] for sub in CONNECTION_STRING.split(";")]
@@ -42,6 +42,5 @@ def get_auth_token(sb_name, eh_name, sas_name, sas_value):
     signature = urllib.parse.quote(base64.b64encode(signed_hmac_sha256.digest()))
     print("token: SharedAccessSignature sr={}&sig={}&se={}&skn={}".format(uri, signature, expiry, sas_name))
     return  "token: SharedAccessSignature sr={}&sig={}&se={}&skn={}".format(uri, signature, expiry, sas_name)
-
 get_token()
-get_auth_token("test-serbus1","test-queue2","RootManageSharedAccessKey","SRfu30BTAd6PsNF1QPdkglOFd+Ye6qkL/O76Gvmmu9s=")
+get_auth_token("andrew-serbus1","state-queue1","RootManageSharedAccessKey","KQBSProBZ7n87MlLWY07BQELRM9oBZHOj6nTu78hJV0=")

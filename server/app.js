@@ -30,26 +30,55 @@ var connection = mysql.createConnection({
 	database : ms.database
 });
 
-// get all registered devices at iot hub for initialization
-// skip when encounter http errors
-// pre: config.hub valid, devices != null
-// post: call getAllTwins on complete, set devices
-function getAllDevices() {
+
+function syncDatabase() {
     request.get({
         url: 'https://'+hub.name+'.azure-devices.net/devices?api-version=2018-06-30',
         headers: hub.head
     }, 	function(error,response,body){
             if (error) {
-                console.error(err.constructor.name + ': ' + err.message);
+                console.log("syncDb "+error);
             } else {
                 var b = JSON.parse(body);
                 b.forEach(element => {
                     var id = element["deviceId"];
-                    devices[id]={"state":element["connectionState"], "lastActive":element["connectionStateUpdatedTime"]};
-                    console.log("device "+id);
+                    console.log("syncDb "+id);
+                    connection.query('INSERT INTO devices VALUES (?)', [id], function(err, results, fields) {
+                        if (err) {
+                            console.log("syncDb "+err);
+                        }
+                    });
                 });
                 getAllTwins();
             }
+    });
+}
+
+// get all registered devices at iot hub for initialization
+// skip when encounter http errors
+// pre: config.hub valid, devices != null
+// post: call getAllTwins on complete, set devices
+function getAllDevices() {
+    connection.query('SELECT DISTINCT device AS result FROM viewControl',  function(error, results, fields) {
+        if (error) {
+            console.error("device "+error);
+        } else {
+            results.forEach(result => {
+                id = result["result"];
+                request.get({
+                    url: 'https://'+hub.name+'.azure-devices.net/devices/'+id+'?api-version=2020-05-31-preview',
+                    headers: hub.head
+                }, 	function(err,response,body){
+                        if (err) {
+                            console.error("device "+err);
+                        } else {
+                            devices[id]={"state":body["connectionState"], "lastActive":body["connectionStateUpdatedTime"]};
+                            console.log("device "+id);
+                        }
+                });
+            });
+            getAllTwins();
+        }
     });
 }
 
@@ -304,9 +333,8 @@ app.get('/logout', function(req, res) {
 // pre: id and methodname and payload and res != null, config valid
 // post: send http call to iot hub, respond call status to res
 app.get('/method/:id/:methodname/:payload', function (req, res) {
-    const methodUrl = 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'/methods?api-version=2020-03-13'
     request.post({
-        url: methodUrl,
+        url: 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'/methods?api-version=2020-03-13',
         headers: hub.head,
         json: {
                 "methodName": req.params.methodname,
@@ -321,9 +349,8 @@ app.get('/method/:id/:methodname/:payload', function (req, res) {
 
 app.post('/device/:id/:edge', function (req, res) {
     console.log("Createdevice "+req.params.id+" "+req.params.edge);
-    const deviceMgmtUrl = 'https://'+hub.name+'.azure-devices.net/devices/'+req.params.id+'?api-version=2020-05-31-preview'
     request.put({
-        url: deviceMgmtUrl,
+        url: 'https://'+hub.name+'.azure-devices.net/devices/'+req.params.id+'?api-version=2020-05-31-preview',
         headers: hub.head,
         json: {
                 "deviceId": "DeviceX",
@@ -342,9 +369,8 @@ app.route('/twin/:id/:newname?')
 // pre: id and newname and res != null, config valid
 // post: send http call to iot hub, respond call status to res
 .get(function (req, res) {
-    const twinUrl = 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'?api-version=2020-03-13'
     request.patch({
-        url: twinUrl,
+        url: 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'?api-version=2020-03-13',
         headers: hub.head,
         json: {
             "properties": {
