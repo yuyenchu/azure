@@ -141,10 +141,10 @@
             $("#addDeviceBtn").html(buttonSpinner);
             $.ajax({
                 type: 'POST',
-				url: "/device/"+$("#idInput2").val().trim(),
+				url: "/device/"+$("#idInput2").val().trim()+"/"+$("#isedge")[0].checked,
 				success: function (response, textStatus, request) {
                     $("#addDeviceResult").text(response);
-                    if (response == "device added successfully") {
+                    if (response["connectionString"]) {
                         added = true;
                     }
                     $("#addDeviceBtn").html("Add device");
