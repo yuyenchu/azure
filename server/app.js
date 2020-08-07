@@ -366,14 +366,15 @@ app.post('/device/:id/:edge', function (req, res) {
         url: 'https://'+hub.name+'.azure-devices.net/devices/'+req.params.id+'?api-version=2020-05-31-preview',
         headers: hub.head,
         json: {
-                "deviceId": "DeviceX",
+                "deviceId": req.params.id,
                 "capabilities": {
                     "iotEdge": req.params.edge
                 }
         }
     }, 	function(error,response){
         console.log("Createdevice "+response.statusCode);
-        res.status(response.statusCode).send("ok");
+        connStr = 'HostName='+hub.name+'.azure-devices.net;DeviceId='+req.params.id+';SharedAccessKey='+response["authentication"]["symmetricKey"]["primaryKey"]
+        res.status(response.statusCode).send(connStr);
     });
 });
 
