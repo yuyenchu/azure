@@ -27,7 +27,7 @@ async function stateListener(receiver) {
             messages.forEach(msg => {
                 var id = msg.body.data.deviceId;
                 var conn = msg.body.eventType.replace("Microsoft.Devices.Device","");
-                console.log("device queue "+id+": "+conn);
+                console.log("state queue "+id+": "+conn);
                 request.post({
                     url: "http://localhost:3000/state/"+id,
                     json: {
