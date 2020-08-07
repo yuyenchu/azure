@@ -81,7 +81,7 @@ function getDevice(id) {
                 console.error("device "+err);
             } else {
                 devices[id]={"state":body["connectionState"], "lastActive":body["connectionStateUpdatedTime"]};
-                console.log("device "+id+" : "+body);
+                console.log("device "+id+" : "+body["connectionState"]+", "+body["connectionStateUpdatedTime"]);
             }
     });
 }
@@ -128,8 +128,8 @@ async function initialize(){
     console.log("---start initializing---");
     connection.connect();
     console.log("database connected");
-    syncDatabase();
-    console.log("database synced");
+    // syncDatabase();
+    // console.log("database synced");
     getAllDevices();
     console.log("get all view devices");
     console.log("---initialize complete---");
