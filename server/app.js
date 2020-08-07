@@ -77,14 +77,15 @@ function getDevice(id) {
         url: 'https://'+hub.name+'.azure-devices.net/devices/'+id+'?api-version=2020-05-31-preview',
         headers: hub.head
     }, 	function(err,response,body){
+            data = JSON.parse(body);
             if (err) {
                 console.error("device "+err);
             } else {
-                devices[id]={"state":body["connectionState"], "lastActive":body["connectionStateUpdatedTime"]};
-                console.log("device "+id+" : "+typeof(body));
-                console.log("device "+id+" : "+Object.keys(body));
-                console.log("device "+id+" : "+body.connectionState+", "+body.connectionStateUpdatedTime);
-                console.log("device "+id+" : "+body["connectionState"]+", "+body["connectionStateUpdatedTime"]);
+                devices[id]={"state":data["connectionState"], "lastActive":data["connectionStateUpdatedTime"]};
+                console.log("device "+id+" : "+typeof(data));
+                console.log("device "+id+" : "+Object.keys(data));
+                console.log("device "+id+" : "+data.connectionState+", "+data.connectionStateUpdatedTime);
+                console.log("device "+id+" : "+data["connectionState"]+", "+data["connectionStateUpdatedTime"]);
             }
     });
 }
