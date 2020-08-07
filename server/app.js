@@ -440,6 +440,7 @@ app.route('/twin/:id/:newname?')
         Object.keys(req.body).forEach(key => {
             updateTwin(twins[req.params.id], req.body, key);
         });
+        console.log("to "+req.session.username);
         io.emit(req.session.username, {"twin": {"body": twins[req.params.id], "id": req.params.id}});
     }
     res.status(200).send("ok")
