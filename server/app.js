@@ -67,7 +67,7 @@ function getAllDevices() {
                 id = result["result"];
                 getDevice(id);
             });
-            getAllTwins();
+            // getAllTwins();
         }
     });
 }
@@ -83,6 +83,7 @@ function getDevice(id) {
             } else {
                 devices[id]={"state":data["connectionState"], "lastActive":data["connectionStateUpdatedTime"]};
                 console.log("device "+id);
+                getTwin(id);
             }
     });
 }
@@ -90,21 +91,24 @@ function getDevice(id) {
 // connect to iot hub registry and get twins
 // pre: devices set(skip if empty), twins != null, registry valid
 // post: set twins
-const registry = Registry.fromConnectionString(hub.connectionstr);
-function getAllTwins() {
-    Object.keys(devices).forEach(element => {
-        getTwin(element);
-    });
-}
+// function getAllTwins() {
+//     Object.keys(devices).forEach(element => {
+//         getTwin(element);
+//     });
+// }
 
-function getTwin(id){
-    registry.getTwin(id, function(err, twin){
-        if (err) {
-            console.error(err.constructor.name + ': ' + err.message);
-        } else {
-            console.log("twin "+id);
-            twins[id] = twin;
-        }
+function getTwin(id) {
+    request.get({
+        url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'?api-version=2020-05-31-preview',
+        headers: hub.head
+    }, 	function(err,response,body){
+            data = JSON.parse(body);
+            if (err) {
+                console.log("twin "+err);
+            } else {
+                twins[id] = data;
+                console.log("twin "+id);
+            }
     });
 }
 
