@@ -357,23 +357,42 @@
 
 		// listen to web socket
 		var socket = io();
-		Object.keys(devices).forEach(id =>{
-			socket.on(id+"/device", function(data){
-				console.log("receive device");
-				drawState(data, id)
-			});
-		
-			socket.on(id+"/twin", function(data){
-				console.log("receive twin");
-				drawTwin(data, id);
-			});
-
-			socket.on(id+"/telemtry", function(data){
-				console.log("receive telemtry");
-				drawChart(data["body"], id, data["time"]);
-				$("#tele"+id).val(JSON.stringify(data.body));
-			});
+		socket.on($("#username").text(), function(msg){
+			type = Object.keys(msg)[0];
+			data = msg[type];
+			switch (type) {
+				case 'state':
+					console.log("receive device");
+					drawState(msg.body, msg.id);
+					break;
+				case 'twin':
+					console.log("receive twin");
+					drawTwin(msg.body, msg.id);
+					break;
+				case 'event':
+					console.log("receive telemtry");
+					drawChart(msg.body["body"], msg.id, msg.body["time"]);
+					$("#tele"+msg.id).val(JSON.stringify(msg.body["body"]));
+					break;
+			}
 		});
+		// Object.keys(devices).forEach(id =>{
+		// 	socket.on(id+"/device", function(data){
+		// 		console.log("receive device");
+		// 		drawState(data, id)
+		// 	});
+		
+		// 	socket.on(id+"/twin", function(data){
+		// 		console.log("receive twin");
+		// 		drawTwin(data, id);
+		// 	});
+
+		// 	socket.on(id+"/telemtry", function(data){
+		// 		console.log("receive telemtry");
+		// 		drawChart(data["body"], id, data["time"]);
+		// 		$("#tele"+id).val(JSON.stringify(data.body));
+		// 	});
+		// });
 	</script>
 </body>
 </html>

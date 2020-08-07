@@ -440,7 +440,7 @@ app.route('/twin/:id/:newname?')
         Object.keys(req.body).forEach(key => {
             updateTwin(twins[req.params.id], req.body, key);
         });
-        io.emit(req.params.id+"/twin",twins[req.params.id]);
+        io.emit(req.session.username, {"twin": {"body": twins[req.params.id], "id": req.params.id}});
     }
     res.status(200).send("ok")
 });
@@ -451,7 +451,7 @@ app.route('/twin/:id/:newname?')
 app.post('/state/:id', function (req, res) {
     console.log("receive event call: "+req.params.id);
     devices[req.params.id] = req.body;
-    io.emit(req.params.id+"/device", devices[req.params.id]);
+    io.emit(req.session.username, {"state": {"body": devices[req.params.id], "id": req.params.id}});
     res.status(200).send("ok")
 });
 
@@ -460,7 +460,7 @@ app.post('/state/:id', function (req, res) {
 // post: send telemtry with socket, respond to res
 app.post('/event/:id', function (req, res) {
     console.log("receive event call: "+req.params.id);
-    io.emit(req.params.id+"/telemtry", req.body);
+    io.emit(req.session.username, {"event": {"body": req.body, "id": req.params.id}});
     res.status(200).send("ok")
 });
 
