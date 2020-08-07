@@ -193,8 +193,7 @@
 															'"><canvas id="chart'+element+'" width="400" height="400"></canvas></div>')
 					// insert modals
 					$("#modalHolder").append(`<div id="modal`+element+`" class="modal fade bd-example-modal-lg show" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-modal="true">
-						<div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-							<div class="modal-content">
+						<div class="modal-dialog modal-xl modal-dialog-centered" role="document"><div class="modal-content">
 								<div class="modal-header">
 								<h5 class="modal-title" id="mT`+element+`">`+displayName(twins[element], element)+`</h5>
 								<label class="d-inline ml-4" id="tr`+element+`" style="font-size: 6px;"></label>
@@ -241,8 +240,8 @@
 						updateTwin(this.id.substring(2,this.id.length));
 					});
 					// labeling charts
-					charts[element] = new Chart(document.getElementById('chart'+element).getContext('2d'), chartTemplate);
-					smCharts[element] = new Chart(document.getElementById('smchart'+element).getContext('2d'), chartTemplate);
+					charts[element] = new Chart($('#chart'+element), chartTemplate);
+					smCharts[element] = new Chart($('#smchart'+element), chartTemplate);
 					charts[element].options.title.text = displayName(twins[element], element);
 					count++;
 				}
@@ -312,8 +311,6 @@
 			console.log(moment(time)+" "+title);
 			Object.keys(msg).forEach(element => {
 				insertData(chart, element, JSON.parse(msg[element]), moment(time));
-			});
-			Object.keys(msg).forEach(element => {
 				insertData(smChart, element, JSON.parse(msg[element]), moment(time));
 			});
 			// chart.update({
