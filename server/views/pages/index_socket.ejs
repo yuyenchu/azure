@@ -70,29 +70,29 @@
 								options: {
 									aspectRatio: 1,
 									scales: {
-											yAxes : [{
-													ticks : {
-															max : 100,    
-															min : 0,
-													}
-											}],
-											xAxes : [{
-													type: "time",
-													time: {
-														displayFormats: {
-															millisecond: "h:mm:ss a",
-															second: "h:mm:ss a"
-														}
-													},
-													ticks : {
-														callback: function(tick, index, array) {
-																return (index % 3) ? "" : tick;
-														}
-													}
-											}]
+										yAxes : [{
+											ticks : {
+												max : 100,    
+												min : 0,
+											}
+										}],
+										xAxes : [{
+												type: "time",
+											time: {
+												displayFormats: {
+													millisecond: "h:mm:ss a",
+													second: "h:mm:ss a"
+												}
+											},
+											ticks : {
+												callback: function(tick, index, array) {
+														return (index % 3) ? "" : tick;
+												}
+											}
+										}]
 									},
 									title: {
-											display: true
+										display: true
 									}
 								}
 							}
@@ -187,10 +187,10 @@
 										'label"></span></div>');
 					// insert carousel indicator
 					$("#indicator").append(	'<li data-target="#carousel" data-slide-to="0"'+
-																	(count==0?'class="active"':' ')+'></li>');
+											(count==0?'class="active"':' ')+'></li>');
 					// insert carousel items (chart)
 					$("#inner").append(	'<div class="carousel-item'+(count==0?' active"':' ')+
-															'"><canvas id="chart'+element+'" width="400" height="400"></canvas></div>')
+										'"><canvas id="chart'+element+'" width="400" height="400"></canvas></div>')
 					// insert modals
 					$("#modalHolder").append(`<div id="modal`+element+`" class="modal fade bd-example-modal-lg show" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-modal="true">
 						<div class="modal-dialog modal-xl modal-dialog-centered" role="document"><div class="modal-content">
@@ -240,8 +240,8 @@
 						updateTwin(this.id.substring(2,this.id.length));
 					});
 					// labeling charts
-					charts[element] = new Chart($('#chart'+element), chartTemplate);
-					smCharts[element] = new Chart($('#smchart'+element), chartTemplate);
+					charts[element] = new Chart($('#chart'+element), JSON.parse(JSON.stringify(chartTemplate)));
+					smCharts[element] = new Chart($('#smchart'+element), JSON.parse(JSON.stringify(chartTemplate)));
 					charts[element].options.title.text = displayName(twins[element], element);
 					count++;
 				}
@@ -313,10 +313,6 @@
 				insertData(chart, element, JSON.parse(msg[element]), moment(time));
 				insertData(smChart, element, JSON.parse(msg[element]), moment(time));
 			});
-			// chart.update({
-			// 		duration: 800,
-			// 		easing: 'easeOutBounce'
-			// });
 			chart.update();
 			smChart.update();
 		}
