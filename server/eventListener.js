@@ -11,14 +11,14 @@ const eh = config.get('eventhub');
 const PORT = config.get('port').event;
 
 function unwrapTelemtry(data, key, eqtime, id) {
-    console.log(JSON.stringify(data)+"\n\n");
+    // console.log(JSON.stringify(data)+"\n\n");
     Object.keys(data).forEach(ele => {
-        console.log(id+" start "+ele+"("+typeof(ele)+")"+": "+data[ele]+"("+typeof(data[ele])+")");
+        // console.log(id+" start "+ele+"("+typeof(ele)+")"+": "+data[ele]+"("+typeof(data[ele])+")");
         if (ele == "values" && Array.isArray(data[ele])) {
             data[ele].forEach(element => {
                 send = {};
                 send[key] = element["value"];
-                console.log(id+" val/arr : "+JSON.stringify(send)+" at "+(element["updateTimeStamp"]?element["updateTimeStamp"]:eqtime));
+                // console.log(id+" val/arr : "+JSON.stringify(send)+" at "+(element["updateTimeStamp"]?element["updateTimeStamp"]:eqtime));
                 request.post({
                     url: "http://localhost:3000/event/"+id,
                     json: {
@@ -36,7 +36,7 @@ function unwrapTelemtry(data, key, eqtime, id) {
         } else if (Number(data[ele])){
             send = {};
             send[ele] = Number(data[ele]);
-            console.log(id+" number : "+JSON.stringify(send)+" at "+(element["updateTimeStamp"]?element["updateTimeStamp"]:eqtime));
+            // console.log(id+" number : "+JSON.stringify(send)+" at "+(element["updateTimeStamp"]?element["updateTimeStamp"]:eqtime));
             request.post({
                 url: "http://localhost:3000/event/"+id,
                 json: {
@@ -51,7 +51,7 @@ function unwrapTelemtry(data, key, eqtime, id) {
                 }
             });
         } else if (typeof(data[ele]) == "object"){
-            console.log(id+" obj : "+JSON.stringify(data[ele]));
+            // console.log(id+" obj : "+JSON.stringify(data[ele]));
             unwrapTelemtry(data[ele], ele, eqtime, id);
         }
     });
