@@ -358,6 +358,7 @@
 		// listen to web socket
 		var socket = io();
 		socket.on($("#username").text(), function(msg){
+			consol.log(JSON.stringify(msg));
 			type = Object.keys(msg)[0];
 			data = msg[type];
 			switch (type) {

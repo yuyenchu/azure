@@ -200,5 +200,10 @@
             all.checked = len===total;
         }
 
+        socket.on($("#username").text(), function(msg){
+			if (msg['state']){
+                devices[msg['state'].id] = msg['state'].body;
+            }
+		});
     </script>
 </body>
