@@ -363,16 +363,16 @@
 			switch (type) {
 				case 'state':
 					console.log("receive device");
-					drawState(msg.body, msg.id);
+					drawState(data.body, data.id);
 					break;
 				case 'twin':
 					console.log("receive twin");
-					drawTwin(msg.body, msg.id);
+					drawTwin(data.body, data.id);
 					break;
 				case 'event':
 					console.log("receive telemtry");
-					drawChart(msg.body["body"], msg.id, msg.body["time"]);
-					$("#tele"+msg.id).val(JSON.stringify(msg.body["body"]));
+					drawChart(data.body["body"], data.id, data.body["time"]);
+					$("#tele"+data.id).val(JSON.stringify(data.body["body"]));
 					break;
 			}
 		});
