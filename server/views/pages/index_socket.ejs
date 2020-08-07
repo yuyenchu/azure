@@ -137,11 +137,7 @@
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					console.log("data: "+data);
-					if (data.status == 200) {
-						$("#r"+id).val(data);
-					} else {
-						$("#r"+id).val(data);
-					}
+					$("#r"+id).val(JSON.parse(data));
 					$("#dmb"+id).html("submit");
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
