@@ -11,7 +11,6 @@ var io = require('socket.io')(server);
 process.env['NODE_CONFIG_DIR'] = __dirname + '/config/';
 const config = require('config');
 const request = require('request');
-const { Registry } = require('azure-iothub');
 const hub = config.get('hub');
 const ms = config.get('mysql');
 const PORT = config.get('port').main;
@@ -39,6 +38,11 @@ function syncDatabase() {
             if (error) {
                 console.log("syncDb "+error);
             } else {
+                connection.query('DELETE FROM devices', [], function(err, results, fields) {
+                    if (err) {
+                        console.log("syncDb "+err);
+                    }
+                });
                 var b = JSON.parse(body);
                 b.forEach(element => {
                     var id = element["deviceId"];
@@ -129,8 +133,8 @@ async function initialize(){
     console.log("---start initializing---");
     connection.connect();
     console.log("database connected");
-    // syncDatabase();
-    // console.log("database synced");
+    syncDatabase();
+    console.log("database synced");
     getAllDevices();
     console.log("get all view devices");
     console.log("---initialize complete---");
@@ -356,7 +360,7 @@ app.get('/method/:id/:methodname/:payload', function (req, res) {
         }
     }, 	function(error,response,body){
         console.log("Invoke "+response.statusCode);
-        res.status(response.statusCode).json(body);
+        res.status(200).json(body);
     });
 });
 
@@ -381,10 +385,10 @@ app.post('/device/:id/:edge', function (req, res) {
                     console.log("Createdevice "+err);
                 }
             });
-            res.status(response.statusCode).json({"connectionString":connStr});
+            res.status(200).json({"connectionString":connStr});
         } else {
             console.log("Createdevice "+body.message);
-            res.status(response.statusCode).json(body);
+            res.status(200).json(body);
         }
     });
 });
