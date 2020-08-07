@@ -381,7 +381,7 @@ app.post('/device/:id/:edge', function (req, res) {
                 }
             });
         }
-        res.status(response.statusCode).send(connStr||("error "+body));
+        res.status(response.statusCode).send(("error "+body)||connStr);
     });
 });
 
