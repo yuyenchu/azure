@@ -11,9 +11,9 @@ const eh = config.get('eventhub');
 const PORT = config.get('port').event;
 
 function unwrapTelemtry(data, key, eqtime, id) {
-    console.log(JSON.stringify(data));
+    console.log(JSON.stringify(data)+"\n\n");
     Object.keys(data).forEach(ele => {
-        console.log(id+" start "+ele+": "+data[ele]);
+        console.log(id+" start "+ele+"("+typeof(ele)+")"+": "+data[ele]+"("+typeof(data[ele])+")");
         if (ele == "values" && Array.isArray(data[ele])) {
             data[ele].forEach(element => {
                 send = {};
