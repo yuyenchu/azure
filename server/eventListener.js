@@ -18,6 +18,7 @@ function unwrapTelemtry(data, key, eqtime, id) {
             data[ele].forEach(element => {
                 send = {};
                 send[key] = element["value"];
+                console.log(id+" val/arr : "+send);
                 request.post({
                     url: "http://localhost:3000/event/"+id,
                     json: {
@@ -25,13 +26,18 @@ function unwrapTelemtry(data, key, eqtime, id) {
                         "body": send
                     }
                 }, 	function(error,response){
-                    console.log("Tele : "+id+" ("+response.statusCode+")");
+                    if (error) {
+                        console.log('Tele Error : '+error);
+                    } else {
+                        console.log("Tele : "+id+" ("+response.statusCode+")");
+                    }
                 });
                 io.emit(id+"/telemtry", send);
             })
         } else if (Number(data[ele])){
             send = {};
             send[ele] = Number(data[ele]);
+            console.log(id+" number : "+send);
             request.post({
                 url: "http://localhost:3000/event/"+id,
                 json: {
@@ -39,9 +45,14 @@ function unwrapTelemtry(data, key, eqtime, id) {
                     "body": send
                 }
             }, 	function(error,response){
-                console.log("Tele : "+id+" ("+response.statusCode+")");
+                if (error) {
+                    console.log('Tele Error : '+error);
+                } else {
+                    console.log("Tele : "+id+" ("+response.statusCode+")");
+                }
             });
         } else if (typeof(ele) == "object"){
+            console.log(id+" obj : "+JSON.stringify(data[ele]));
             unwrapTelemtry(data[ele], ele, id);
         }
     });
