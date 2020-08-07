@@ -38,21 +38,24 @@ function syncDatabase() {
             if (error) {
                 console.log("syncDb "+error);
             } else {
-                connection.query('DELETE FROM devices', [], function(err, results, fields) {
-                    if (err) {
-                        console.log("syncDb "+err);
+                connection.query('DELETE FROM devices', [], function(delerr, results, fields) {
+                    if (delerr) {
+                        console.log("syncDb "+delerr);
+                    } else {
+                        console.log("syncDb all entries deleted");
+                        var b = JSON.parse(body);
+                        b.forEach(element => {
+                            var id = element["deviceId"];
+                            console.log("syncDb insert"+id);
+                            connection.query('INSERT INTO devices VALUES (?)', [id], function(inserterr, results, fields) {
+                                if (inserterr) {
+                                    console.log("syncDb "+inserterr);
+                                }
+                            });
+                        });
                     }
                 });
-                var b = JSON.parse(body);
-                b.forEach(element => {
-                    var id = element["deviceId"];
-                    console.log("syncDb "+id);
-                    connection.query('INSERT INTO devices VALUES (?)', [id], function(err, results, fields) {
-                        if (err) {
-                            console.log("syncDb "+err);
-                        }
-                    });
-                });
+                
             }
     });
 }
