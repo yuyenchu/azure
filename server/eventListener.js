@@ -16,7 +16,7 @@ function unwrapTelemtry(data, key, eqtime, id) {
         console.log(id+" "+ele+": "+data[ele]);
         if (ele == "values" && Array.isArray(data[ele])) {
             data[ele].forEach(element => {
-                sned = {};
+                send = {};
                 send[key] = element["value"];
                 request.post({
                     url: "http://localhost:3000/event/"+id,
@@ -30,7 +30,7 @@ function unwrapTelemtry(data, key, eqtime, id) {
                 io.emit(id+"/telemtry", send);
             })
         } else if (Number(data[ele])){
-            sned = {};
+            send = {};
             send[ele] = Number(data[ele]);
             request.post({
                 url: "http://localhost:3000/event/"+id,
