@@ -13,7 +13,8 @@ from azure.iot.device import IoTHubDeviceClient, Message
 # The device connection string to authenticate the device with your IoT hub.
 # Using the Azure CLI:
 # az iot hub device-identity show-connection-string --hub-name {YourIoTHubName} --device-id MyNodeDevice --output table
-CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate1;SharedAccessKey=FmjOA1axWH37RaQ24Qx9qcakk/pXuxmGhoELlZElv40="
+# CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate1;SharedAccessKey=FmjOA1axWH37RaQ24Qx9qcakk/pXuxmGhoELlZElv40="
+CONNECTION_STRING = "HostName=thingspro-IoTHub-newTwin.azure-devices.net;DeviceId=andrew-simulate2;SharedAccessKey=vNBsge34JTrkFKndzqhI7OlotbfhgDcHoWqBm8F70VY="
 
 # Define the JSON message to send to IoT Hub.
 TEMPERATURE = 20.0

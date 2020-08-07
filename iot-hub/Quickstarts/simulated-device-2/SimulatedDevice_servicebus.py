@@ -10,7 +10,8 @@ import sys
 from azure.servicebus import QueueClient, Message
 from azure.iot.device import IoTHubDeviceClient, MethodResponse
 
-CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate2;SharedAccessKey=ZWosSuCL4pHgXGmhRKm4QHG9yJKB0y72ctPDFv02Qqg="
+# CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate2;SharedAccessKey=ZWosSuCL4pHgXGmhRKm4QHG9yJKB0y72ctPDFv02Qqg="
+CONNECTION_STRING = "HostName=thingspro-IoTHub-newTwin.azure-devices.net;DeviceId=andrew-simulate3;SharedAccessKey=GVhMXgGQ8VXw+A5AvZVs3VfY5Lw3UruqWjn5+AK3csM="
 TEMPERATURE = 20.0
 HUMIDITY = 60
 POWER = 50

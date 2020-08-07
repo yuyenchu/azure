@@ -373,10 +373,15 @@ app.post('/device/:id/:edge', function (req, res) {
         }
     }, 	function(error,response,body){
         console.log("Createdevice "+response.statusCode);
-        if (!error) {
+        if (response.statusCode != "200") {
             connStr = 'HostName='+hub.name+'.azure-devices.net;DeviceId='+req.params.id+';SharedAccessKey='+body["authentication"]["symmetricKey"]["primaryKey"]
+            connection.query('INSERT INTO devices VALUES (?)', [req.params.id], function(err, results, fields) {
+                if (err) {
+                    console.log("Createdevice "+err);
+                }
+            });
         }
-        res.status(response.statusCode).send(connStr||"error");
+        res.status(response.statusCode).send(connStr||("error "+body));
     });
 });
 

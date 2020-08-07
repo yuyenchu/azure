@@ -14,7 +14,8 @@
         <h3 style="text-align:center">
             <b>Device List</b>
         </h3>
-        <button type="button" class="btn btn-outline-primary m-2" data-toggle="modal" data-target="#addModal">add view</button>
+        <button type="button" class="btn btn-outline-primary m-2" data-toggle="modal" data-target="#addDeviceModal">add Device</button>
+        <button type="button" class="btn btn-outline-primary m-2" data-toggle="modal" data-target="#addViewModal">add view</button>
         <button type="button" class="btn btn-outline-primary m-2" id ="deleBtn">delete view</button>
         <div class="d-flex justify-content-center">
             <label id="deleResult"></label>
@@ -43,11 +44,11 @@
             </div>
         </div>
     </div>
-    <div class="modal fade show" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalTitle" aria-modal="true">
+    <div class="modal fade show" id="addViewModal" tabindex="-1" role="dialog" aria-labelledby="addViewModalTitle" aria-modal="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="addModalTitle">Add view</h5>
+                <h5 class="modal-title" id="addViewModalTitle">Add view</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="checkReload()">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -58,12 +59,41 @@
                         <input type="deviceId" class="form-control" id="idInput">
                     </div>
                     <div class="d-flex justify-content-center">
-                        <label id="addResult"></label>
+                        <label id="addViewResult"></label>
                     </div>
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="checkReload()">Close</button>
-                <button type="button" class="btn btn-primary" id="addBtn">Add</button>
+                <button type="button" class="btn btn-primary" id="addViewBtn">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade show" id="addDeviceModal" tabindex="-1" role="dialog" aria-labelledby="addDeviceModalTitle" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="addDeviceModalTitle">Add Device</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="checkReload()">
+                    <span aria-hidden="true">×</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="idInput">Device Id</label>
+                        <input type="deviceId" class="form-control" id="idInput2">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="select-all form-check-input" id="isedge">
+                            Activate IoT Edge
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <textarea readonly="" class="form-control mr-2 ml-2" id="addDeviceResult" rows="2" style="margin-top: 0px; margin-bottom: 0px; max-height: 150px; min-height: 40px;" placeholder="Connection String"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="checkReload()">Close</button>
+                <button type="button" class="btn btn-primary" id="addDeviceBtn">Add</button>
                 </div>
             </div>
         </div>
@@ -107,21 +137,39 @@
             checkSelected();
         });
 
-        $("#addBtn").click(function () {
-            $("#addBtn").html(buttonSpinner);
+        $("#addDeviceBtn").click(function () {
+            $("#addDeviceBtn").html(buttonSpinner);
+            $.ajax({
+                type: 'POST',
+				url: "/device/"+$("#idInput2").val().trim(),
+				success: function (response, textStatus, request) {
+                    $("#addDeviceResult").text(response);
+                    if (response == "device added successfully") {
+                        added = true;
+                    }
+                    $("#addDeviceBtn").html("Add device");
+				}
+			}).fail(function (jqXHR, textStatus, errorThrown) { 
+                $("#addDeviceResult").text(jqXHR.status+" "+jqXHR.statusText);
+                $("#addDeviceBtn").html("Add device");
+			});
+        });
+
+        $("#addViewBtn").click(function () {
+            $("#addViewBtn").html(buttonSpinner);
             $.ajax({
                 type: 'POST',
 				url: "/view/"+$("#idInput").val().trim(),
 				success: function (response, textStatus, request) {
-                    $("#addResult").text(response);
+                    $("#addViewResult").text(response);
                     if (response == "view added successfully") {
                         added = true;
                     }
-                    $("#addBtn").html("Add view");
+                    $("#addViewBtn").html("Add view");
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
-                $("#addResult").text(jqXHR.status+" "+jqXHR.statusText);
-                $("#addBtn").html("Add view");
+                $("#addViewResult").text(jqXHR.status+" "+jqXHR.statusText);
+                $("#addViewBtn").html("Add view");
 			});
         });
 
