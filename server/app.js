@@ -66,6 +66,7 @@ function syncDatabase() {
 // pre: config.hub valid, devices and twins != null
 // post: set devices and twins
 function getAllDevices() {
+    console.log("get all view devices");
     connection.query('SELECT DISTINCT device AS result FROM viewControl',  function(error, results, fields) {
         if (error) {
             console.error("device "+error);
@@ -75,7 +76,6 @@ function getAllDevices() {
                 getDevice(id);
             });
         }
-        console.log("get all view devices");
     });
 }
 
@@ -135,10 +135,10 @@ function updateTwin(twinPath, data, key) {
 // post: twins and devices set, connected to database
 async function initialize(){
     console.log("---start initializing---");
+    console.log("database connect");
     connection.connect();
-    console.log("database connected");
+    console.log("database sync");
     syncDatabase();
-    console.log("database synced");
     console.log("---initialize complete---");
 }
 initialize();
