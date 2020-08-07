@@ -381,7 +381,7 @@ app.post('/device/:id/:edge', function (req, res) {
                     console.log("Createdevice "+err);
                 }
             });
-            res.status(response.statusCode).send(connStr);
+            res.status(response.statusCode).json({"connection string":connStr});
         } else {
             console.log("Createdevice "+body.message);
             res.status(response.statusCode).json(body);
