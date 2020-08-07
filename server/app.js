@@ -56,8 +56,8 @@ function syncDatabase() {
 
 // get all viewed devices at iot hub for initialization
 // skip when encounter http errors
-// pre: config.hub valid, devices != null
-// post: call getAllTwins on complete, set devices
+// pre: config.hub valid, devices and twins != null
+// post: set devices and twins
 function getAllDevices() {
     connection.query('SELECT DISTINCT device AS result FROM viewControl',  function(error, results, fields) {
         if (error) {
@@ -67,11 +67,13 @@ function getAllDevices() {
                 id = result["result"];
                 getDevice(id);
             });
-            // getAllTwins();
         }
     });
 }
 
+// call iot hub and get device
+// pre: devices != null, id valid
+// post: set devices
 function getDevice(id) {
     request.get({
         url: 'https://'+hub.name+'.azure-devices.net/devices/'+id+'?api-version=2020-05-31-preview',
@@ -88,15 +90,9 @@ function getDevice(id) {
     });
 }
 
-// connect to iot hub registry and get twins
-// pre: devices set(skip if empty), twins != null, registry valid
+// call iot hub and get twin
+// pre: twins != null, id valid
 // post: set twins
-// function getAllTwins() {
-//     Object.keys(devices).forEach(element => {
-//         getTwin(element);
-//     });
-// }
-
 function getTwin(id) {
     request.get({
         url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'?api-version=2020-05-31-preview',
