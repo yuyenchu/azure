@@ -46,13 +46,14 @@ function syncDatabase() {
                         var b = JSON.parse(body);
                         b.forEach(element => {
                             var id = element["deviceId"];
-                            console.log("syncDb insert"+id);
+                            console.log("syncDb insert "+id);
                             connection.query('INSERT INTO devices VALUES (?)', [id], function(inserterr, results, fields) {
                                 if (inserterr) {
                                     console.log("syncDb "+inserterr);
                                 }
                             });
                         });
+                        getAllDevices();
                     }
                 });
                 
@@ -74,6 +75,7 @@ function getAllDevices() {
                 getDevice(id);
             });
         }
+        console.log("get all view devices");
     });
 }
 
@@ -137,8 +139,6 @@ async function initialize(){
     console.log("database connected");
     syncDatabase();
     console.log("database synced");
-    getAllDevices();
-    console.log("get all view devices");
     console.log("---initialize complete---");
 }
 initialize();

@@ -11,12 +11,12 @@ CREATE TABLE users(
 Drop Table IF Exists viewControl;
 CREATE TABLE viewControl(
     username varchar(30) NOT NULL,
-    device varchar(30) NOT NULL,
+    device varchar(200) NOT NULL,
     PRIMARY KEY(username, username)
 );
 
 Drop Table IF Exists devices;
 CREATE TABLE devices(
-    id varchar(30) NOT NULL,
+    id varchar(200) NOT NULL,
     PRIMARY KEY(id)
 );
