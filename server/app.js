@@ -383,7 +383,7 @@ app.post('/device/:id/:edge', function (req, res) {
             });
             res.status(response.statusCode).send(connStr);
         } else {
-            console.log("Createdevice "+error);
+            console.log("Createdevice "+body.message);
             res.status(response.statusCode).json(body);
         }
     });
