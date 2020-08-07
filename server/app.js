@@ -65,20 +65,24 @@ function getAllDevices() {
         } else {
             results.forEach(result => {
                 id = result["result"];
-                request.get({
-                    url: 'https://'+hub.name+'.azure-devices.net/devices/'+id+'?api-version=2020-05-31-preview',
-                    headers: hub.head
-                }, 	function(err,response,body){
-                        if (err) {
-                            console.error("device "+err);
-                        } else {
-                            devices[id]={"state":body["connectionState"], "lastActive":body["connectionStateUpdatedTime"]};
-                            console.log("device "+id);
-                        }
-                });
+                getDevice(id);
             });
             getAllTwins();
         }
+    });
+}
+
+function getDevice(id) {
+    request.get({
+        url: 'https://'+hub.name+'.azure-devices.net/devices/'+id+'?api-version=2020-05-31-preview',
+        headers: hub.head
+    }, 	function(err,response,body){
+            if (err) {
+                console.error("device "+err);
+            } else {
+                devices[id]={"state":body["connectionState"], "lastActive":body["connectionStateUpdatedTime"]};
+                console.log("device "+id);
+            }
     });
 }
 
@@ -88,14 +92,18 @@ function getAllDevices() {
 const registry = Registry.fromConnectionString(hub.connectionstr);
 function getAllTwins() {
     Object.keys(devices).forEach(element => {
-        registry.getTwin(element, function(err, twin){
-            if (err) {
-                console.error(err.constructor.name + ': ' + err.message);
-            } else {
-                console.log("twin "+element);
-                twins[element] = twin;
-            }
-        });
+        getTwin(element);
+    });
+}
+
+function getTwin(id){
+    registry.getTwin(id, function(err, twin){
+        if (err) {
+            console.error(err.constructor.name + ': ' + err.message);
+        } else {
+            console.log("twin "+id);
+            twins[id] = twin;
+        }
     });
 }
 
@@ -231,6 +239,8 @@ app.route('/view/:id')
                                 console.log("Insert error: "+error);
                             } else {
                                 console.log("insert success");
+                                getDevice(req.params.id);
+                                getTwin(req.params.id);
                                 res.status(200).send("view added successfully");
                             }
                         });
@@ -390,6 +400,7 @@ app.route('/twin/:id/:newname?')
 // post: process and send twin patch with socket (update if desired and
 //       reported match, else update desired to match reported), respond res
 .post(function (req, res) {
+    console.log("receive twin call: "+req.params.id);
     if (req.body["properties"]["reported"] && req.body["properties"]["reported"]["Name"] &&
     req.body["properties"]["reported"]["Name"] != twins[req.params.id]["properties"]["desired"]["Name"]) {
         const twinUrl = 'https://'+hub.name+'.azure-devices.net/twins/'+id+'?api-version=2020-03-13'
@@ -412,7 +423,6 @@ app.route('/twin/:id/:newname?')
         });
         io.emit(req.params.id+"/twin",twins[req.params.id]);
     }
-    console.log("receive twin call: "+req.params.id);
     res.status(200).send("ok")
 });
 
@@ -420,9 +430,9 @@ app.route('/twin/:id/:newname?')
 // pre: id and req.body and res and io != null, config valid, devices set
 // post: send state change with socket, respond to res
 app.post('/state/:id', function (req, res) {
+    console.log("receive event call: "+req.params.id);
     devices[req.params.id] = req.body;
     io.emit(req.params.id+"/device", devices[req.params.id]);
-    console.log("receive event call: "+req.params.id);
     res.status(200).send("ok")
 });
 
@@ -430,8 +440,8 @@ app.post('/state/:id', function (req, res) {
 // pre: id and req.body and res and io != null, config valid
 // post: send telemtry with socket, respond to res
 app.post('/event/:id', function (req, res) {
-    io.emit(req.params.id+"/telemtry", req.body);
     console.log("receive event call: "+req.params.id);
+    io.emit(req.params.id+"/telemtry", req.body);
     res.status(200).send("ok")
 });
 
