@@ -17,8 +17,8 @@ from optparse import OptionParser
 # The device connection string to authenticate the device with your IoT hub.
 # Using the Azure CLI:
 # az iot hub device-identity show-connection-string --hub-name {YourIoTHubName} --device-id MyNodeDevice --output table
-CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate2;SharedAccessKey=ZWosSuCL4pHgXGmhRKm4QHG9yJKB0y72ctPDFv02Qqg="
-
+# CONNECTION_STRING = "HostName=hub-test1.azure-devices.net;DeviceId=simulate2;SharedAccessKey=ZWosSuCL4pHgXGmhRKm4QHG9yJKB0y72ctPDFv02Qqg="
+CONNECTION_STRING = "HostName=thingspro-IoTHub-newTwin.azure-devices.net;DeviceId=andrew-simulate;SharedAccessKey=FzUfu+qgPPo6tlJQpw4XafADuJyJQJhpxnT+SPDPS/E="
 # Define the JSON message to send to IoT Hub.
 NAME="simulate2"
 TEMPERATURE = 20.0

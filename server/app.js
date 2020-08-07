@@ -373,7 +373,7 @@ app.post('/device/:id/:edge', function (req, res) {
         }
     }, 	function(error,response){
         console.log("Createdevice "+response.statusCode);
-        connStr = 'HostName='+hub.name+'.azure-devices.net;DeviceId='+req.params.id+';SharedAccessKey='+response["authentication"]["symmetricKey"]["primaryKey"]
+        connStr = 'HostName='+hub.name+'.azure-devices.net;DeviceId='+req.params.id+';SharedAccessKey='+response.body["authentication"]["symmetricKey"]["primaryKey"]
         res.status(response.statusCode).send(connStr);
     });
 });
