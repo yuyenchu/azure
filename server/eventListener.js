@@ -13,7 +13,7 @@ const PORT = config.get('port').event;
 function unwrapTelemtry(data, key, eqtime, id) {
     console.log(JSON.stringify(data));
     Object.keys(data).forEach(ele => {
-        console.log(id+" "+ele+": "+data[ele]);
+        console.log(id+" start "+ele+": "+data[ele]);
         if (ele == "values" && Array.isArray(data[ele])) {
             data[ele].forEach(element => {
                 send = {};
