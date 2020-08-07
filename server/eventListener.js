@@ -61,7 +61,7 @@ consumerClient.subscribe({
             dateObj = new Date(event.systemProperties["iothub-enqueuedtime"]); 
             utcString = dateObj.toUTCString();
             id = event.systemProperties['iothub-connection-device-id'];
-            
+            console.log("Tele : "+id);
             unwrapTelemtry(dateObj, id, utcString, id);
 
             // request.post({
