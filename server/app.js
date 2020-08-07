@@ -395,6 +395,19 @@ app.post('/device/:id/:edge', function (req, res) {
     });
 });
 
+// check users onlineand send message to each of them
+// if received any message belongs to their view
+function sendTo(msg, id) {
+    connection.query('SELECT DISTINCT(username) AS result FROM viewControl WHERE device = ?', [id], 
+                    function(error, results, fields) {
+        results.forEach(result => {
+            if (loggedinUsers[result["result"]]) {
+                io.emit(result["result"], msg);
+            }
+        });
+    });
+}
+
 // respond to twin desired name update and receive twin queue update call
 app.route('/twin/:id/:newname?')
 // pre: id and newname and res != null, config valid
@@ -441,7 +454,8 @@ app.route('/twin/:id/:newname?')
             updateTwin(twins[req.params.id], req.body, key);
         });
         console.log("to "+req.session.username);
-        io.emit(req.session.username, {"twin": {"body": twins[req.params.id], "id": req.params.id}});
+        sendTo({"twin": {"body": twins[req.params.id], "id": req.params.id}}, req.params.id);
+        // io.emit(req.session.username, );
     }
     res.status(200).send("ok")
 });
@@ -452,7 +466,8 @@ app.route('/twin/:id/:newname?')
 app.post('/state/:id', function (req, res) {
     console.log("receive event call: "+req.params.id);
     devices[req.params.id] = req.body;
-    io.emit(req.session.username, {"state": {"body": devices[req.params.id], "id": req.params.id}});
+    sendTo({"state": {"body": devices[req.params.id], "id": req.params.id}}, req.params.id);
+    // io.emit(req.session.username, );
     res.status(200).send("ok")
 });
 
@@ -461,7 +476,8 @@ app.post('/state/:id', function (req, res) {
 // post: send telemtry with socket, respond to res
 app.post('/event/:id', function (req, res) {
     console.log("receive event call: "+req.params.id);
-    io.emit(req.session.username, {"event": {"body": req.body, "id": req.params.id}});
+    sendTo({"event": {"body": req.body, "id": req.params.id}}, req.params.id);
+    // io.emit(req.session.username, );
     res.status(200).send("ok")
 });
 
