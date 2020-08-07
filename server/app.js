@@ -82,10 +82,7 @@ function getDevice(id) {
                 console.error("device "+err);
             } else {
                 devices[id]={"state":data["connectionState"], "lastActive":data["connectionStateUpdatedTime"]};
-                console.log("device "+id+" : "+typeof(data));
-                console.log("device "+id+" : "+Object.keys(data));
-                console.log("device "+id+" : "+data.connectionState+", "+data.connectionStateUpdatedTime);
-                console.log("device "+id+" : "+data["connectionState"]+", "+data["connectionStateUpdatedTime"]);
+                console.log("device "+id);
             }
     });
 }
