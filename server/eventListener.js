@@ -53,7 +53,7 @@ function unwrapTelemtry(data, key, eqtime, id) {
             });
         } else if (typeof(data[ele]) == "object"){
             console.log(id+" obj : "+JSON.stringify(data[ele]));
-            unwrapTelemtry(data[ele], ele, id);
+            unwrapTelemtry(data[ele], ele, eqtime, id);
         }
     });
 }
