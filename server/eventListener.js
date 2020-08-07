@@ -12,6 +12,7 @@ const PORT = config.get('port').event;
 
 function unwrapTelemtry(data, key, eqtime, id) {
     Object.keys(data).forEach(ele => {
+        console.log(id+" "+ele+": "+data[ele]);
         if (ele == "values" && Array.isArray(data[ele])) {
             data[ele].forEach(element => {
                 sned = {};
