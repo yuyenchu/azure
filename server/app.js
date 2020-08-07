@@ -360,6 +360,7 @@ app.get('/method/:id/:methodname/:payload', function (req, res) {
     });
 });
 
+// add new device to iot hub
 app.post('/device/:id/:edge', function (req, res) {
     console.log("Createdevice "+req.params.id+" "+req.params.edge);
     request.put({
@@ -380,8 +381,11 @@ app.post('/device/:id/:edge', function (req, res) {
                     console.log("Createdevice "+err);
                 }
             });
+            res.status(response.statusCode).send(connStr);
+        } else {
+            console.log("Createdevice "+error);
+            res.status(response.statusCode).json(body);
         }
-        res.status(response.statusCode).send(("error "+body)||connStr);
     });
 });
 
