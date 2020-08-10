@@ -252,7 +252,7 @@
 		}
 
 		// unwrapping twin data
-		function unwrapData(data, indent) {
+		function unwrapTwin(data, indent) {
 			if (data== null || ['string', 'number', 'boolean'].indexOf(typeof(data)) >= 0){
 				return data == null ? "null" : data;
 			} else {
@@ -261,7 +261,7 @@
 					var ele = typeof(element)=="string" ? element.replace("$","") : element;
 					if (ele != "metadata") {
 						str += "</p><p style=\"text-indent:"+(indent*20)+"px;margin-top:-15px;\">"+
-									ele+": "+unwrapData(data[element], indent+1)+"</p>";
+									ele+": "+unwrapTwin(data[element], indent+1)+"</p>";
 					}
 				});
 				return str;
@@ -296,6 +296,21 @@
 			}
 		}
 
+		function unwrapTele (data, preKey, chart, eqtime) {
+			Object.keys(data).forEach(element => {
+				if (element == "values" && Array.isArray(data[element])) {
+					data[element].forEach(value => {
+						insertData(chart, preKey, value["value"], moment(value["updateTimeStamp"]));
+					});
+				} else if (Number(data[element])) {
+					insertData(chart, element, Number(data[element]), moment(eqtime));
+				} else if (typeof data[element]==='object' && data[element]!==null &&
+						!(data[element] instanceof Array) && !(data[element] instanceof Date)) {
+					unwrapTele(data[element], element, chart, eqtime);
+				}
+			});
+		}
+
 		// draw a individual chrat based on id
 		// only update if timestamp is newer
 		// title = device id
@@ -306,8 +321,10 @@
 			var smChart = smCharts[title];
 			console.log(moment(time)+" "+title);
 			Object.keys(msg).forEach(element => {
-				insertData(chart, element, JSON.parse(msg[element]), moment(time));
-				insertData(smChart, element, JSON.parse(msg[element]), moment(time));
+				unwrapTele(msg[element], element, chart, time);
+				unwrapTele(msg[element], element, smChart, time)
+				// insertData(chart, element, JSON.parse(msg[element]), moment(time));
+				// insertData(smChart, element, JSON.parse(msg[element]), moment(time));
 			});
 			chart.update();
 			smChart.update();
@@ -335,7 +352,7 @@
 			var str ='';
 			Object.keys(twin).forEach(element =>{
 				// console.log(element)
-				str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapData(twin[element], 1);
+				str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapTwin(twin[element], 1);
 			});
 			$("#ft"+id).html(str);
 			$("#t"+id).html(str);
