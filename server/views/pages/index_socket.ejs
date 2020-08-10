@@ -304,7 +304,9 @@
 					});
 				} else if (Number(data[element])) {
 					insertData(chart, element, Number(data[element]), moment(eqtime));
-				} else if (typeof data[element]==='object' && data[element]!==null &&
+				} else if (Number(data)) {
+					insertData(chart, preKey, Number(data), moment(eqtime));
+				}else if (typeof data[element]==='object' && data[element]!==null &&
 						!(data[element] instanceof Array) && !(data[element] instanceof Date)) {
 					unwrapTele(data[element], element, chart, eqtime);
 				}
