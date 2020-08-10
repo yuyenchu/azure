@@ -191,7 +191,7 @@
 					$("#modalHolder").append(`<div id="modal`+element+`" class="modal fade bd-example-modal-lg show" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-modal="true">
 						<div class="modal-dialog modal-xl modal-dialog-centered" role="document"><div class="modal-content">
 								<div class="modal-header">
-								<h5 class="modal-title" id="mT`+element+`">`+displayName(twins[element], element)+`</h5>
+								<h5 class="modal-title" id="mT`+element+`">Device Name: `+displayName(twins[element], element)+`</h5>
 								<label class="d-inline ml-4" id="tr`+element+`" style="font-size: 6px;"></label>
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">×</span>
@@ -201,6 +201,7 @@
 										<div class="row">
 											<div class="col">
 												<div class="row chart-container">
+													Monitor
 													<canvas id="smchart`+element+`" class="m-1" style="max-height: 300px""></canvas>     
 												</div>
 												<div class="row">Telemetry
@@ -212,11 +213,14 @@
 												</div><hr>
 												<div class="row ">
 													<div class="col form-check form-check-inline justify-content-end">
-														<input type="checkbox" checked data-toggle="toggle" id="check`+element+`" data-size="sm">
-														<input class="form-check-input" type="checkbox" id="check2`+element+`" value="option1">
+														<input type="checkbox" checked data-toggle="toggle" id="check`+element+`" data-size="xs">
 														<label class="form-check-label">Text Mode</label>
 													</div></div>
-												<div class="row overflow-auto" style="height: 250px;">
+												<div class="row overflow-auto" style="height: 250px;" id="gctl`+element+`">
+													<input type="checkbox" checked data-toggle="toggle" id="check`+element+`" data-style="ios">
+													<label class="form-check-label">sth</label>
+												</div>
+												<div class="row overflow-auto" style="height: 250px;" id="tctl`+element+`">
 													<div class="form-group col">
 														<label for="input">Method Name</label>
 														<input class="form-control" id="m`+element+`" placeholder="Reboot">
@@ -226,7 +230,8 @@
 														<button type="button" id="clr`+element+`" class="btn btn-primary mt-3 ml-3">clear</button>
 													</div>
 													<textarea readonly="" class="form-control mr-2 ml-2" id="r`+element+`" rows="2" style="margin-top: 0px; margin-bottom: 0px; max-height: 150px; min-height: 40px;" placeholder="result: {}"></textarea>
-												</div></div></div></div></div>
+												</div>
+												</div></div></div></div>
 								<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 								</div></div></div></div>`);
@@ -240,6 +245,15 @@
 					$("#mT"+element).blur(function() {
 						$("#mT"+element).prop('contenteditable', false);
 						updateTwin(this.id.substring(2,this.id.length));
+					});
+					$("#check"+element).change(function() {
+						if($("#check"+element).prop("checked")) {
+							$("#gctl`+element+`").hide();
+							$("#tctl`+element+`").fadeIn('slow');
+						} else {
+							$("#tctl`+element+`").hide();
+							$("#gctl`+element+`").fadeIn('slow');
+						}
 					});
 					// labeling charts
 					charts[element] = new Chart($('#chart'+element), JSON.parse(JSON.stringify(chartTemplate)));
