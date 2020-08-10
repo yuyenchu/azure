@@ -190,80 +190,82 @@
 					// insert modals
 					$("#modalHolder").append(
 					`<div id="modal`+element+`" class="modal fade bd-example-modal-lg show" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-modal="true">
-						<div class="modal-dialog modal-xl modal-dialog-centered" role="document"><div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="mT`+element+`">Device Name: `+displayName(twins[element], element)+`</h5>
-								<label class="d-inline ml-4" id="tr`+element+`" style="font-size: 6px;"></label>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">×</span>
-								</button>
-							</div>
-							<div class="modal-body">
-								<div class="container">
-									<div class="row">
-										<div class="col">
-											<div class="row chart-container">
-												Monitor
-												<canvas id="smchart`+element+`" class="m-1" style="max-height: 300px""></canvas>     
-											</div>
-											<div class="row">Telemetry
-												<textarea readonly class="form-control" id="tele`+element+`" rows="5" style="margin-top: 0px; margin-bottom: 0px; max-height: 250px; min-height: 40px;" placeholder="result: {}"></textarea>
-											</div>
-										</div>
-										<div class="col-8">
-											<div class="row overflow-auto" style="height: 300px;">
-												<div id="t`+element+`" class="mt-3 ml-3"></div>
-											</div><hr>
-											<div class="row ">
-												<div class="col form-check form-check-inline justify-content-end">
-													<input type="checkbox" data-toggle="toggle" id="check`+element+`" data-size="xs">
-													<label class="ml-2 form-check-label">Text Mode</label>
+						<div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="mT`+element+`">Device Name: `+displayName(twins[element], element)+`</h5>
+									<label class="d-inline ml-4" id="tr`+element+`" style="font-size: 6px;"></label>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">×</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<div class="container">
+										<div class="row">
+											<div class="col">
+												<div class="row chart-container">
+													Monitor
+													<canvas id="smchart`+element+`" class="m-1" style="max-height: 300px""></canvas>     
+												</div>
+												<div class="row">Telemetry
+													<textarea readonly class="form-control" id="tele`+element+`" rows="5" style="margin-top: 0px; margin-bottom: 0px; max-height: 250px; min-height: 40px;" placeholder="result: {}"></textarea>
 												</div>
 											</div>
-											<div class="row overflow-auto" style="min-height: 250px;" id="gctl`+element+`">
-												<div class="row">
-													<div class="col">
-														<input type="checkbox" checked data-toggle="toggle" id="check1`+element+`" data-style="ios">
-														<label class="ml-1 form-check-label">sth1</label>
+											<div class="col-8">
+												<div class="row overflow-auto" style="height: 300px;">
+													<div id="t`+element+`" class="mt-3 ml-3"></div>
+												</div><hr>
+												<div class="row ">
+													<div class="col form-check form-check-inline justify-content-end">
+														<input type="checkbox" data-toggle="toggle" id="check`+element+`" data-size="xs">
+														<label class="ml-2 form-check-label">Text Mode</label>
 													</div>
-													<div class="col">
-														<input type="checkbox" checked data-toggle="toggle" id="check2`+element+`" data-style="ios">
-														<label class="ml-1 form-check-label">sth2</label>
-													</div>
-													<div class="col">
-														<input type="checkbox" checked data-toggle="toggle" id="check3`+element+`" data-style="ios">
-														<label class="ml-1 form-check-label">sth3</label>
-													</div>
-												<div>
-												<div class="row">
-													<div class="col">
-														<button type="button" class="btn btn-primary" id="check4`+element+`">sth4</button>
-													</div>
-													<div class="col">
-														<button type="button" class="btn btn-primary" id="check5`+element+`">sth5</button>
-													</div>
-													<div class="col">
-														<button type="button" class="btn btn-primary" id="check6`+element+`">sth6</button>
-													</div>
-												<div>
-											</div>
-											<div class="row overflow-auto" style="height: 250px; display: none;" id="tctl`+element+`">
-												<div class="form-group col">
-													<label for="input">Method Name</label>
-													<input class="form-control" id="m`+element+`" placeholder="Reboot">
-													<label for="textarea">Payload</label>
-													<textarea class="form-control" id="p`+element+`" placeholder="Payload" rows="5" style="max-height: 200px; min-height: 40px;"></textarea>
-													<button type="button" id="dmb`+element+`" class="btn btn-primary mt-3" onclick="invoke('`+element+`')">submit</button>
-													<button type="button" id="clr`+element+`" class="btn btn-primary mt-3 ml-3">clear</button>
 												</div>
-												<textarea readonly="" class="form-control mr-2 ml-2" id="r`+element+`" rows="2" style="margin-top: 0px; margin-bottom: 0px; max-height: 150px; min-height: 40px;" placeholder="result: {}"></textarea>
+												<div class="row overflow-auto" style="min-height: 250px;" id="gctl`+element+`">
+													<div class="row">
+														<div class="col">
+															<input type="checkbox" checked data-toggle="toggle" id="check1`+element+`" data-style="ios">
+															<label class="ml-1 form-check-label">sth1</label>
+														</div>
+														<div class="col">
+															<input type="checkbox" checked data-toggle="toggle" id="check2`+element+`" data-style="ios">
+															<label class="ml-1 form-check-label">sth2</label>
+														</div>
+														<div class="col">
+															<input type="checkbox" checked data-toggle="toggle" id="check3`+element+`" data-style="ios">
+															<label class="ml-1 form-check-label">sth3</label>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col">
+															<button type="button" class="btn btn-primary" id="check4`+element+`">sth4</button>
+														</div>
+														<div class="col">
+															<button type="button" class="btn btn-primary" id="check5`+element+`">sth5</button>
+														</div>
+														<div class="col">
+															<button type="button" class="btn btn-primary" id="check6`+element+`">sth6</button>
+														</div>
+													<div>
+												</div>
+												<div class="row overflow-auto" style="height: 250px; display: none;" id="tctl`+element+`">
+													<div class="form-group col">
+														<label for="input">Method Name</label>
+														<input class="form-control" id="m`+element+`" placeholder="Reboot">
+														<label for="textarea">Payload</label>
+														<textarea class="form-control" id="p`+element+`" placeholder="Payload" rows="5" style="max-height: 200px; min-height: 40px;"></textarea>
+														<button type="button" id="dmb`+element+`" class="btn btn-primary mt-3" onclick="invoke('`+element+`')">submit</button>
+														<button type="button" id="clr`+element+`" class="btn btn-primary mt-3 ml-3">clear</button>
+													</div>
+													<textarea readonly="" class="form-control mr-2 ml-2" id="r`+element+`" rows="2" style="margin-top: 0px; margin-bottom: 0px; max-height: 150px; min-height: 40px;" placeholder="result: {}"></textarea>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+								</div>
 							</div>
 						</div>
 					</div>`);
