@@ -137,8 +137,12 @@ async function initialize(){
     console.log("---start initializing---");
     console.log("database connect");
     connection.connect();
-    console.log("database sync");
-    syncDatabase();
+    if (process.argv[0] == "sync"){
+        console.log("database sync");
+        syncDatabase();
+    } else {
+        getAllDevices();
+    }
     console.log("---initialize complete---");
 }
 initialize();
