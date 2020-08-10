@@ -220,7 +220,7 @@
 													<input type="checkbox" checked data-toggle="toggle" id="check`+element+`" data-style="ios">
 													<label class="form-check-label">sth</label>
 												</div>
-												<div class="row overflow-auto" style="height: 250px;" id="tctl`+element+`">
+												<div class="row overflow-auto" style="height: 250px; display: none;" id="tctl`+element+`">
 													<div class="form-group col">
 														<label for="input">Method Name</label>
 														<input class="form-control" id="m`+element+`" placeholder="Reboot">
@@ -248,11 +248,11 @@
 					});
 					$("#check"+element).change(function() {
 						if($("#check"+element).prop("checked")) {
-							$("#gctl`+element+`").hide();
-							$("#tctl`+element+`").fadeIn('slow');
+							$("#gctl"+element).hide();
+							$("#tctl"+element).fadeIn('slow');
 						} else {
-							$("#tctl`+element+`").hide();
-							$("#gctl`+element+`").fadeIn('slow');
+							$("#tctl"+element).hide();
+							$("#gctl"+element).fadeIn('slow');
 						}
 					});
 					// labeling charts
