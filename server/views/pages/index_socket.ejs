@@ -304,10 +304,7 @@
 					});
 				} else if (Number(data[element])) {
 					insertData(chart, element, Number(data[element]), moment(eqtime));
-				} else if (Number(data)) {
-					insertData(chart, preKey, Number(data), moment(eqtime));
-				}else if (typeof data[element]==='object' && data[element]!==null &&
-						!(data[element] instanceof Array) && !(data[element] instanceof Date)) {
+				} else if (Number(data)) {			
 					unwrapTele(data[element], element, chart, eqtime);
 				}
 			});
@@ -323,8 +320,13 @@
 			var smChart = smCharts[title];
 			console.log(moment(time)+" "+title);
 			Object.keys(msg).forEach(element => {
-				unwrapTele(msg[element], element, chart, time);
-				unwrapTele(msg[element], element, smChart, time)
+				if (isDict(msg[element])) {
+					unwrapTele(msg[element], element, chart, time);
+					unwrapTele(msg[element], element, smChart, time);
+				} else if (Number(msg[element])) {
+					insertData(chart, element, Number(msg[element]), moment(time));
+					insertData(smChart, element, Number(msg[element]), moment(time));
+				}
 				// insertData(chart, element, JSON.parse(msg[element]), moment(time));
 				// insertData(smChart, element, JSON.parse(msg[element]), moment(time));
 			});
