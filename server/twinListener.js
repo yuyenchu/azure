@@ -25,7 +25,7 @@ async function twinListener(receiver) {
         }
         if (messages) {
             messages.forEach(msg => {
-                console.log(msg.userProperties);
+                // console.log(msg.userProperties);
                 var id = msg.userProperties.deviceId;
                 var module = msg.userProperties.moduleId;
                 console.log("twin queue "+id);
