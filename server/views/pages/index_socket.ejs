@@ -413,11 +413,13 @@
 				str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapTwin(twin[element], 1);
 			});
             $("#ft"+id).html(str);
-			var str ='';
-			Object.keys(twin["module"]).forEach(element =>{
-				// console.log(element)
-				str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapTwin(twin[element], 1);
-			});
+            if (twin["module"]) {
+                str ='';
+                Object.keys(twin["module"]).forEach(element =>{
+                    // console.log(element)
+                    str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapTwin(twin[element], 1);
+                });
+            }
 			$("#t"+id).html(str);
 			$("#"+id+"name").text(displayName(twins[id]["device"], id));
 			charts[id].options.title.text = displayName(twins[id]["device"], id);
