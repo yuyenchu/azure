@@ -406,13 +406,18 @@
 
 		// draw twin info block
 		function drawTwin(twin, id){
-			twins[id]["device"] = twin;
+			twins[id] = twin;
 			var str ='';
-			Object.keys(twin).forEach(element =>{
+			Object.keys(twin["device"]).forEach(element =>{
 				// console.log(element)
 				str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapTwin(twin[element], 1);
 			});
-			$("#ft"+id).html(str);
+            $("#ft"+id).html(str);
+			var str ='';
+			Object.keys(twin["module"]).forEach(element =>{
+				// console.log(element)
+				str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapTwin(twin[element], 1);
+			});
 			$("#t"+id).html(str);
 			$("#"+id+"name").text(displayName(twin, id));
 			charts[id].options.title.text = displayName(twin, id);

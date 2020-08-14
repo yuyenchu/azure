@@ -1,4 +1,5 @@
-function displayName(twin, id) {
+function displayName(ftwin, id) {
+    twin = ftwin["device"];
     if (twin["properties"]["reported"] && twin["properties"]["reported"]["Name"]) {
         return twin["properties"]["reported"]["Name"];
     } else {
@@ -6,7 +7,8 @@ function displayName(twin, id) {
     }
 }
 
-function displayTPEVer(twin) {
+function displayTPEVer(ftwin) {
+    twin = ftwin["device"];
     if (twin["properties"]["reported"] && twin["properties"]["reported"]["general"] 
         && twin["properties"]["reported"]["general"]["thingsproVersion"]) {
         return twin["properties"]["reported"]["general"]["thingsproVersion"];
