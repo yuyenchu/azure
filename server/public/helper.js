@@ -1,5 +1,6 @@
 function displayName(ftwin, id) {
     twin = ftwin["device"];
+    console.log(JSON.stringify(twin));
     if (twin["properties"]["reported"] && twin["properties"]["reported"]["Name"]) {
         return twin["properties"]["reported"]["Name"];
     } else {
