@@ -25,10 +25,12 @@ async function twinListener(receiver) {
         }
         if (messages) {
             messages.forEach(msg => {
+                console.log(msg.userProperties);
                 var id = msg.userProperties.deviceId;
+                var module = msg.userProperties.moduleId;
                 console.log("twin queue "+id);
                     request.post({
-                        url: "http://localhost:3000/twin/"+id,
+                        url: "http://localhost:3000/twin/"+id+"/"+module,
                         json: msg.body
                     }, 	function(error,response){
                         console.log("Twin  : "+id+" ("+response.statusCode+")");

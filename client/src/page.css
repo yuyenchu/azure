@@ -1,0 +1,54 @@
+body {
+    width: 100%;
+    margin: 0 auto;
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+}
+.content {
+  margin-top: 50px;
+  max-width: 750px;
+}
+.canvas {
+  width: 100%;
+  padding: 50px 0;
+  padding-left:5em;
+  text-align: left;
+  background-color: lightblue;
+  margin-top: 20px;
+  line-height: 150%;
+}
+.inner {
+    display: inline-block;
+}
+.h-center {
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+.login-form {
+  max-width: 300px;
+  margin: 0 auto;
+  font-family: Tahoma, Geneva, sans-serif;
+}
+.login-form h1 {
+  text-align: center;
+  color: #4d4d4d;
+  font-size: 24px;
+  padding: 20px 0 20px 0;
+}
+.double-line {
+  border-top: 3px double #8c8b8b; 
+}
+.toggle.ios, .toggle-on.ios, .toggle-off.ios { 
+  border-radius: 20rem; 
+}
+.toggle.ios .toggle-handle { 
+  border-radius: 20rem; 
+}
+
+.modal-xl {
+  width: 90%;
+  min-width: 768px;
+  max-width:1200px;
+}

@@ -137,7 +137,7 @@
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					console.log("data: "+data);
-					$("#r"+id).val(data);
+					$("#r"+id).text(JSON.stringify(data));
 					$("#dmb"+id).html("submit");
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown) { 
@@ -150,7 +150,7 @@
 		function updateTwin(id) {
 			var newname = $("#mT"+id).text().trim();
 			$("#mT"+id).text(newname);
-			if (displayName(twins[id], id) != newname) {
+			if (displayName(twins[id]["device"], id) != newname) {
 				$.ajax({
 					url: "/twin/"+id+"/"+newname,
 					success: function (data, textStatus, request) {
@@ -193,7 +193,7 @@
 						<div class="modal-dialog modal-xl modal-dialog-centered" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="mT`+element+`">Device Name: `+displayName(twins[element], element)+`</h5>
+									<h5 class="modal-title" id="mT`+element+`">Device Name: `+displayName(twins[element]["device"], element)+`</h5>
 									<label class="d-inline ml-4" id="tr`+element+`" style="font-size: 6px;"></label>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">×</span>
@@ -215,7 +215,7 @@
 												<div class="row overflow-auto" style="height: 300px;">
 													<div id="t`+element+`" class="mt-3 ml-3"></div>
 												</div><hr>
-												<div class="row ">
+												<div class="row mb-2">
 													<div class="col form-check form-check-inline justify-content-end">
 														<input type="checkbox" data-toggle="toggle" id="check`+element+`" data-size="xs">
 														<label class="ml-2 form-check-label">Text Mode</label>
@@ -294,7 +294,7 @@
 					// labeling charts
 					charts[element] = new Chart($('#chart'+element), JSON.parse(JSON.stringify(chartTemplate)));
 					smCharts[element] = new Chart($('#smchart'+element), JSON.parse(JSON.stringify(chartTemplate)));
-					charts[element].options.title.text = displayName(twins[element], element);
+					charts[element].options.title.text = displayName(twins[element]["device"], element);
 					count++;
 				}
 				drawState(data[element], element);
@@ -406,7 +406,7 @@
 
 		// draw twin info block
 		function drawTwin(twin, id){
-			twins[id] = twin;
+			twins[id]["device"] = twin;
 			var str ='';
 			Object.keys(twin).forEach(element =>{
 				// console.log(element)
@@ -414,19 +414,24 @@
 			});
 			$("#ft"+id).html(str);
 			$("#t"+id).html(str);
-			try {
-				$("#"+id+"name").text(displayName(twin, id));
-				charts[id].options.title.text = displayName(twin, id);
-				charts[id].update();
-			} catch(err) {
-				console.log(err)
+			$("#"+id+"name").text(displayName(twin, id));
+			charts[id].options.title.text = displayName(twin, id);
+			charts[id].update();
+		}
+
+		function drawMsgCtl(id) {
+			if ($("#gctl"+id+" > .col > .row:last-child .col").length > 3){
+				$("#gctl"+id+" > .col > .row:last-child").append('<div class="col">');
+			} else {
+				$("#gctl"+id+" > .col").append('<div class="row">');
 			}
+			
 		}
 
 		// initialization
 		items(devices);
 		Object.keys(twins).forEach(id =>{
-			drawTwin(twins[id], id)
+			drawTwin(twins[id]["device"], id);
 		});
 		$('.carousel').carousel();
 

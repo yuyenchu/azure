@@ -103,17 +103,38 @@ function getDevice(id) {
 // post: set twins
 function getTwin(id) {
     request.get({
-        url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'?api-version=2020-05-31-preview',
+        url: 'https://'+hub.name+'.azure-devices.net/devices/'+id+'/modules?api-version=2020-05-31-preview',
         headers: hub.head
     }, 	function(err,response,body){
             data = JSON.parse(body);
-            if (err) {
-                console.log("twin "+err);
-            } else {
-                twins[id] = data;
-                console.log("twin "+id);
-            }
+            data.forEach(ele => {
+                request.get({
+                    url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'/modules/'+ele+'?api-version=2020-05-31-preview',
+                    headers: hub.head
+                }, 	function(err,response,body){
+                        data = JSON.parse(body);
+                        if (err) {
+                            console.log("twin "+err);
+                        } else {
+                            twins[id]["module"][ele] = data;
+                            console.log("twin "+id+" module "+ele);
+                        }
+                });
+            });
+            request.get({
+                url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'?api-version=2020-05-31-preview',
+                headers: hub.head
+            }, 	function(err,response,body){
+                    data = JSON.parse(body);
+                    if (err) {
+                        console.log("twin "+err);
+                    } else {
+                        twins[id]["device"] = data;
+                        console.log("twin "+id);
+                    }
+            });
     });
+    
 }
 
 // helper method for updating twin with twin patch
@@ -356,13 +377,34 @@ app.get('/logout', function(req, res) {
 // pre: id and methodname and payload and res != null, config valid
 // post: send http call to iot hub, respond call status to res
 app.get('/method/:id/:methodname/:payload', function (req, res) {
+    var url = 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id;
+    if (twin["properties"]["reported"] && twin["properties"]["reported"]["general"] 
+    && twin["properties"]["reported"]["general"]["thingsproVersion"]) {
+        url += 'modules/thingspro-agent';
+    }
+    url += '/methods?api-version=2020-03-13';
     request.post({
-        url: 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'/methods?api-version=2020-03-13',
+        url: url,
         headers: hub.head,
         json: {
                 "methodName": req.params.methodname,
-                "responseTimeoutInSeconds": 200,
+                "responseTimeoutInSeconds": 300,
                 "payload": req.params.payload
+        }
+    }, 	function(error,response,body){
+        console.log("Invoke "+response.statusCode);
+        res.status(200).json(body);
+    });
+});
+
+app.post('/method/:id/:methodname', function (req, res) {
+    request.post({
+        url: 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'modules/thingspro-agent/methods?api-version=2020-03-13',
+        headers: hub.head,
+        json: {
+                "methodName": req.params.methodname,
+                "responseTimeoutInSeconds": 300,
+                "payload": req.body
         }
     }, 	function(error,response,body){
         console.log("Invoke "+response.statusCode);
@@ -413,7 +455,7 @@ function sendTo(msg, id) {
 }
 
 // respond to twin desired name update and receive twin queue update call
-app.route('/twin/:id/:newname?')
+app.route('/twin/:id/:payload?')
 // pre: id and newname and res != null, config valid
 // post: send http call to iot hub, respond call status to res
 .get(function (req, res) {
@@ -423,7 +465,7 @@ app.route('/twin/:id/:newname?')
         json: {
             "properties": {
                 "desired": {
-                        "Name": req.params.newname
+                        "Name": req.params.payload
                 }
             }
         }
@@ -438,7 +480,7 @@ app.route('/twin/:id/:newname?')
 .post(function (req, res) {
     console.log("receive twin call: "+req.params.id);
     if (req.body["properties"]["reported"] && req.body["properties"]["reported"]["Name"] &&
-    req.body["properties"]["reported"]["Name"] != twins[req.params.id]["properties"]["desired"]["Name"]) {
+    req.body["properties"]["reported"]["Name"] != twins[req.params.id]["device"]["properties"]["desired"]["Name"]) {
         const twinUrl = 'https://'+hub.name+'.azure-devices.net/twins/'+id+'?api-version=2020-03-13'
         request.patch({
             url: twinUrl,
@@ -455,7 +497,11 @@ app.route('/twin/:id/:newname?')
         });
     } else {
         Object.keys(req.body).forEach(key => {
-            updateTwin(twins[req.params.id], req.body, key);
+            if (payload) {
+                updateTwin(twins[req.params.id]["module"][req.params.payload], req.body, key);
+            } else {
+                updateTwin(twins[req.params.id]["device"], req.body, key);
+            }
         });
         console.log("to "+req.session.username);
         sendTo({"twin": {"body": twins[req.params.id], "id": req.params.id}}, req.params.id);
@@ -483,6 +529,18 @@ app.post('/event/:id', function (req, res) {
     sendTo({"event": {"body": req.body, "id": req.params.id}}, req.params.id);
     // io.emit(req.session.username, );
     res.status(200).send("ok")
+});
+
+app.get('/initialize', function (req, res) {
+    devicesToRender = {};
+    twinsToRender = {};
+    connection.query('SELECT device AS result FROM viewControl WHERE username = ?', [req.session.username], function(error, results, fields) {
+        results.forEach(element => {
+            devicesToRender[element['result']] = devices[element['result']];
+            twinsToRender[element['result']] = twins[element['result']];
+        });
+        res.json({"devices":devicesToRender, "twins":twinsToRender, "user":req.session.username});
+    });
 });
 
 // send loggedin 
