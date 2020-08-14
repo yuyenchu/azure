@@ -116,6 +116,9 @@ function getTwin(id) {
                         if (err) {
                             console.log("twin "+err);
                         } else {
+                            if (!twins[id]["module"]) {
+                                twins[id]["module"] = {};
+                            }
                             twins[id]["module"][ele] = data;
                             console.log("twin "+id+" module "+ele);
                         }
