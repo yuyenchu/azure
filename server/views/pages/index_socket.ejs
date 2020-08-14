@@ -419,8 +419,8 @@
 				str += "<p style=\"margin-top:-15px;\">"+element+": "+unwrapTwin(twin[element], 1);
 			});
 			$("#t"+id).html(str);
-			$("#"+id+"name").text(displayName(twin, id));
-			charts[id].options.title.text = displayName(twin, id);
+			$("#"+id+"name").text(displayName(twins[id]["device"], id));
+			charts[id].options.title.text = displayName(twins[id]["device"], id);
 			charts[id].update();
 		}
 
