@@ -405,8 +405,8 @@
 		}
 
 		// draw twin info block
-		function drawTwin(twin, id){
-			twins[id] = twin;
+		function drawTwin(id){
+            twin = twins[id];
 			var str ='';
 			Object.keys(twin["device"]).forEach(element =>{
 				// console.log(element)
@@ -436,7 +436,7 @@
 		// initialization
 		items(devices);
 		Object.keys(twins).forEach(id =>{
-			drawTwin(twins[id]["device"], id);
+			drawTwin(id);
 		});
 		$('.carousel').carousel();
 
@@ -452,8 +452,9 @@
 					drawState(data.body, data.id);
 					break;
 				case 'twin':
-					console.log("receive twin");
-					drawTwin(data.body, data.id);
+                    console.log("receive twin");
+                    twins[data.id] = data.body;
+					drawTwin(data.id);
 					break;
 				case 'event':
 					console.log("receive telemtry");
