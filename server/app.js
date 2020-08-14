@@ -106,6 +106,9 @@ function getTwin(id) {
         url: 'https://'+hub.name+'.azure-devices.net/devices/'+id+'/modules?api-version=2020-05-31-preview',
         headers: hub.head
     }, 	function(err,response,body){
+            if (!twins[id]) {
+                twins[id] = {};
+            }
             data = JSON.parse(body);
             data.forEach(ele => {
                 request.get({
