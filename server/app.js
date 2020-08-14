@@ -110,9 +110,9 @@ function getTwin(id) {
                 twins[id] = {};
             }
             data = JSON.parse(body);
-            console.log("twin module"+data);
-            console.log("twin module"+typeof(data));
-            console.log("twin module"+JSON.stringify(data));
+            // console.log("twin module"+data);
+            // console.log("twin module"+typeof(data));
+            // console.log("twin module"+JSON.stringify(data));
             data.forEach(ele => {
                 if (!twins[id]["module"]) {
                     twins[id]["module"] = {};
