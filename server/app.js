@@ -114,21 +114,11 @@ function getTwin(id) {
             console.log("twin module"+typeof(data));
             console.log("twin module"+JSON.stringify(data));
             data.forEach(ele => {
-                request.get({
-                    url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'/modules/'+ele+'?api-version=2020-05-31-preview',
-                    headers: hub.head
-                }, 	function(err,response,body){
-                        data = JSON.parse(body);
-                        if (err) {
-                            console.log("twin "+err);
-                        } else {
-                            if (!twins[id]["module"]) {
-                                twins[id]["module"] = {};
-                            }
-                            twins[id]["module"][ele] = data;
-                            console.log("twin "+id+" module "+ele);
-                        }
-                });
+                if (!twins[id]["module"]) {
+                    twins[id]["module"] = {};
+                }
+                twins[id]["module"][ele["moduleId"]] = ele;
+                console.log("twin "+id+" module "+ele["moduleId"]);
             });
             request.get({
                 url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'?api-version=2020-05-31-preview',
