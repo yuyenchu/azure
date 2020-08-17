@@ -326,7 +326,7 @@
                     element["enable"] = checked;
                 }
             });
-            console.log("msgput\n"+msgGroup[id]);
+            console.log("msgput\n" + JSON.stringify(msgGroup[id]));
             $.ajax({
                 url: "/method/"+id+"/message-policy-put",
                 type: 'POST',
