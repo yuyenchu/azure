@@ -108,7 +108,8 @@
 			var payload = $("#payloadall").val().trim();
 			Object.keys(devices).forEach(ele => {
 				$.ajax({
-				url: "/method/"+ele+"/"+methodname+"/"+payload,
+                url: "/method/"+ele+"/"+methodname,
+                data: JSON.parse(payload),
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
 					console.log("data: "+data);
@@ -138,7 +139,7 @@
                 success: function (data, textStatus, request) {
                     // console.log("data type: "+typeof(data));
                     console.log("data: "+data);
-                    $("#r"+id).text(JSON.stringify(data));
+                    $("#r"+id).val(JSON.stringify(data));
                     $("#dmb"+id).html("submit");
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) { 
@@ -223,32 +224,7 @@
 													</div>
 												</div>
 												<div class="row overflow-auto" style="min-height: 250px;" id="gctl`+element+`">
-													<div class="col">
-														<div class="row mb-2 container-fluid">
-															<div class="col m-1">
-																<input type="checkbox" checked data-toggle="toggle" id="check1`+element+`" data-style="ios">
-																<label class="ml-1 form-check-label">sth1</label>
-															</div>
-															<div class="col m-1">
-																<input type="checkbox" checked data-toggle="toggle" id="check2`+element+`" data-style="ios">
-																<label class="ml-1 form-check-label">sth2</label>
-															</div>
-															<div class="col m-1">
-																<input type="checkbox" checked data-toggle="toggle" id="check3`+element+`" data-style="ios">
-																<label class="ml-1 form-check-label">sth3</label>
-															</div>
-														</div>
-														<div class="row mb-2 container-fluid">
-															<div class="col m-1">
-																<button type="button" class="btn btn-primary" id="check4`+element+`">sth4</button>
-															</div>
-															<div class="col m-1">
-																<button type="button" class="btn btn-primary" id="check5`+element+`">sth5</button>
-															</div>
-															<div class="col m-1">
-																<button type="button" class="btn btn-primary" id="check6`+element+`">sth6</button>
-															</div>
-														</div>
+													<div class="col" id="msg`+element+`">
 													</div>
 												</div>
 												<div class="row overflow-auto" style="height: 250px; display: none;" id="tctl`+element+`">
@@ -291,7 +267,10 @@
 							$("#tctl"+element).hide();
 							$("#gctl"+element).fadeIn('slow');
 						}
-					});
+                    });
+                    if (displayTPEVer(twins[element] != "-")) {
+                        getMsgGroup(element);
+                    }
 					// labeling charts
 					charts[element] = new Chart($('#chart'+element), JSON.parse(JSON.stringify(chartTemplate)));
 					smCharts[element] = new Chart($('#smchart'+element), JSON.parse(JSON.stringify(chartTemplate)));
@@ -306,7 +285,29 @@
 					$("#devices").append('<div id=ft'+element+' class="canvas collapse"></div><hr>');
 				} 
 			});
-		}
+        }
+        
+        function getMsgGroup(id) {
+            $.ajax({
+                url: "/method/"+id+"/message-policy-get",
+                data: {},
+                success: function (data, textStatus, request) {
+                    // console.log("data type: "+typeof(data));
+                    console.log("data: "+JSON.stringify(data));
+                    data.payload.data.groups.forEach(element => {
+                        if ($("#msg"+id+" > .row:last-child").children().length>=3) {
+                            $("#msg"+id).append('<div class="row mb-2 container-fluid"></div>');
+                        } 
+                        $("#msg"+id+" > .row:last-child").append(`<div class="col m-1">
+                                                                    <input type="checkbox" checked data-toggle="toggle" id="`+element["outputTopic"]+`" data-style="ios">
+                                                                    <label class="ml-1 form-check-label">`+element["outputTopic"]+`</label>
+															    </div>'`);
+                    })
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) { 
+                console.log("Msg Group Error: ("+id+") "+jqXHR.status+" "+jqXHR.statusText);
+            });
+        }
 
 		// unwrapping twin data
 		function unwrapTwin(data, indent) {

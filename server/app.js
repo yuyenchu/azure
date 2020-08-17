@@ -391,7 +391,6 @@ app.get('/method/:id/:methodname', function (req, res) {
         url += '/modules/thingspro-agent';
     }
     url += '/methods?api-version=2020-03-13';
-    console.log(url);
     request.post({
         url: url,
         headers: hub.head,
@@ -402,7 +401,7 @@ app.get('/method/:id/:methodname', function (req, res) {
         }
     }, 	function(error,response,body){
         console.log("Invoke "+response.statusCode);
-        res.json(response);
+        res.json(response.body);
     });
 });
 
