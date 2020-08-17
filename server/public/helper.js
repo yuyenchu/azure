@@ -15,8 +15,9 @@ function displayTPEVer(ftwin) {
     if (twin["properties"]["reported"] && twin["properties"]["reported"]["general"] 
         && twin["properties"]["reported"]["general"]["thingsproVersion"]) {
         return twin["properties"]["reported"]["general"]["thingsproVersion"];
-    } else if (module && module["thingspro-agent"] && ) {
-
+    } else if (module && module["thingspro-agent"] && module["thingspro-agent"]["general"] 
+        && module["thingspro-agent"]["general"]["thingsproVersion"]) {
+        return module["thingspro-agent"]["general"]["thingsproVersion"];
     } else{
         return "-";
     }
