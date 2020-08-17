@@ -10,17 +10,20 @@ function displayName(twin, id) {
 }
 
 function displayTPEVer(ftwin) {
-    twin = ftwin["device"];
+    device = ftwin["device"];
     module = ftwin["module"];
-    if (twin["properties"]["reported"] && twin["properties"]["reported"]["general"] 
-        && twin["properties"]["reported"]["general"]["thingsproVersion"]) {
-        return twin["properties"]["reported"]["general"]["thingsproVersion"];
-    } else if (module && module["thingspro-agent"] && module["thingspro-agent"]["general"] 
-        && module["thingspro-agent"]["general"]["thingsproVersion"]) {
-        return module["thingspro-agent"]["general"]["thingsproVersion"];
+    if (hasTPEVer(device)) {
+        return device["properties"]["reported"]["general"]["thingsproVersion"];
+    } else if (module && module["thingspro-agent"] && hasTPEVer(module["thingspro-agent"])) {
+        return module["thingspro-agent"]["properties"]["reported"]["general"]["thingsproVersion"];
     } else{
         return "-";
     }
+}
+
+function hasTPEVer(twin) {
+    return (twin["properties"]["reported"] && twin["properties"]["reported"]["general"] 
+        && twin["properties"]["reported"]["general"]["thingsproVersion"]);
 }
 
 function isDict(v) {
