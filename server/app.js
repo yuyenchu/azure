@@ -385,7 +385,7 @@ app.get('/logout', function(req, res) {
 // respond to invoke direct method, expect http error
 // pre: id and methodname and payload and res != null, config valid
 // post: send http call to iot hub, respond call status to res
-app.get('/method/:id/:methodname', function (req, res) {
+app.post('/method/:id/:methodname', function (req, res) {
     var url = 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id;
     if (twins[req.params.id]["module"] && twins[req.params.id]["module"]["thingspro-agent"]) {
         url += '/modules/thingspro-agent';

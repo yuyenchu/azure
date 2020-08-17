@@ -110,6 +110,7 @@
 			Object.keys(devices).forEach(ele => {
 				$.ajax({
                 url: "/method/"+ele+"/"+methodname,
+                type: 'POST',
                 data: JSON.parse(payload),
 				success: function (data, textStatus, request) {
 					// console.log("data type: "+typeof(data));
@@ -136,6 +137,7 @@
             var payload = $("#p"+id).val().trim();
             $.ajax({
                 url: "/method/"+id+"/"+methodname,
+                type: 'POST',
                 data: JSON.parse(payload),
                 success: function (data, textStatus, request) {
                     // console.log("data type: "+typeof(data));
@@ -291,6 +293,7 @@
         function getMsgGroup(id) {
             $.ajax({
                 url: "/method/"+id+"/message-policy-get",
+                type: 'POST',
                 data: {},
                 success: function (data, textStatus, request) {
                     // console.log("data type: "+typeof(data));
@@ -326,6 +329,7 @@
             console.log("msgput\n"+msgGroup[id]);
             $.ajax({
                 url: "/method/"+id+"/message-policy-put",
+                type: 'POST',
                 data: {
                     "groups": msgGroup[id]
                 },
