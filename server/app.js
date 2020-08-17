@@ -125,7 +125,7 @@ function getTwin(id) {
                             twins[id]["module"] = {};
                         }
                         twins[id]["module"][ele["moduleId"]] = body;
-                        console.log("twin "+id+" module "+ele["moduleId"]);
+                        console.log("twin "+id+" module "+ele["moduleId"]+body+"/"+response.data);
                     }
                 });
             });
