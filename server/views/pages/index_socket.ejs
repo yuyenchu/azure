@@ -332,7 +332,7 @@
                 type: 'POST',
                 dataType: 'json',
                 contentType: 'application/json',
-                data: {"groups": msgGroup[id]},
+                data: JSON.stringify({"groups": msgGroup[id]}),
                 success: function (data, textStatus, request) {
                     // console.log("data type: "+typeof(data));
                     console.log("data: "+JSON.stringify(data));
