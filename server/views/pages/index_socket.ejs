@@ -147,7 +147,7 @@
                 });
             } else {
                 $.ajax({
-                    url: "/method/edge"+id+"/"+methodname,
+                    url: "/method/edge/"+id+"/"+methodname,
                     data: JSON.parse(payload),
                     success: function (data, textStatus, request) {
                         // console.log("data type: "+typeof(data));
