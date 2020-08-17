@@ -114,11 +114,21 @@ function getTwin(id) {
             // console.log("twin module"+typeof(data));
             // console.log("twin module"+JSON.stringify(data));
             data.forEach(ele => {
-                if (!twins[id]["module"]) {
-                    twins[id]["module"] = {};
-                }
-                twins[id]["module"][ele["moduleId"]] = ele;
-                console.log("twin "+id+" module "+ele["moduleId"]);
+                request.get({
+                    url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'modules'+ele["moduleId"]+'?api-version=2020-05-31-preview',
+                    headers: hub.head
+                }, 	function(err,response,body){
+                    data = JSON.parse(body);
+                    if (err) {
+                        console.log("twin "+err);
+                    } else {
+                        if (!twins[id]["module"]) {
+                            twins[id]["module"] = {};
+                        }
+                        twins[id]["module"][ele["moduleId"]] = data;
+                        console.log("twin "+id+" module "+ele["moduleId"]);
+                    }
+                });
             });
             request.get({
                 url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'?api-version=2020-05-31-preview',
@@ -504,7 +514,6 @@ app.route('/twin/:id/:payload?')
         });
         console.log("to "+req.session.username);
         sendTo({"twin": {"body": twins[req.params.id], "id": req.params.id}}, req.params.id);
-        // io.emit(req.session.username, );
     }
     res.status(200).send("ok")
 });
@@ -516,7 +525,6 @@ app.post('/state/:id', function (req, res) {
     console.log("receive event call: "+req.params.id);
     devices[req.params.id] = req.body;
     sendTo({"state": {"body": devices[req.params.id], "id": req.params.id}}, req.params.id);
-    // io.emit(req.session.username, );
     res.status(200).send("ok")
 });
 
@@ -526,7 +534,6 @@ app.post('/state/:id', function (req, res) {
 app.post('/event/:id', function (req, res) {
     console.log("receive event call: "+req.params.id);
     sendTo({"event": {"body": req.body, "id": req.params.id}}, req.params.id);
-    // io.emit(req.session.username, );
     res.status(200).send("ok")
 });
 
