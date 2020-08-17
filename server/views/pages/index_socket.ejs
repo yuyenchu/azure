@@ -323,9 +323,12 @@
                     element["enable"] = checked;
                 }
             });
+            console.log("msgput\n"+msgGroup[id]);
             $.ajax({
                 url: "/method/"+id+"/message-policy-put",
-                data: {"groups": msgGroup[id]},
+                data: {
+                    "groups": msgGroup[id]
+                },
                 success: function (data, textStatus, request) {
                     // console.log("data type: "+typeof(data));
                     console.log("data: "+JSON.stringify(data));

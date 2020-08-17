@@ -391,6 +391,7 @@ app.get('/method/:id/:methodname', function (req, res) {
         url += '/modules/thingspro-agent';
     }
     url += '/methods?api-version=2020-03-13';
+    console.log(req.params.id);
     console.log(JSON.stringify(req.body));
     request.post({
         url: url,
