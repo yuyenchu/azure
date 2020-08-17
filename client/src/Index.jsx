@@ -1,50 +1,62 @@
-import React, { useState }  from 'react';
+import React, { useState, useEffect }  from 'react';
+import axios from 'axios';
+import webSocket from 'socket.io-client'
 import './App.css';
 import './page.css';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import TestComponent from './test_component.jsx';
 import Header from './Header.jsx';
 import ControlPanel from './ControlPanel.jsx';
+import InvokeAll from './InvokeAll.jsx';
+import {displayTPEVer, displayName} from './Helper.jsx';
 
 function Index() {
-    const [name, setName] = useState('App');
+    const [name, setName] = useState('Andrew');
     const [twins, setTwins] = useState({"A":{1:2}});
     const [devices, setDevices] = useState({"simulate2":{"state":"Disconnected"}});
+    const [ws,setWs] = useState(null);
 
+    const connectWebSocket = () => {
+        setWs(webSocket('http://localhost:3000'));
+        ws.on(name, message => {
+            console.log(message)
+        })
+    }
+    
+    const updateAll = () => {
+        axios.get("http://localhost:3000/initialize")
+        .then(function(response) {
+            // console.log(JSON.stringify(response.data));
+            // console.log(JSON.stringify(response.data.twins));
+            setName(response.data.user);
+            setDevices(response.data.devices);
+            setTwins(response.data.twins);
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+    }
 
-  return (
+    useEffect(() => { 
+        if (Object.keys(devices).length === 0) {
+            updateAll();
+        }
+        if (!ws) {
+            connectWebSocket();
+            console.log('connect success!');
+        }
+    });
+
+    return (
     <>
-      <Header userName="root"/>
+      <Header userName={name}/>
       <div className="container-fluid content mb-3">
         <h3 style={{"text-align":"center"}}>
-          <a data-toggle="collapse" href="#controlall" className="text-dark nav-link">
             <b>Registered Devices</b>
-          </a>
         </h3>
-        <div id="controlall" className="collapse">
-          <hr className="double-line"/>
-          <p style={{"text-align":"center"}}>Direct Method to All Devices</p>
-          <div className="mt-3 d-flex justify-content-center">
-            <input type="text" className="form-control" placeholder="Method Name" id="methodall" style={{"maxWidth": "200px"}}/>
-          </div>
-          <div className="mt-3 d-flex justify-content-center">
-            <textarea className="form-control" id="txtarea" rows="5" style={{"marginTop": "0px", "marginBottom": "0px"}} placeholder="Payload"></textarea>
-          </div>
-          <div className="mt-3 d-flex justify-content-center">
-            <button type="button" id="dmbuttonall" className="btn btn-danger" onclick="invokeall()">submit</button>
-          </div>
-          <label id="resultall" className="mt-4 ml-3"></label>
-          <hr className="double-line"/>
-          <p style={{"text-align":"center"}}>Twin Patch to All Devices</p>
-          <textarea className="form-control mb-3" id="txtarea" rows="5" style={{"margin-top": "0px", "margin-bottom": "0px"}} placeholder="desired: {}"></textarea>
-          <div className="mb-3 d-flex justify-content-center">
-            <button type="button" id="tpbuttonall" className="btn btn-danger" onclick="invokeall()">submit</button>
-          </div>
-        </div>
+        
         <br/>
         <hr/>
-        <div id="messages"></div>
         <div id="devices"></div>
 
         <div id="carousel" className="carousel slide p-5 border" data-interval="false">
@@ -61,38 +73,19 @@ function Index() {
             <span className="sr-only ml-5">Next</span>
           </a>
         </div>
-        <div id="modalHolder"></div>
-      </div>
-      <ControlPanel displayName="app"/>
-      <p>
-          {JSON.stringify(twins)}
-        </p>
-      <button onClick={() => setTwins(twins.map((key,result)=>key))}> Add b </button>
+        <div id="modalHolder">
+            <ControlPanel displayName="app"/>
+        </div>
+    </div>
+     
+    <p>
+        {JSON.stringify(twins)}
+    </p>
+    <button type='button' className='btn btn-outline-secondary m-2' onClick={() => setTwins({...twins, "B":{3:4}})}> Add b </button>
     <script src="https://unpkg.com/react/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js" crossorigin></script>
 
-
-    
-    {/* <div className="App body">
-      <header className="App-header">
-        
-        <img src={logo} alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <TestComponent name={name}/>
-        <Button onClick={() => setName(name+"p")}> Add p </Button>
-      </header>
-    </div> */}
     </>
   );
 }

@@ -16,13 +16,9 @@ var loggedinUsers = {}; // record accounts login
 // in form of {id: data}
 
 
-// app setup
-// using ejs views for dynamic page
-app.set('views', path.join(__dirname, '/views'))
-app.set('view engine', 'ejs');
 // set static directory
 app.use(cors());
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, 'client/build')));
 // app.use(express.static(path.join(__dirname, '/public')));
 // setting express session for user login/logout
 app.use(session({
@@ -39,6 +35,10 @@ app.use((req, res, next) => {
 });
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
+
+app.get('*', (req,res) =>{
+    res.sendFile(path.join(__dirname+'/../client/build/index.html'));
+});
 
 app.route('/view/:id')
 .post(function (req, res) {

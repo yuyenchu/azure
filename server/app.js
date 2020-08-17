@@ -396,7 +396,7 @@ app.get('/method/:id/:methodname/:payload', function (req, res) {
     });
 });
 
-app.post('/method/:id/:methodname', function (req, res) {
+app.post('/method/edge/:id/:methodname', function (req, res) {
     request.post({
         url: 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'modules/thingspro-agent/methods?api-version=2020-03-13',
         headers: hub.head,
