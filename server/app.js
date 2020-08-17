@@ -496,7 +496,7 @@ app.route('/twin/:id/:payload?')
         });
     } else {
         Object.keys(req.body).forEach(key => {
-            if (payload) {
+            if (req.params.payload) {
                 updateTwin(twins[req.params.id]["module"][req.params.payload], req.body, key);
             } else {
                 updateTwin(twins[req.params.id]["device"], req.body, key);

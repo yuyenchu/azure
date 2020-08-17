@@ -116,7 +116,7 @@
             Object.keys(devices).forEach(element => {
                 $("#tbody").append('<tr><td><div class="custom-control custom-checkbox">'+
                     '<input type="checkbox" class="select-item form-check-input" id="'+
-                    element+'"></div></td><td>'+displayName(twins[element], element)+
+                    element+'"></div></td><td>'+displayName(twins[element]["device"], element)+
                     '</td><td>'+element+'</td><td>'+devices[element]["state"]+'</td><td>'+
                     displayTPEVer(twins[element])+'</td></tr>');
             });
