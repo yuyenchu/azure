@@ -385,31 +385,14 @@ app.get('/logout', function(req, res) {
 // respond to invoke direct method, expect http error
 // pre: id and methodname and payload and res != null, config valid
 // post: send http call to iot hub, respond call status to res
-app.get('/method/:id/:methodname/:payload', function (req, res) {
+app.get('/method/:id/:methodname', function (req, res) {
     var url = 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id;
-    if (twin["properties"]["reported"] && twin["properties"]["reported"]["general"] 
-    && twin["properties"]["reported"]["general"]["thingsproVersion"]) {
+    if (twins[req.params.id]["module"] && twins[req.params.id]["module"]["thingspro-agent"]) {
         url += 'modules/thingspro-agent';
     }
     url += '/methods?api-version=2020-03-13';
     request.post({
         url: url,
-        headers: hub.head,
-        json: {
-                "methodName": req.params.methodname,
-                "responseTimeoutInSeconds": 300,
-                "payload": req.params.payload
-        }
-    }, 	function(error,response,body){
-        console.log("Invoke "+response.statusCode);
-        res.status(200).json(body);
-    });
-});
-
-app.post('/method/edge/:id/:methodname', function (req, res) {
-    console.log(req.body);
-    request.post({
-        url: 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id+'modules/thingspro-agent/methods?api-version=2020-03-13',
         headers: hub.head,
         json: {
                 "methodName": req.params.methodname,

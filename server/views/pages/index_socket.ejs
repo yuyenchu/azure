@@ -132,34 +132,19 @@
 			$("#dmb"+id).html(buttonSpinner);
 			var methodname = $("#m"+id).val().trim();
             var payload = $("#p"+id).val().trim();
-            if (displayTPEVer(twins[id]) == "-") {
-                $.ajax({
-                    url: "/method/"+id+"/"+methodname+"/"+payload,
-                    success: function (data, textStatus, request) {
-                        // console.log("data type: "+typeof(data));
-                        console.log("data: "+data);
-                        $("#r"+id).text(JSON.stringify(data));
-                        $("#dmb"+id).html("submit");
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) { 
-                    $("#r"+id).val(jqXHR.status+" "+jqXHR.statusText);
+            $.ajax({
+                url: "/method/"+id+"/"+methodname,
+                data: JSON.parse(payload),
+                success: function (data, textStatus, request) {
+                    // console.log("data type: "+typeof(data));
+                    console.log("data: "+data);
+                    $("#r"+id).text(JSON.stringify(data));
                     $("#dmb"+id).html("submit");
-                });
-            } else {
-                $.ajax({
-                    url: "/method/edge/"+id+"/"+methodname,
-                    data: JSON.parse(payload),
-                    success: function (data, textStatus, request) {
-                        // console.log("data type: "+typeof(data));
-                        console.log("data: "+data);
-                        $("#r"+id).text(JSON.stringify(data));
-                        $("#dmb"+id).html("submit");
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) { 
-                    $("#r"+id).val(jqXHR.status+" "+jqXHR.statusText);
-                    $("#dmb"+id).html("submit");
-                });
-            }
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) { 
+                $("#r"+id).val(jqXHR.status+" "+jqXHR.statusText);
+                $("#dmb"+id).html("submit");
+            });
 		}
 
 		// http requests for update desired device name in twin
