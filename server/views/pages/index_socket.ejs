@@ -294,15 +294,18 @@
                 success: function (data, textStatus, request) {
                     // console.log("data type: "+typeof(data));
                     console.log("data: "+JSON.stringify(data));
-                    data.payload.data.groups.forEach(element => {
-                        if ($("#msg"+id+" > .row:last-child").children().length>=3) {
-                            $("#msg"+id).append('<div class="row mb-2 container-fluid"></div>');
-                        } 
-                        $("#msg"+id+" > .row:last-child").append(`<div class="col m-1">
-                                                                    <input type="checkbox" checked data-toggle="toggle" id="`+element["outputTopic"]+`" data-style="ios">
-                                                                    <label class="ml-1 form-check-label">`+element["outputTopic"]+`</label>
-															    </div>'`);
-                    })
+                    if (data.status && data.status == 200) {
+                        data.payload.data.groups.forEach(element => {
+                            if ($("#msg"+id+" > .row").length == 0 ||
+                                $("#msg"+id+" > .row:last-child").children().length>=3) {
+                                $("#msg"+id).append('<div class="row mb-2 container-fluid"></div>');
+                            } 
+                            $("#msg"+id+" > .row:last-child").append(`<div class="col m-1">
+                                                                        <input type="checkbox" checked data-toggle="toggle" id="`+element["outputTopic"]+`" data-style="ios">
+                                                                        <label class="ml-1 form-check-label">`+element["outputTopic"]+`</label>
+                                                                    </div>'`);
+                        });
+                    }
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) { 
                 console.log("Msg Group Error: ("+id+") "+jqXHR.status+" "+jqXHR.statusText);
