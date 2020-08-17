@@ -330,6 +330,7 @@
             $.ajax({
                 url: "/method/"+id+"/message-policy-put",
                 type: 'POST',
+                dataType: 'json',
                 data: {
                     "groups": msgGroup[id]
                 },
