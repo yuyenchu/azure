@@ -388,7 +388,7 @@ app.get('/logout', function(req, res) {
 app.get('/method/:id/:methodname', function (req, res) {
     var url = 'https://'+hub.name+'.azure-devices.net/twins/'+req.params.id;
     if (twins[req.params.id]["module"] && twins[req.params.id]["module"]["thingspro-agent"]) {
-        url += 'modules/thingspro-agent';
+        url += '/modules/thingspro-agent';
     }
     url += '/methods?api-version=2020-03-13';
     console.log(url);

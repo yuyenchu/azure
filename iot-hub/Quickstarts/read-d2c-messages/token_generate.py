@@ -12,8 +12,8 @@ TOKEN_FORMAT = 'SharedAccessSignature sr=%s&sig=%s&se=%s&skn=%s'
 # iot hub token
 def get_token():
     CONNECTION_STRING = """
-    HostName=thingspro-IoTHub-newTwin.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=/2LO5sUFm0BZqEiKLW6i8q4696k2FWJVH++U3IthJMs=
-    """
+HostName=thingspro-IoTHub-newTwin.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=KwgMjyXpI8j6REaiPjZy/JzIxriQeW6gKpt0zQwvpmo=
+"""
     IOTHOST, KEYNAME, KEYVLAUE = [
         sub[sub.index('=') + 1:] for sub in CONNECTION_STRING.split(";")]
     targetUri = IOTHOST.lower()
