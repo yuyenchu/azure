@@ -268,7 +268,7 @@
 							$("#gctl"+element).fadeIn('slow');
 						}
                     });
-                    if (displayTPEVer(twins[element] != "-")) {
+                    if (twins[element]["module"] && twins[element]["module"]["thingspro-agent"]) {
                         getMsgGroup(element);
                     }
 					// labeling charts
