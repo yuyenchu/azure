@@ -115,7 +115,7 @@ function getTwin(id) {
             // console.log("twin module"+JSON.stringify(data));
             data.forEach(ele => {
                 request.get({
-                    url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'/modules'+ele["moduleId"]+'?api-version=2020-05-31-preview',
+                    url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'/modules/'+ele["moduleId"]+'?api-version=2020-05-31-preview',
                     headers: hub.head
                 }, 	function(err,response,body){
                     if (err) {
