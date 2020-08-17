@@ -118,14 +118,15 @@ function getTwin(id) {
                     url: 'https://'+hub.name+'.azure-devices.net/twins/'+id+'/modules/'+ele["moduleId"]+'?api-version=2020-05-31-preview',
                     headers: hub.head
                 }, 	function(err,response,body){
+                    data = JSON.parse(body);
                     if (err) {
                         console.log("twin "+err);
                     } else {
                         if (!twins[id]["module"]) {
                             twins[id]["module"] = {};
                         }
-                        twins[id]["module"][ele["moduleId"]] = body;
-                        console.log("twin "+id+" module "+ele["moduleId"]+body+"/"+response.data);
+                        twins[id]["module"][ele["moduleId"]] = data;
+                        console.log("twin "+id+" module "+ele["moduleId"]);
                     }
                 });
             });

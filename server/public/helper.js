@@ -11,10 +11,13 @@ function displayName(twin, id) {
 
 function displayTPEVer(ftwin) {
     twin = ftwin["device"];
+    module = ftwin["module"];
     if (twin["properties"]["reported"] && twin["properties"]["reported"]["general"] 
         && twin["properties"]["reported"]["general"]["thingsproVersion"]) {
         return twin["properties"]["reported"]["general"]["thingsproVersion"];
-    } else {
+    } else if (module && module["thingspro-agent"] && ) {
+
+    } else{
         return "-";
     }
 }
