@@ -397,6 +397,7 @@ app.get('/method/:id/:methodname', function (req, res) {
         json: {
                 "methodName": req.params.methodname,
                 "responseTimeoutInSeconds": 300,
+                "connectTimeoutInSeconds": 300,
                 "payload": req.body
         }
     }, 	function(error,response,body){

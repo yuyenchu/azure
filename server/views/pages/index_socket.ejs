@@ -302,13 +302,13 @@
                                 $("#msg"+id+" > .row:last-child").children().length>=3) {
                                 $("#msg"+id).append('<div class="row mb-2 container-fluid"></div>');
                             } 
-                            $("#msg"+id+" > .row:last-child").append(`<div class="col m-1">
-                                                                        <input type="checkbox" checked data-toggle="toggle" id="`+element["outputTopic"]+`" data-style="ios">
+                            $("#msg"+id+" > .row:last-child").append(`<div class="col m-1"><input type="checkbox" 
+                                                                        `+(element.enable?"checked":"")+`data-toggle="toggle" id="`+element["outputTopic"]+`" data-style="ios">
                                                                         <label class="ml-1 form-check-label">`+element["outputTopic"]+`</label>
                                                                     </div>`);
                             $("#"+element["outputTopic"]).change(function(){
                                 switchMsgGroup(id, element["outputTopic"], $(this).prop('checked'))
-                            })
+                            });
                         });
                     }
                 }
