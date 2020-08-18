@@ -142,7 +142,7 @@
                 type: 'POST',
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                data: typeof(payload)==="object"?JSON.stringify(payload):payload,
+                data: JSON.stringify(payload),
                 // data: {
                 //     jsonData: JSON.stringify(payload),
                 // },
