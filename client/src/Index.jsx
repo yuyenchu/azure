@@ -7,19 +7,21 @@ import './page.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './Header.jsx';
 import ControlPanel from './ControlPanel.jsx';
+import ConnBadge from './ConnBadge.jsx';
+import TwinBlock from './TwinBlock.jsx';
 import InvokeAll from './InvokeAll.jsx';
 import {displayTPEVer, displayName} from './Helper.jsx';
 
 function Index() {
     const [name, setName] = useState('');
-    const [twins, setTwins] = useState(null);
-    const [devices, setDevices] = useState(null);
+    const [twins, setTwins] = useState({});
+    const [devices, setDevices] = useState({});
     const [ws,setWs] = useState(webSocket('http://localhost:3000'));
     
     const updateAll = () => {
         axios.get("http://localhost:3000/initialize")
         .then(function(response) {
-            // console.log(JSON.stringify(response.data));
+            // console.log(typeof(response.data.twins));
             // console.log(JSON.stringify(response.data.twins));
             setName(response.data.user);
             setDevices(response.data.devices);
@@ -33,9 +35,9 @@ function Index() {
     useEffect(() => { 
         if (Object.keys(devices).length === 0) {
             updateAll();
-            ws.on(name, message => {
-                console.log(message)
-            })
+            // ws.on(name, message => {
+            //     console.log(message)
+            // })
         }
     });
 
@@ -51,11 +53,10 @@ function Index() {
         <hr/>
         <div id="devices">
             {
-                devices.map(device => {
-                    id = device.deviceId;
-                    return (<div class="p-3 mb-2 bg-light">
-                                <p class="mt-3 d-inline-block">{displayName(twins[id]["device"],id)}</p>
-                                <span class="m-2"></span>
+                Object.keys(devices).map(key => {
+                    return (<div className="p-3 mb-2 bg-light">
+                                <p className="mt-3 d-inline-block">{displayName(twins[key],key)}</p>
+                                <ConnBadge data={devices[key]["state"]}/>
                             </div>);
                 })
             }
@@ -83,11 +84,8 @@ function Index() {
     <p>
         {JSON.stringify(twins)}
     </p>
+    <TwinBlock data={twins}/>
     <button type='button' className='btn btn-outline-secondary m-2' onClick={() => setTwins({...twins, "B":{3:4}})}> Add b </button>
-    <script src="https://unpkg.com/react/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js" crossorigin></script>
-
     </>
   );
 }

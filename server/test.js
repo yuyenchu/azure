@@ -18,7 +18,7 @@ var loggedinUsers = {}; // record accounts login
 
 // set static directory
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, '../client/build')));
 // app.use(express.static(path.join(__dirname, '/public')));
 // setting express session for user login/logout
 app.use(session({
@@ -37,10 +37,16 @@ app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
 app.get('/', (req,res) =>{
-    res.redirect('/home');
+    // res.redirect('/home');
+    res.sendFile(path.join(__dirname+'/../client/build/index.html'));
 });
 
 app.get('/home', (req,res) =>{
+    console.log(path.join(__dirname+'/../client/build/index.html'));
+    res.sendFile(path.join(__dirname+'/../client/build/index.html'));
+});
+
+app.get('/manage', (req,res) =>{
     res.sendFile(path.join(__dirname+'/../client/build/index.html'));
 });
 
@@ -62,8 +68,8 @@ app.get('/initialize', function (req, res) {
                             },
                             "user":"Andrew", 
                             "twins":{
-                                "simulate2":{"properties":{"reported":{"general":{"thingsproVersion": "1.1.0"}}}},
-                                "simulate1":{"properties":{"reported":{"general":{"thingsproVersion": "2.0.1"}}}}
+                                "simulate2":{"properties":{"reported":{"general":{"thingsproVersion": "1.1.0"}},"name":"s2"}},
+                                "simulate1":{"properties":{"reported":{"general":{"thingsproVersion": "2.0.1"}},"name":"simulate1"}}
                             }});
 });
 // send loggedin 
