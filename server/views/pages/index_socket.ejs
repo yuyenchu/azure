@@ -135,7 +135,8 @@
 			$("#dmb"+id).html(buttonSpinner);
 			var methodname = $("#m"+id).val().trim();
             var payload = $("#p"+id).val().trim();
-            console.log()
+            console.log("payload:\n"+payload)
+            console.log("payload:\n"+JSON.stringify(payload))
             $.ajax({
                 url: "/method/"+id+"/"+methodname,
                 type: 'POST',
