@@ -141,7 +141,8 @@
                 url: "/method/"+id+"/"+methodname,
                 type: 'POST',
                 dataType: "json",
-                data: typeof(payload)==="object"?JSON.stringify(payload):payload,
+                // data: typeof(payload)==="object"?JSON.stringify(payload):payload,
+                data: {"test":"paylosd"},
                 success: function (data, textStatus, request) {
                     // console.log("data type: "+typeof(data));
                     console.log("data: "+data);
