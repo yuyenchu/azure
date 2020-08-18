@@ -47,7 +47,7 @@ def device_method_listener(device_client):
         )
         if method_request.name == "SetTelemetryInterval":
             try:
-                INTERVAL = int(method_request.payload)
+                INTERVAL = int(method_request.payload['value'])
             except ValueError:
                 response_payload = {"Response": "Invalid parameter"}
                 response_status = 400
@@ -56,7 +56,7 @@ def device_method_listener(device_client):
                 response_status = 200
         elif method_request.name == "Reboot":
             try:
-                reboot_time = int(method_request.payload)
+                reboot_time = int(method_request.payload['value'])
                 print("rebooting in %d second(s)"%reboot_time)
             except ValueError:
                 response_payload = {"Response": "Invalid parameter"}

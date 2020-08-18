@@ -142,10 +142,7 @@
                 type: 'POST',
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(payload),
-                // data: {
-                //     jsonData: JSON.stringify(payload),
-                // },
+                data: payload,
                 success: function (data, textStatus, request) {
                     // console.log("data type: "+typeof(data));
                     console.log("data: "+data);
