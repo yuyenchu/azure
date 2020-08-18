@@ -36,7 +36,11 @@ app.use((req, res, next) => {
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
-app.get('*', (req,res) =>{
+app.get('/', (req,res) =>{
+    res.redirect('/home');
+});
+
+app.get('/home', (req,res) =>{
     res.sendFile(path.join(__dirname+'/../client/build/index.html'));
 });
 

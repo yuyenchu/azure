@@ -11,17 +11,10 @@ import InvokeAll from './InvokeAll.jsx';
 import {displayTPEVer, displayName} from './Helper.jsx';
 
 function Index() {
-    const [name, setName] = useState('Andrew');
-    const [twins, setTwins] = useState({"A":{1:2}});
-    const [devices, setDevices] = useState({"simulate2":{"state":"Disconnected"}});
-    const [ws,setWs] = useState(null);
-
-    const connectWebSocket = () => {
-        setWs(webSocket('http://localhost:3000'));
-        ws.on(name, message => {
-            console.log(message)
-        })
-    }
+    const [name, setName] = useState('');
+    const [twins, setTwins] = useState(null);
+    const [devices, setDevices] = useState(null);
+    const [ws,setWs] = useState(webSocket('http://localhost:3000'));
     
     const updateAll = () => {
         axios.get("http://localhost:3000/initialize")
@@ -40,10 +33,9 @@ function Index() {
     useEffect(() => { 
         if (Object.keys(devices).length === 0) {
             updateAll();
-        }
-        if (!ws) {
-            connectWebSocket();
-            console.log('connect success!');
+            ws.on(name, message => {
+                console.log(message)
+            })
         }
     });
 
@@ -57,7 +49,17 @@ function Index() {
         
         <br/>
         <hr/>
-        <div id="devices"></div>
+        <div id="devices">
+            {
+                devices.map(device => {
+                    id = device.deviceId;
+                    return (<div class="p-3 mb-2 bg-light">
+                                <p class="mt-3 d-inline-block">{displayName(twins[id]["device"],id)}</p>
+                                <span class="m-2"></span>
+                            </div>);
+                })
+            }
+        </div>
 
         <div id="carousel" className="carousel slide p-5 border" data-interval="false">
           <ol id="indicator" className="carousel-indicators bg-dark">

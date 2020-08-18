@@ -298,7 +298,7 @@
                 success: function (data, textStatus, request) {
                     // console.log("data type: "+typeof(data));
                     console.log("data: "+JSON.stringify(data));
-                    if (data.status && data.status == 200) {
+                    if (data.status && data.status == 200) {d
                         msgGroup[id] = data.payload.data.groups;
                         data.payload.data.groups.forEach(element => {
                             if ($("#msg"+id+" > .row").length == 0 ||
@@ -308,7 +308,7 @@
                             $("#msg"+id+" > .row:last-child").append(`<div class="col m-1">
                                                                         <input type="checkbox" data-toggle="toggle" id="`+element["outputTopic"]+`" data-style="ios">
                                                                         <label class="ml-1 form-check-label">`+element["outputTopic"]+`</label>
-                                                                    </div>`);
+                                                                      </div>`);
                             $("#"+element["outputTopic"]).bootstrapToggle(element.enable?'on':'off')
                             $("#"+element["outputTopic"]).change(function(){
                                 switchMsgGroup(id, element["outputTopic"], $(this).prop('checked'))
