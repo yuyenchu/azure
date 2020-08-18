@@ -140,7 +140,8 @@
             $.ajax({
                 url: "/method/"+id+"/"+methodname,
                 type: 'POST',
-                data: typeof(payload)==="string"?payload:JSON.stringify(payload),
+                dataType: "json",
+                data: typeof(payload)==="object"?JSON.stringify(payload):payload,
                 success: function (data, textStatus, request) {
                     // console.log("data type: "+typeof(data));
                     console.log("data: "+data);
