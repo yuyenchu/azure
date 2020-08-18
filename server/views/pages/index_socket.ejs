@@ -141,11 +141,11 @@
                 url: "/method/"+id+"/"+methodname,
                 type: 'POST',
                 dataType: "json",
-                contentType: "application/json",
-                // data: typeof(payload)==="object"?JSON.stringify(payload):payload,
-                data: {
-                    jsonData: JSON.stringify(payload),
-                },
+                contentType: "application/json; charset=utf-8",
+                data: typeof(payload)==="object"?JSON.stringify(payload):payload,
+                // data: {
+                //     jsonData: JSON.stringify(payload),
+                // },
                 success: function (data, textStatus, request) {
                     // console.log("data type: "+typeof(data));
                     console.log("data: "+data);
