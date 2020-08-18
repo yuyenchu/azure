@@ -392,7 +392,7 @@ app.post('/method/:id/:methodname', function (req, res) {
     }
     url += '/methods?api-version=2020-03-13';
     console.log(req.params.id);
-    console.log(JSON.stringify(req.body));
+    console.log(typeof(req.body));
     console.log(req.body);
     console.log(url);
     console.log(req.params.methodname);
