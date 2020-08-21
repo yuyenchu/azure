@@ -1,10 +1,6 @@
-import React, { useState } from 'react';
-import Collapse from 'react-bootstrap/Collapse';
-import TwinText from './TwinText.jsx'
+import React from 'react';
 
-function TwinBlock(props) {
-    const [open, setOpen] = useState(false);
-
+function TwinText(props) {
     const unwrap = (data, indent)=>{
         // console.log(Object.keys(data)+" "+indent)
         if (data== null || ['string', 'number', 'boolean'].indexOf(typeof(data)) >= 0){
@@ -33,21 +29,7 @@ function TwinBlock(props) {
         return (<></>);
     }
 
-    return (
-        <>
-        <button className="btn btn-info ml-2 mb-2" 
-            onClick={() => setOpen(!open)}
-            aria-controls="collapse-text"
-            aria-expanded={open}>
-                full twin</button>
-         
-        <Collapse className="mb-2"in={open}>
-            <div id="collapse-text">
-                <TwinText data={props.data}/>
-            </div>
-        </Collapse>  
-        </>
-    );
+    return (<>{generate()}</>);
 }
 
-export default TwinBlock;
+export default TwinText;

@@ -10,10 +10,22 @@ var io = require('socket.io')(server);
 // declare config file path
 const PORT = 3000;
 
-var loggedinUsers = {}; // record accounts login 
 // keep track of all devices' status and twin 
 // then inject into home page before render
 // in form of {id: data}
+
+
+// io.on('connect', (socket) => {
+//     console.log('a user connected');
+//     // io.emit("Andrew",'a user connected');
+//     io.emit("Andrew",{"state":{"body":{"simulate2":{"state":"Connected"}},"id":"simulate2"}});
+  
+//     socket.on("disconnect", () => {
+//         console.log("a user go out");
+//         // io.emit("Andrew","a user go out");
+//         io.emit("Andrew",{"id":"simulate2","state":{"simulate2":{"state":"Disconnected"}}});
+//     });
+// });
 
 
 // set static directory
@@ -44,6 +56,7 @@ app.get('/', (req,res) =>{
 app.get('/home', (req,res) =>{
     console.log(path.join(__dirname+'/../client/build/index.html'));
     res.sendFile(path.join(__dirname+'/../client/build/index.html'));
+    io.emit("Andrew",{"state":{"body":{"simulate2":{"state":"Connected"}},"id":"simulate2"}});
 });
 
 app.get('/manage', (req,res) =>{
@@ -68,14 +81,47 @@ app.get('/initialize', function (req, res) {
                             },
                             "user":"Andrew", 
                             "twins":{
-                                "simulate2":{"properties":{"reported":{"general":{"thingsproVersion": "1.1.0"}},"name":"s2"}},
-                                "simulate1":{"properties":{"reported":{"general":{"thingsproVersion": "2.0.1"}},"name":"simulate1"}}
+                                "simulate2":{"properties":{"reported":{"general":{"thingsproVersion": "1.1.0"},"Name":"s2"}}},
+                                "simulate1":{"properties":{"reported":{"general":{"thingsproVersion": "2.0.1"}}}}
                             }});
+});
+app.post('/method/:id/:name', function (req, res) {
+    console.log("METHOD "+req.params.id+", "+req.params.name+"\n"+JSON.stringify(req.body))
+    if (req.params.name==="message-policy-put") {
+        res.status(200).json({"groups": [{"enable":req.body["groups"][0]["enable"],"outputTopic":"sys-test"},
+                                        {"enable":req.body["groups"][1]["enable"],"outputTopic":"modbus-test"}]})
+    } else if (req.params.name==="message-policy-get"){
+        res.status(200).json({"groups": [{"enable":false,"outputTopic":"sys-test"},{"enable":false,"outputTopic":"modbus-test"}]})
+    } else {
+        res.status(200).send(req.params.id+", "+req.params.name+"\n"+JSON.stringify(req.body)+" ok");
+    }
 });
 // send loggedin 
 // pre: loggedin != null
 // post: send loggedin to res
-app.get('/users', function (req, res) {res.json(loggedinUsers)});
+app.get('/users', function (req, res) {
+    io.emit("Andrew",{"state":{"body":{"simulate2":{"state":"Connected"}},"id":"simulate2"}});
+    res.send("ok");
+});
+
+app.get('/event', function (req, res) {
+    io.emit("Andrew",{"event":""});
+    res.send("ok");
+}).post('/event/:val', function (req, res) {
+    io.emit("Andrew",
+    {
+        "event":{
+            "body":{
+                "values":[
+                    {"value":req.params.val,"updateTimeStamp":new Date().getTime()},
+                    {"value": 30,"updateTimeStamp":new Date().getTime()+1}
+                ]
+            },
+            "id":"simulate2"
+        }
+    });
+    res.send("ok");
+});
 
 // start server
 // pre: config valid

@@ -16,3 +16,7 @@ export const displayName = (twin, id) => {
         return id;
     }
 }
+
+export const isDict = (v) => {
+    return typeof v==='object' && v!==null && !(v instanceof Array) && !(v instanceof Date);
+}

@@ -219,20 +219,23 @@ app.get('/', function(req, res) {
 // post: respond res
 app.get('/home', function(req, res) {
     if (req.session.loggedin) {
-        devicesToRender = {};
-        twinsToRender = {};
-        connection.query('SELECT device AS result FROM viewControl WHERE username = ?', [req.session.username], function(error, results, fields) {
-            results.forEach(element => {
-                devicesToRender[element['result']] = devices[element['result']];
-                twinsToRender[element['result']] = twins[element['result']];
-            });
-            res.render('pages/index_socket',{
-                username: req.session.username, 
-                disable: "",
-                devices: devicesToRender,
-                twins: twinsToRender
-            });
-        });
+        console.log(__dirname)
+        console.log(path.join(__dirname+'/../client/build/index.html'));
+        res.sendFile(path.join(__dirname+'/../client/build/index.html'));
+        // devicesToRender = {};
+        // twinsToRender = {};
+        // connection.query('SELECT device AS result FROM viewControl WHERE username = ?', [req.session.username], function(error, results, fields) {
+        //     results.forEach(element => {
+        //         devicesToRender[element['result']] = devices[element['result']];
+        //         twinsToRender[element['result']] = twins[element['result']];
+        //     });
+        //     res.render('pages/index_socket',{
+        //         username: req.session.username, 
+        //         disable: "",
+        //         devices: devicesToRender,
+        //         twins: twinsToRender
+        //     });
+        // });
 	} else {
         req.session.message = "Please login to view home page";
         res.redirect('/login');
