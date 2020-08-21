@@ -2,6 +2,7 @@ var express = require('express');
 var session = require('express-session');
 var path = require('path');
 var mysql = require('mysql');
+var cors = require('cors');
 var bodyparser = require('body-parser');
 var app = express();
 var server = require('http').createServer(app);
@@ -185,6 +186,7 @@ initialize();
 app.set('views', path.join(__dirname, '/views'))
 app.set('view engine', 'ejs');
 // set static directory
+app.use(cors());
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, '../client/build')));
 // app.use(express.static(path.join(__dirname, '/public')));
