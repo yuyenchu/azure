@@ -55,7 +55,8 @@ function Manage() {
 
     const addView = () => {
         // console.log(inputView);
-        axios.post("http://localhost:3000/view/"+inputView.trim())
+        // axios.post("http://localhost:3000/view/"+inputView.trim())
+        axios.post("/view/"+inputView.trim())
         .then(function(response) {
             // console.log(response.data);
             setResultView(response.data);
@@ -70,7 +71,8 @@ function Manage() {
         Object.entries(checkedList).forEach(([key, value]) => {
             if (value.isChecked) {
                 console.log(key+" "+value.id.substring(4));
-                axios.delete("http://localhost:3000/view/"+value.id.substring(4))
+                // axios.delete("http://localhost:3000/view/"+value.id.substring(4))
+                axios.delete("/view/"+value.id.substring(4))
                 .then(function(response) {
                     // console.log(response.data);
                     setResultDelete(response.data);
@@ -86,7 +88,8 @@ function Manage() {
 
     const addDevice = () => {
         console.log(inputDevice.trim()+"/"+isEdge)
-        axios.post("http://localhost:3000/device/"+inputDevice.trim()+"/"+isEdge)
+        // axios.post("http://localhost:3000/device/"+inputDevice.trim()+"/"+isEdge)
+        axios.post("/device/"+inputDevice.trim()+"/"+isEdge)
         .then(function(response) {
             // console.log(response.data);
             setResultDevice(response.data);

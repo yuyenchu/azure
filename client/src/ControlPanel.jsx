@@ -73,7 +73,7 @@ function ControlPanel(props) {
                     </Col>
                     <Col xs={8}>
                         <Row className="overflow-auto" style={{"height": "300px"}}>
-                            <TwinTab data={props.twin}/>
+                            <TwinTab data={props.twin["module"]?props.twin["module"]:props.twin["device"]}/>
                         </Row>
                         <hr/>
                         <Row className="mb-2">
