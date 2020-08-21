@@ -27,7 +27,8 @@ function Index() {
                     "rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
 
     const updateAll = () => {
-        axios.get("http://localhost:3000/initialize")
+        // axios.get("http://localhost:3000/initialize")
+        axios.get("/initialize")
         .then(function(response) {
             // console.log(typeof(response.data.twins));
             // console.log(JSON.stringify(response.data.twins));

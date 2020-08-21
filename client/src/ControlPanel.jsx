@@ -8,7 +8,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import Switch from '@material-ui/core/Switch';
 import { Line } from 'react-chartjs-2';
 import TextController from './TextController.jsx';
 import GraphicController from './GraphicController.jsx';

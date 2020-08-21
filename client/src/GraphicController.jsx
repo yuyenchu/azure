@@ -11,7 +11,8 @@ function GraphicController(props){
 
     const getMsgGroup = () => {
         axios({
-            url: "http://localhost:3000/method/"+props.deviceId+"/message-policy-get",
+            // url: "http://localhost:3000/method/"+props.deviceId+"/message-policy-get",
+            url: "/method/"+props.deviceId+"/message-policy-get",
             method: 'POST',
             data: {},
         }).then((response) => { 
@@ -29,7 +30,8 @@ function GraphicController(props){
             return group;
         }));
         axios({
-            url: "http://localhost:3000/method/"+props.deviceId+"/message-policy-put",
+            // url: "http://localhost:3000/method/"+props.deviceId+"/message-policy-put",
+            url: "/method/"+props.deviceId+"/message-policy-put",
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json'
