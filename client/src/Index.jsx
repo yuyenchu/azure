@@ -87,7 +87,7 @@ function Index() {
             case 'event':
                 console.log("receive telemtry");
                 // insertData(msgHolder[type].id,"label", msgHolder[type].body, new Date)
-                drawChart(msgHolder[type].body, msgHolder[type].id, new Date)
+                drawChart(msgHolder[type].body.body, msgHolder[type].id, msgHolder[type].body.time)
                 break;
         }
     },[msgHolder]);
@@ -102,7 +102,7 @@ function Index() {
                 if(time > dataset["data"][lastIdx].x) {
                     dataset["data"] =  [
                         ...dataset["data"],
-                        {x: moment(time), y:Number(dat)}
+                        {x: time, y:Number(dat)}
                     ];
                     if (lastIdx >= MAX_PTS){
                         dataset["data"].shift();
@@ -114,7 +114,7 @@ function Index() {
         });
         if (!found) {
             set.push({  "label":lb,
-                        "data":[{x: moment(time), y:Number(dat)}],
+                        "data":[{x: time, y:Number(dat)}],
                         "fill":false,
                         "borderColor":COLORS[chart[id]["datasets"].length%COLORS.length],
                         "lineTension":0.1
@@ -129,15 +129,16 @@ function Index() {
     function unwrapTele (id, preKey, data, chart, eqtime) {
         var holder = chart;
         Object.keys(data).forEach(key => {
+            console.log("key: "+key)
             if (key == "values" && Array.isArray(data[key])) {
                 data[key].forEach(value => {
                     // console.log("CHART IN\n"+JSON.stringify(holder))
                     console.log("VALUE\n"+JSON.stringify(value));
-                    holder = insertData(id, preKey, value["value"], value["updateTimeStamp"], holder);
-                    // console.log("CHART OUT\n"+JSON.stringify(holder))
+                    holder = insertData(id, preKey, value["value"], moment(value["updateTimeStamp"]), holder);
+                    console.log("CHART OUT\n"+JSON.stringify(holder))
                 });
             } else if (Number(data[key])) {
-                console.log("NUMBER\n"+Number(key));
+                console.log("NUMBER\n"+Number(data[key]));
                 holder = insertData(id, preKey, Number(key), moment(eqtime), holder);
             } else if (isDict(data[key])) {			
                 holder = unwrapTele(id, key, data[key], holder, eqtime);
@@ -150,12 +151,12 @@ function Index() {
         // console.log(moment(time)+" "+title);
         if (isDict(msg)) {
             // console.log("\naDraw\n"+JSON.stringify(plotPt))
-            var key = Object.keys(msg)[0]
-            if (isDict(msg[key])) {
-                setPlotPt(unwrapTele(title, key, msg[key], plotPt, time));
-            } else {
-                setPlotPt(insertData(title, key, msg[key], time, plotPt));
-            }
+            // var key = Object.keys(msg)[0]
+            // if (isDict(msg[key])) {
+            setPlotPt(unwrapTele(title, "body", msg, plotPt, time));
+            // } else {
+            //     setPlotPt(insertData(title, key, msg[key], time, plotPt));
+            // }
         } else {
             // console.log("bDraw\n"+JSON.stringify(plotPt))
             setPlotPt(insertData(title, "body", msg, time, plotPt));

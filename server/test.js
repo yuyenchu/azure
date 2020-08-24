@@ -109,17 +109,18 @@ app.get('/event', function (req, res) {
     res.send("ok");
 }).post('/event/:val', function (req, res) {
     io.emit("Andrew",
-    {
-        "event":{
-            "body":{
-                "values":[
-                    {"value":req.params.val,"updateTimeStamp":new Date().getTime()},
-                    {"value": 30,"updateTimeStamp":new Date().getTime()+1}
-                ]
-            },
-            "id":"simulate2"
-        }
-    });
+    {"event":{"body":{"time":"Mon, 24 Aug 2020 02:43:27 GMT","body":{"messageTimeStamp":"2020-08-24T02:43:27Z","tags":{"system":{"status":{"memoryUsage":{"values":[{"updateTimeStamp":"2020-08-24T02:43:07Z","value":67},{"updateTimeStamp":"2020-08-24T02:43:12Z","value":70},{"updateTimeStamp":"2020-08-24T02:43:17Z","value":70},{"updateTimeStamp":"2020-08-24T02:43:22Z","value":68}]},"cpuUsage":{"values":[{"updateTimeStamp":"2020-08-24T02:43:07Z","value":69},{"updateTimeStamp":"2020-08-24T02:43:12Z","value":75},{"updateTimeStamp":"2020-08-24T02:43:17Z","value":60},{"updateTimeStamp":"2020-08-24T02:43:22Z","value":67}]}}}}}},"id":"simulate2"}});
+    // {
+    //     "event":{
+    //         "body":{
+    //             "values":[
+    //                 {"value":req.params.val,"updateTimeStamp":new Date().getTime()},
+    //                 {"value": 30,"updateTimeStamp":new Date().getTime()+1}
+    //             ]
+    //         },
+    //         "id":"simulate2"
+    //     }
+    // });
     res.send("ok");
 });
 
