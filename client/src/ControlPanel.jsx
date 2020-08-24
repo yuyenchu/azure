@@ -21,6 +21,14 @@ function ControlPanel(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);  
 
+    const displayTwin = () => {
+        if (props.twin && props.twin["module"]){
+            return props.twin["module"];
+        } else {
+            return props.twin;
+        }
+    }
+
     return (
         <>
         <Button className="ml-2 mb-2" onClick={handleShow}>
@@ -31,7 +39,7 @@ function ControlPanel(props) {
                             className="bd-example-modal-lg" tabindex="-1" role="dialog" aria-modal="true">
         <ModalHeader>
             <ModalTitle className="modal-title">Device Name: {props.displayName}</ModalTitle>
-            <label className="d-inline ml-4" style={{"font-size": "6px"}}></label>
+            <label className="d-inline ml-4" style={{"fontSize": "6px"}}></label>
             <Button variant="white"  onClick={handleClose}>
                 <span aria-hidden="true">×</span>
             </Button>
@@ -68,20 +76,19 @@ function ControlPanel(props) {
 									}}}/>
                         </Row>
                         <Row>Telemetry
-                            <textarea readonly="" className="form-control" rows="5" style={{"margin-top": "0px", "marginBottom": "0px", "maxHeight": "250px", "minHeight": "40px"}} placeholder="result: {}"></textarea>
+                            <textarea readOnly={true} className="form-control" rows="5" style={{"marginTop": "0px", "marginBottom": "0px", "maxHeight": "250px", "minHeight": "40px"}} placeholder="result: {}"></textarea>
                         </Row>
                     </Col>
                     <Col xs={8}>
                         <Row className="overflow-auto" style={{"height": "300px"}}>
-                            <TwinTab data={props.twin}/>
-                            {props.twin}
+                            <TwinTab data={displayTwin()}/>
                         </Row>
                         <hr/>
                         <Row className="mb-2">
                             <div className="col form-check form-check-inline justify-content-end">
-                                <label className="mr-2 form-check-label">GUI</label>
+                                <label className="mr-2 form-check-label">Text</label>
                                 <AntSwitch checked={gui} onChange={(e)=>setGui(e.target.checked)}/>
-                                <label className="ml-2 form-check-label">Text</label>
+                                <label className="ml-2 form-check-label">GUI</label>
                             </div>
                         </Row>
                         <div className="row overflow-auto" style={{"minHeight": "250px", "display": gui? 'block' : 'none'}}>

@@ -9,11 +9,11 @@ function TwinText(props) {
             return (
                 Object.keys(data).map(element => {
                     var ele = typeof(element)=="string" ? element.replace("$","") : element;
-                    if (ele != "metadata") {
-                        return( <p style={{"textIndent":(indent*20)+"px","marginTop":"-5px"}}>
-                                    {ele+": "}{unwrap(data[element], indent+1)}</p>);
+                    if (ele !== "metadata") {
+                        return( <div key={ele} style={{"textIndent":(indent*20)+"px","marginTop":"-5px"}}>
+                                    {ele+": "}{unwrap(data[element], indent+1)}</div>);
                     }
-                    // return (<></>);
+                    return (<></>);
                 })
             );
         }
@@ -23,7 +23,7 @@ function TwinText(props) {
         if (props.data) {
          return (Object.keys(props.data).map(element => {
             // console.log("TWIN ELE "+element)
-            return( <p>{element+": "}{unwrap(props.data[element], 1)}</p>);
+            return( <div key={element}>{element+": "}{unwrap(props.data[element], 1)}</div>);
         }));
         }
         return (<></>);

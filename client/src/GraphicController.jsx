@@ -16,8 +16,8 @@ function GraphicController(props){
             method: 'POST',
             data: {},
         }).then((response) => { 
-            console.log("Msg Group Controller: "+JSON.stringify(response.data));
-            setMsgGroup(response.data);
+            console.log("Msg Group get: "+JSON.stringify(response.data));
+            setMsgGroup(response.data.payload.data);
         });
     }
 
@@ -49,13 +49,14 @@ function GraphicController(props){
             // console.log("LEN "+msgGroup["groups"].length)
             return (msgGroup["groups"].map((element,index) => {
                 // console.log("MAP ("+index+") "+JSON.stringify(element))
-                if (index%3==0) {
-                    return( <div class="row mb-2 container-fluid">
+                if (index%3===0) {
+                    return( <div key={index} className="row mb-2 container-fluid">
                                 {getMsgController(index)}
                                 {getMsgController(index+1)}
                                 {getMsgController(index+2)}
                             </div>);
                 } 
+                return(<></>);
             }));
         }
     }

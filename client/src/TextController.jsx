@@ -19,7 +19,8 @@ function TextController(props){
         console.log("payload:\n"+payload.trim())
         axios({
             method: 'POST',
-            url: "http://localhost:3000/method/"+props.deviceId+"/"+method.trim(),
+            // url: "http://localhost:3000/method/"+props.deviceId+"/"+method.trim(),
+            url: "/method/"+props.deviceId+"/"+method.trim(),
             headers: {
                 'Content-Type': "application/json; charset=utf-8"
             },
@@ -31,29 +32,29 @@ function TextController(props){
 
     return (<>
                 <div className="form-group col">
-                    <label for="input">Method Name</label>
+                    <label htmlFor="input">Method Name</label>
                     <input  className="form-control" 
                             id="input" 
                             placeholder="Mathod" 
                             onChange={handleMethod}/>
-                    <label for="textarea">Payload</label>
+                    <label htmlFor="textarea">Payload</label>
                     <textarea   className="form-control" 
                                 id="textarea" 
                                 placeholder="Payload" 
                                 rows="5" 
-                                style={{"max-height": "200px", "min-height": "40px"}}
+                                style={{"maxHeight": "200px", "minJeight": "40px"}}
                                 onChange={handlePayload}></textarea>
                     <button type="button" className="btn btn-primary mt-3" onClick={invoke}>submit</button>
                     <button type="button" className="btn btn-primary mt-3 ml-3" onClick={clear}>clear</button>
                 </div>
-                <textarea   readonly="" 
+                <textarea   readOnly={true} 
                             className="form-control mr-2 ml-2" 
                             placeholder="result: {}"
                             rows="2" 
-                            style={{"margin-top": "0px", 
-                                    "margin-bottom": "0px", 
-                                    "max-height": "150px", 
-                                    "min-height": "40px;"}} 
+                            style={{"marginTop": "0px", 
+                                    "marginBottom": "0px", 
+                                    "maxHeight": "150px", 
+                                    "minHeight": "40px"}} 
                             value={result}></textarea>
             </>);
 }

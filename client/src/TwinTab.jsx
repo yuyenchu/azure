@@ -84,7 +84,7 @@ export default function TwinTab(props) {
         onChangeIndex={handleChangeIndex}
       >
             {Object.keys(props.data).map((key,index) =>{
-                return (<TabPanel value={value} index={index} dir={theme.direction}>
+                return (<TabPanel key={key} value={value} index={index} dir={theme.direction}>
                             <TwinText data={props.data[key]}/>
                         </TabPanel>)
             })}

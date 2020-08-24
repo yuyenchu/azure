@@ -81,17 +81,17 @@ app.get('/initialize', function (req, res) {
                             },
                             "user":"Andrew", 
                             "twins":{
-                                "simulate2":{"properties":{"reported":{"general":{"thingsproVersion": "1.1.0"},"Name":"s2"}}},
-                                "simulate1":{"properties":{"reported":{"general":{"thingsproVersion": "2.0.1"}}}}
+                                "simulate2":{"device":{"properties":{"reported":{"general":{"thingsproVersion": "1.1.0"},"Name":"s2"}}}},
+                                "simulate1":{"device":{"properties":{"reported":{"general":{"thingsproVersion": "2.0.1"}}}}}
                             }});
 });
 app.post('/method/:id/:name', function (req, res) {
     console.log("METHOD "+req.params.id+", "+req.params.name+"\n"+JSON.stringify(req.body))
     if (req.params.name==="message-policy-put") {
-        res.status(200).json({"groups": [{"enable":req.body["groups"][0]["enable"],"outputTopic":"sys-test"},
-                                        {"enable":req.body["groups"][1]["enable"],"outputTopic":"modbus-test"}]})
+        res.status(200).json({"status":200,"payload":{"data":{"groups": [{"enable":req.body["groups"][0]["enable"],"outputTopic":"sys-test"},
+                                        {"enable":req.body["groups"][1]["enable"],"outputTopic":"modbus-test"}]}}})
     } else if (req.params.name==="message-policy-get"){
-        res.status(200).json({"groups": [{"enable":false,"outputTopic":"sys-test"},{"enable":false,"outputTopic":"modbus-test"}]})
+        res.status(200).json({"status":200,"payload":{"data":{"groups": [{"enable":false,"outputTopic":"sys-test"},{"enable":false,"outputTopic":"modbus-test"}]}}})
     } else {
         res.status(200).send(req.params.id+", "+req.params.name+"\n"+JSON.stringify(req.body)+" ok");
     }

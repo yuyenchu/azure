@@ -10,8 +10,8 @@ import Header from './Header.jsx';
 import ControlPanel from './ControlPanel.jsx';
 import ConnBadge from './ConnBadge.jsx';
 import TwinBlock from './TwinBlock.jsx';
-import InvokeAll from './InvokeAll.jsx';
-import {displayTPEVer, displayName, isDict} from './Helper.jsx';
+// import InvokeAll from './InvokeAll.jsx';
+import {displayName, isDict} from './Helper.jsx';
 
 function Index() {
     const [name, setName] = useState('');
@@ -19,8 +19,8 @@ function Index() {
     const [plotPt, setPlotPt] = useState({});
     const [twins, setTwins] = useState({});
     const [devices, setDevices] = useState({});
-    // const [ws,setWs] = useState(webSocket('http://localhost:3000'));
-    const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
+    const [ws,setWs] = useState(webSocket('http://localhost:3000'));
+    // const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
     const [flag, setFlag] = useState(false);
     const MAX_PTS = 31;
     const COLORS = ["rgb(255, 159, 0)","rgb(0, 59, 174)","rgb(75, 192, 192)",
@@ -29,8 +29,8 @@ function Index() {
 
     const updateAll = () => {
         // axios.get("http://localhost:3000/initialize")
-        axios.get("http://andrew-vm.westus2.cloudapp.azure.com:3000/initialize")
-        // axios.get("/initialize")
+        // axios.get("http://andrew-vm.westus2.cloudapp.azure.com:3000/initialize")
+        axios.get("/initialize")
         .then(function(response) {
             // console.log(typeof(response.data.twins));
             // console.log(JSON.stringify(response.data.twins));
@@ -160,7 +160,7 @@ function Index() {
     <>
       <Header userName={name}/>
       <div className="container-fluid content mb-3">
-        <h3 style={{"text-align":"center"}}>
+        <h3 style={{"textAlign":"center"}}>
             <b>Registered Devices</b>
         </h3>
         
@@ -169,7 +169,7 @@ function Index() {
         <div id="devices">
             {
                 Object.keys(devices).map(key => {
-                    return (<div>
+                    return (<div key={key}>
                                 <div className="p-3 mb-2 bg-light">
                                     <p className="mt-3 d-inline-block">{displayName(twins[key],key)}</p>
                                     <ConnBadge data={devices[key]["state"]}/>
@@ -198,23 +198,23 @@ function Index() {
         </div> */}
     </div>
      
-    <div id="modalHolder">
+    {/* <div id="modalHolder">
         <ControlPanel displayName="app" data=   {{"datasets":[{
                                                     "label":"label",
                                                     "data":plotPt
                                                 }]}}/>
-    </div>
-    <p>
+    </div> */}
+    {/* <p>
         {JSON.stringify(twins)}
-    </p>
-    <p>
+    </p> */}
+    {/* <p>
         {JSON.stringify(devices)}
-    </p>
+    </p> */}
     {/* <p>
         {JSON.stringify(plotPt)}
     </p> */}
-    <TwinBlock data={twins}/>
-    <button type='button' className='btn btn-outline-secondary m-2' onClick={() => setTwins({...twins, "B":{3:4}})}> Add b </button>
+    {/* <TwinBlock data={twins}/>
+    <button type='button' className='btn btn-outline-secondary m-2' onClick={() => setTwins({...twins, "B":{3:4}})}> Add b </button> */}
     </>
   );
 }

@@ -6,9 +6,9 @@ function MsgController(props){
         props.switchMsgGroup(event.target.checked, props.data["outputTopic"]);
     }
 
-    return (<div class="col m-1">
+    return (<div className="col m-1">
                 <Switch color="primary" checked={props.data["enable"]} onChange={handleChange}/>
-                <label class="ml-1 form-check-label">{props.data["outputTopic"]}</label>
+                <label className="ml-1 form-check-label">{props.data["outputTopic"]}</label>
             </div>);
 }
 
