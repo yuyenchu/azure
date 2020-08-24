@@ -133,15 +133,15 @@ function Index() {
             if (key == "values" && Array.isArray(data[key])) {
                 data[key].forEach(value => {
                     // console.log("CHART IN\n"+JSON.stringify(holder))
-                    console.log("VALUE\n"+JSON.stringify(value));
+                    // console.log("VALUE\n"+JSON.stringify(value));
                     holder = insertData(id, preKey, value["value"], moment(value["updateTimeStamp"]), holder);
-                    console.log("CHART OUT\n"+JSON.stringify(holder))
+                    // console.log("CHART OUT\n"+JSON.stringify(holder))
                 });
-            } else if (Number(data[key])) {
-                console.log("NUMBER\n"+Number(data[key]));
-                holder = insertData(id, preKey, Number(key), moment(eqtime), holder);
             } else if (isDict(data[key])) {			
                 holder = unwrapTele(id, key, data[key], holder, eqtime);
+            } else if (Number(data[key])) {
+                // console.log("NUMBER\n"+Number(data[key]));
+                holder = insertData(id, preKey, Number(key), moment(eqtime), holder);
             } 
         });
         return holder;
@@ -151,12 +151,7 @@ function Index() {
         // console.log(moment(time)+" "+title);
         if (isDict(msg)) {
             // console.log("\naDraw\n"+JSON.stringify(plotPt))
-            // var key = Object.keys(msg)[0]
-            // if (isDict(msg[key])) {
             setPlotPt(unwrapTele(title, "body", msg, plotPt, time));
-            // } else {
-            //     setPlotPt(insertData(title, key, msg[key], time, plotPt));
-            // }
         } else {
             // console.log("bDraw\n"+JSON.stringify(plotPt))
             setPlotPt(insertData(title, "body", msg, time, plotPt));
