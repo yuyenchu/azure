@@ -126,21 +126,22 @@ function Index() {
         return({...chart, ...holder})
     }
 
-    function unwrapTele (id, data, chart, eqtime) {
-        var holder = chart
-        Object.keys(data).forEach(element => {
-            if (element == "values" && Array.isArray(data[element])) {
-                data[element].forEach(value => {
+    function unwrapTele (id, preKey, data, chart, eqtime) {
+        var holder = chart;
+        Object.keys(data).forEach(key => {
+            if (key == "values" && Array.isArray(data[key])) {
+                data[key].forEach(value => {
                     // console.log("CHART IN\n"+JSON.stringify(holder))
-                    console.log("VALUE\n"+JSON.stringify(value))
-                    holder = insertData(id, element, value["value"], value["updateTimeStamp"], holder);
+                    console.log("VALUE\n"+JSON.stringify(value));
+                    holder = insertData(id, preKey, value["value"], value["updateTimeStamp"], holder);
                     // console.log("CHART OUT\n"+JSON.stringify(holder))
                 });
-            } else if (Number(data[element])) {
-                holder = insertData(id, element, Number(data[element]), moment(eqtime), holder);
-            } else if (isDict(data)) {			
-                holder = unwrapTele(id, data[element], holder, eqtime);
-            }
+            } else if (Number(data[key])) {
+                console.log("NUMBER\n"+Number(key));
+                holder = insertData(id, preKey, Number(key), moment(eqtime), holder);
+            } else if (isDict(data[key])) {			
+                holder = unwrapTele(id, key, data[key], holder, eqtime);
+            } 
         });
         return holder;
     }
@@ -149,7 +150,12 @@ function Index() {
         // console.log(moment(time)+" "+title);
         if (isDict(msg)) {
             // console.log("\naDraw\n"+JSON.stringify(plotPt))
-            setPlotPt(unwrapTele(title, msg, plotPt, time));
+            var key = Object.keys(msg)[0]
+            if (isDict(msg[key])) {
+                setPlotPt(unwrapTele(title, key, msg[key], plotPt, time));
+            } else {
+                setPlotPt(insertData(title, key, msg[key], time, plotPt));
+            }
         } else {
             // console.log("bDraw\n"+JSON.stringify(plotPt))
             setPlotPt(insertData(title, "body", msg, time, plotPt));
