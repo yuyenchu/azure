@@ -19,8 +19,8 @@ function Index() {
     const [plotPt, setPlotPt] = useState({});
     const [twins, setTwins] = useState({});
     const [devices, setDevices] = useState({});
-    const [ws,setWs] = useState(webSocket('http://localhost:3000'));
-    // const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
+    // const [ws,setWs] = useState(webSocket('http://localhost:3000'));
+    const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
     const [flag, setFlag] = useState(false);
     const MAX_PTS = 31;
     const COLORS = ["rgb(255, 159, 0)","rgb(0, 59, 174)","rgb(75, 192, 192)",
@@ -28,8 +28,8 @@ function Index() {
                     "rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
 
     const updateAll = () => {
-        axios.get("http://localhost:3000/initialize")
-        // axios.get("/initialize")
+        // axios.get("http://localhost:3000/initialize")
+        axios.get("/initialize")
         .then(function(response) {
             // console.log(typeof(response.data.twins));
             // console.log(JSON.stringify(response.data.twins));
