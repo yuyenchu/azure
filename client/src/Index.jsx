@@ -132,8 +132,8 @@ function Index() {
             if (element == "values" && Array.isArray(data[element])) {
                 data[element].forEach(value => {
                     // console.log("CHART IN\n"+JSON.stringify(holder))
-                    // console.log("VALUE\n"+JSON.stringify(value))
-                    holder = insertData(id, element, value["value"], moment(value["updateTimeStamp"]), holder);
+                    console.log("VALUE\n"+JSON.stringify(value))
+                    holder = insertData(id, element, value["value"], value["updateTimeStamp"], holder);
                     // console.log("CHART OUT\n"+JSON.stringify(holder))
                 });
             } else if (Number(data[element])) {
