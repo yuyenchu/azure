@@ -19,8 +19,8 @@ function Index() {
     const [plotPt, setPlotPt] = useState({});
     const [twins, setTwins] = useState({});
     const [devices, setDevices] = useState({});
-    // const [ws,setWs] = useState(webSocket('http://localhost:3000'));
-    const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
+    const [ws,setWs] = useState(webSocket('http://localhost:3000'));
+    // const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
     const [flag, setFlag] = useState(false);
     const MAX_PTS = 31;
     const COLORS = ["rgb(255, 159, 0)","rgb(0, 59, 174)","rgb(75, 192, 192)",
@@ -28,9 +28,8 @@ function Index() {
                     "rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
 
     const updateAll = () => {
-        // axios.get("http://localhost:3000/initialize")
-        // axios.get("http://andrew-vm.westus2.cloudapp.azure.com:3000/initialize")
-        axios.get("/initialize")
+        axios.get("http://localhost:3000/initialize")
+        // axios.get("/initialize")
         .then(function(response) {
             // console.log(typeof(response.data.twins));
             // console.log(JSON.stringify(response.data.twins));
@@ -55,7 +54,7 @@ function Index() {
         if (Object.keys(devices).length === 0) {
             // console.log("Useeffect: "+Object.keys(devices).length)
             updateAll();
-            console.log("1 FLAG="+flag);
+            // console.log("1 FLAG="+flag);
         } 
         if (flag){
             console.log("---socket on---")
@@ -63,7 +62,7 @@ function Index() {
                 setMsgHolder(msg);
                 console.log("MSG \n"+JSON.stringify(msg));
             })
-            console.log("2 FLAG="+flag);
+            // console.log("2 FLAG="+flag);
             setFlag(false);
         }
     },[flag]);
@@ -95,10 +94,11 @@ function Index() {
     function insertData(id, lb, dat, time, chart) {
         var found = false;
         var holder = {};
+        // console.log("A")
         var set = chart[id]["datasets"].map(dataset => {
             if (dataset["label"] == lb){
                 var lastIdx = dataset["data"].length - 1;
-                // console.log(dataset["data"][lastIdx].x)
+                // console.log("DATASET\n"+dataset["data"][lastIdx].x)
                 if(time > dataset["data"][lastIdx].x) {
                     dataset["data"] =  [
                         ...dataset["data"],
@@ -123,13 +123,15 @@ function Index() {
         holder[id] = {"datasets":set};
         // console.log("HOLDER\n"+JSON.stringify(holder))
         // setPlotPt({...plotPt, ...holder})
+        // console.log("RETURN INSERT\n"+JSON.stringify({...chart, ...holder}))
         return({...chart, ...holder})
+        // chart[id] = {"datasets":set};
     }
 
     function unwrapTele (id, preKey, data, chart, eqtime) {
         var holder = chart;
         Object.keys(data).forEach(key => {
-            console.log("key: "+key)
+            // console.log("key: "+key)
             if (key == "values" && Array.isArray(data[key])) {
                 data[key].forEach(value => {
                     // console.log("CHART IN\n"+JSON.stringify(holder))
@@ -137,13 +139,15 @@ function Index() {
                     holder = insertData(id, preKey, value["value"], moment(value["updateTimeStamp"]), holder);
                     // console.log("CHART OUT\n"+JSON.stringify(holder))
                 });
-            } else if (isDict(data[key])) {			
+            } else if (isDict(data[key])) {		
+                // console.log("IS DICT\n");	
                 holder = unwrapTele(id, key, data[key], holder, eqtime);
             } else if (Number(data[key])) {
                 // console.log("NUMBER\n"+Number(data[key]));
                 holder = insertData(id, preKey, Number(key), moment(eqtime), holder);
             } 
         });
+        // console.log("RETURN UNWRAP\n"+JSON.stringify(holder))
         return holder;
     }
 
