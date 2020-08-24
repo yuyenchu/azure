@@ -19,8 +19,8 @@ function Index() {
     const [plotPt, setPlotPt] = useState({});
     const [twins, setTwins] = useState({});
     const [devices, setDevices] = useState({});
-    const [ws,setWs] = useState(webSocket('http://localhost:3000'));
-    // const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
+    // const [ws,setWs] = useState(webSocket('http://localhost:3000'));
+    const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
     const [flag, setFlag] = useState(false);
     const MAX_PTS = 31;
     const COLORS = ["rgb(255, 159, 0)","rgb(0, 59, 174)","rgb(75, 192, 192)",
