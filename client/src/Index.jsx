@@ -16,11 +16,12 @@ import {displayName, isDict} from './Helper.jsx';
 function Index() {
     const [name, setName] = useState('');
     const [msgHolder, setMsgHolder] = useState({});
+    const [teleHolder, setTeleHolder] = useState({});
     const [plotPt, setPlotPt] = useState({});
     const [twins, setTwins] = useState({});
     const [devices, setDevices] = useState({});
-    // const [ws,setWs] = useState(webSocket('http://localhost:3000'));
-    const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
+    const [ws,setWs] = useState(webSocket('http://localhost:3000'));
+    // const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
     const [flag, setFlag] = useState(false);
     const MAX_PTS = 31;
     const COLORS = ["rgb(255, 159, 0)","rgb(0, 59, 174)","rgb(75, 192, 192)",
@@ -28,8 +29,8 @@ function Index() {
                     "rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
 
     const updateAll = () => {
-        // axios.get("http://localhost:3000/initialize")
-        axios.get("/initialize")
+        axios.get("http://localhost:3000/initialize")
+        // axios.get("/initialize")
         .then(function(response) {
             // console.log(typeof(response.data.twins));
             // console.log(JSON.stringify(response.data.twins));
@@ -86,7 +87,14 @@ function Index() {
             case 'event':
                 console.log("receive telemtry");
                 // insertData(msgHolder[type].id,"label", msgHolder[type].body, new Date)
-                drawChart(msgHolder[type].body.body, msgHolder[type].id, msgHolder[type].body.time)
+                drawChart(msgHolder[type].body.body, msgHolder[type].id, msgHolder[type].body.time);
+                var temp = {};
+                // var type = Object.keys(msgHolder)[0];
+                temp[msgHolder[type].id] = msgHolder[type].body.body;
+                setTeleHolder({...teleHolder, ...temp});
+                console.log("TEMP:\n"+JSON.stringify(temp))
+                break;
+            default:
                 break;
         }
     },[msgHolder]);
@@ -96,7 +104,7 @@ function Index() {
         var holder = {};
         // console.log("A")
         var set = chart[id]["datasets"].map(dataset => {
-            if (dataset["label"] == lb){
+            if (dataset["label"] === lb){
                 var lastIdx = dataset["data"].length - 1;
                 // console.log("DATASET\n"+dataset["data"][lastIdx].x)
                 if(time > dataset["data"][lastIdx].x) {
@@ -132,7 +140,7 @@ function Index() {
         var holder = chart;
         Object.keys(data).forEach(key => {
             // console.log("key: "+key)
-            if (key == "values" && Array.isArray(data[key])) {
+            if (key === "values" && Array.isArray(data[key])) {
                 data[key].forEach(value => {
                     // console.log("CHART IN\n"+JSON.stringify(holder))
                     // console.log("VALUE\n"+JSON.stringify(value));
@@ -146,6 +154,12 @@ function Index() {
                 // console.log("NUMBER\n"+Number(data[key]));
                 holder = insertData(id, preKey, Number(key), moment(eqtime), holder);
             } 
+            //else if (typeof(data[key])==='string') {
+                // var temp = {};
+                // var type = Object.keys(msgHolder)[0];
+                // temp[msgHolder[type].id] = msgHolder[type].body.body;
+                // setTeleHolder({...teleHolder, ...temp});
+            // }
         });
         // console.log("RETURN UNWRAP\n"+JSON.stringify(holder))
         return holder;
@@ -180,7 +194,8 @@ function Index() {
                                     <p className="mt-3 d-inline-block">{displayName(twins[key],key)}</p>
                                     <ConnBadge data={devices[key]["state"]}/>
                                 </div>
-                                <ControlPanel deviceId={key} displayName={displayName(twins[key],key)} data={plotPt[key]} twin={twins[key]}/>
+                                <ControlPanel   deviceId={key} displayName={displayName(twins[key],key)} 
+                                                data={plotPt[key]} twin={twins[key]} result={teleHolder[key]}/>
                                 <TwinBlock data={twins[key]}/>
                             </div>
                             );

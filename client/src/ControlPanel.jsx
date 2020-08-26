@@ -76,7 +76,7 @@ function ControlPanel(props) {
 									}}}/>
                         </Row>
                         <Row>Telemetry
-                            <textarea readOnly={true} className="form-control" rows="5" style={{"marginTop": "0px", "marginBottom": "0px", "maxHeight": "250px", "minHeight": "40px"}} placeholder="result: {}"></textarea>
+                            <textarea readOnly={true} value={JSON.stringify(props.result)} className="form-control" rows="5" style={{"marginTop": "0px", "marginBottom": "0px", "maxHeight": "250px", "minHeight": "40px"}} placeholder="result: {}"></textarea>
                         </Row>
                     </Col>
                     <Col xs={8}>

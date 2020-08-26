@@ -1,5 +1,5 @@
 import React , { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Manage from './Manage.jsx';
 import Index from './Index.jsx';
 // import Hello from './Hello.jsx';
@@ -12,8 +12,11 @@ class App extends Component {
       const App = () => (
         <div>
           <Switch>
+            <Route exact path="/">
+                <Redirect to="/login" />
+            </Route>
             {/* <Route exact path='/' component={Hello}/> */}
-            <Route path='/manage/' component={Manage}/>
+            <Route path='/manage' component={Manage}/>
             <Route path='/home' component={Index}/>
             </Switch>
         </div>
