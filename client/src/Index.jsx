@@ -20,8 +20,8 @@ function Index() {
     const [plotPt, setPlotPt] = useState({});
     const [twins, setTwins] = useState({});
     const [devices, setDevices] = useState({});
-    const [ws,setWs] = useState(webSocket('http://localhost:3000'));
-    // const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
+    // const [ws,setWs] = useState(webSocket('http://localhost:3000'));
+    const [ws,setWs] = useState(webSocket('http://andrew-vm.westus2.cloudapp.azure.com:3000'));
     const [flag, setFlag] = useState(false);
     const MAX_PTS = 31;
     const COLORS = ["rgb(255, 159, 0)","rgb(0, 59, 174)","rgb(75, 192, 192)",
@@ -29,15 +29,15 @@ function Index() {
                     "rgb(128, 255, 0)","rgb(102, 178, 255)","rgb(255, 102, 255)"]
 
     const updateAll = () => {
-        axios.get("http://localhost:3000/initialize")
-        // axios.get("/initialize")
+        // axios.get("http://localhost:3000/initialize")
+        axios.get("/initialize")
         .then(function(response) {
             // console.log(typeof(response.data.twins));
             // console.log(JSON.stringify(response.data.twins));
             console.log("-----AJAX-----")
             setName(response.data.user);
             setDevices(response.data.devices);
-            var dataHolder = {};
+            let dataHolder = {};
             Object.keys(response.data.devices).forEach((key)=>{
                 dataHolder[key] = {"datasets":[]};
             });
@@ -51,7 +51,7 @@ function Index() {
     }
 
     useEffect(() => { 
-        console.log("USE EFFECT: key len="+Object.keys(devices).length+" flag="+flag)
+        console.log(`USE EFFECT: key len=${Object.keys(devices).length} flag=${flag}`)
         if (Object.keys(devices).length === 0) {
             // console.log("Useeffect: "+Object.keys(devices).length)
             updateAll();
@@ -71,7 +71,7 @@ function Index() {
     useEffect(() => { 
         // console.log("twin \n"+JSON.stringify(twins));
         // console.log("devices \n"+JSON.stringify(devices));
-        var type = Object.keys(msgHolder)[0];
+        let type = Object.keys(msgHolder)[0];
         // if (msg[type].body)
         // var bodyKey = Object.keys(msg[type].body)[0];
         // console.log("data "+JSON.stringify(msg[type].body));
@@ -88,11 +88,11 @@ function Index() {
                 console.log("receive telemtry");
                 // insertData(msgHolder[type].id,"label", msgHolder[type].body, new Date)
                 drawChart(msgHolder[type].body.body, msgHolder[type].id, msgHolder[type].body.time);
-                var temp = {};
+                let temp = {};
                 // var type = Object.keys(msgHolder)[0];
                 temp[msgHolder[type].id] = msgHolder[type].body.body;
                 setTeleHolder({...teleHolder, ...temp});
-                console.log("TEMP:\n"+JSON.stringify(temp))
+                console.log(`TEMP:\n${JSON.stringify(temp)}`)
                 break;
             default:
                 break;
@@ -105,7 +105,7 @@ function Index() {
         // console.log("A")
         var set = chart[id]["datasets"].map(dataset => {
             if (dataset["label"] === lb){
-                var lastIdx = dataset["data"].length - 1;
+                let lastIdx = dataset["data"].length - 1;
                 // console.log("DATASET\n"+dataset["data"][lastIdx].x)
                 if(time > dataset["data"][lastIdx].x) {
                     dataset["data"] =  [
@@ -137,7 +137,7 @@ function Index() {
     }
 
     function unwrapTele (id, preKey, data, chart, eqtime) {
-        var holder = chart;
+        let holder = chart;
         Object.keys(data).forEach(key => {
             // console.log("key: "+key)
             if (key === "values" && Array.isArray(data[key])) {
